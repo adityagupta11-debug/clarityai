@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type Route } from "next";
@@ -234,17 +234,17 @@ export default function NewInterviewPage() {
   const [titleError,     setTitleError]     = useState<string | null>(null);
   const [audioError,     setAudioError]     = useState<string | null>(null);
 
-  // Mirror Firestore status → local phase while pipeline is running
-  const interviewIdRef = useRef<string | null>(null);
+  // Mirror Firestore status → local phase while pipeline is running.
+  // Must be a state variable (not a ref) so the useEffect re-fires when the
+  // interview ID is set — refs don't trigger re-renders.
+  const [activeInterviewId, setActiveInterviewId] = useState<string | null>(null);
   useEffect(() => {
-    const id = interviewIdRef.current;
-    if (!id) return;
-    const unsub = subscribeToInterview(id, (status) => {
+    if (!activeInterviewId) return;
+    return subscribeToInterview(activeInterviewId, (status) => {
       if      (status === "transcribing") setPhase("transcribing");
       else if (status === "analyzing")    setPhase("analyzing");
     });
-    return unsub;
-  }, [interviewIdRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeInterviewId]);
 
   const isSubmitting = ["uploading", "creating", "transcribing", "analyzing"].includes(phase);
   const activeAudio: File | Blob | null = activeTab === "file" ? audioFile : audioBlob;
@@ -311,7 +311,6 @@ export default function NewInterviewPage() {
       // Step 2 — create the Firestore interview document
       setPhase("creating");
       const interviewId = await createInterview({
-
         userId:            user.uid,
         title:             title.trim(),
         company:           company.trim() || null,
@@ -324,8 +323,8 @@ export default function NewInterviewPage() {
         mimeType:          activeAudio!.type || "audio/webm",
       });
 
-      // Store interview ID so the Firestore listener can subscribe to status updates
-      interviewIdRef.current = interviewId;
+      // Set the interview ID in state — triggers the subscribeToInterview useEffect
+      setActiveInterviewId(interviewId);
 
       // Step 3 — run the full transcribe → analyse pipeline on the server.
       // /api/transcribe updates Firestore status as it progresses; the
