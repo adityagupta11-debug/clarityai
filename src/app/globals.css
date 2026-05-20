@@ -285,6 +285,88 @@
 }
 
 /* ============================================================
+   Landing page — new brand utilities (Red · Moka Brown · Blue)
+   ============================================================ */
+@layer utilities {
+  /* Gradient headline text: red → amber → blue */
+  .gradient-text-brand {
+    background: linear-gradient(
+      120deg,
+      oklch(0.72 0.22 25)  0%,
+      oklch(0.82 0.16 55)  45%,
+      oklch(0.70 0.20 264) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Red CTA button */
+  .gradient-red {
+    background: linear-gradient(135deg, oklch(0.55 0.25 25), oklch(0.48 0.22 15));
+  }
+
+  /* Red glow */
+  .glow-red {
+    box-shadow: 0 0 28px oklch(0.55 0.25 25 / 0.40),
+                0 0 56px oklch(0.55 0.25 25 / 0.18);
+  }
+
+  .glow-red-sm {
+    box-shadow: 0 0 14px oklch(0.55 0.25 25 / 0.30);
+  }
+
+  /* Blue glow */
+  .glow-blue {
+    box-shadow: 0 0 24px oklch(0.58 0.22 264 / 0.35),
+                0 0 48px oklch(0.58 0.22 264 / 0.15);
+  }
+
+  /* Moka brown glass card surface */
+  .glass-moka {
+    background: oklch(0.13 0.025 35 / 0.85);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid oklch(1 0 0 / 0.09);
+  }
+
+  /* Float animations */
+  .animate-float {
+    animation: lp-float 5s ease-in-out infinite;
+  }
+  .animate-float-slow {
+    animation: lp-float 8s ease-in-out infinite;
+  }
+  .animate-float-delayed {
+    animation: lp-float 6s ease-in-out 2.5s infinite;
+  }
+  .animate-float-reverse {
+    animation: lp-float-reverse 7s ease-in-out infinite;
+  }
+  .animate-drift {
+    animation: lp-drift 20s ease-in-out infinite;
+  }
+  .animate-drift-slow {
+    animation: lp-drift 28s ease-in-out 6s infinite reverse;
+  }
+}
+
+@keyframes lp-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
+}
+@keyframes lp-float-reverse {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(12px); }
+}
+@keyframes lp-drift {
+  0%   { transform: translate(0px, 0px) rotate(0deg); }
+  33%  { transform: translate(18px, -12px) rotate(2deg); }
+  66%  { transform: translate(-12px, 8px) rotate(-1deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+/* ============================================================
    Radial gradient ambient background (applied to main layout)
    ============================================================ */
 .ambient-bg {
