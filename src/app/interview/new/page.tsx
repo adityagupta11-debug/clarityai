@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type Route } from "next";
 import {
@@ -10,7 +11,11 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
-  ChevronRight,
+  ArrowRight,
+  ArrowLeft,
+  Building2,
+  Briefcase,
+  Tag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,9 +34,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { DashboardHeader } from "@/components/layout/DashboardHeader";
 import { FileUploader } from "@/components/interview/FileUploader";
 import { AudioRecorder } from "@/components/interview/AudioRecorder";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,143 +45,188 @@ import { type InterviewType } from "@/types/interview";
 
 type UploadPhase = "idle" | "uploading" | "creating" | "done" | "error";
 
-// ── Progress status card ────────────────────────────────────────────────────
+// ── Upload progress overlay ───────────────────────────────────────────────────
 
-function UploadProgress({
-  phase,
-  progress,
-}: {
-  phase: UploadPhase;
-  progress: number;
-}) {
+function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: number }) {
   const isUploading = phase === "uploading";
-  const isCreating = phase === "creating";
+  const isCreating  = phase === "creating";
+
+  const steps = [
+    { label: "Uploading audio",    active: isUploading, done: isCreating || phase === "done" },
+    { label: "Creating interview", active: isCreating,  done: phase === "done" },
+  ];
 
   return (
-    <Card className="glass border-red-500/20">
-      <CardContent className="py-7 space-y-5">
-        {/* Steps */}
+    <div
+      className="rounded-2xl border border-white/8 overflow-hidden"
+      style={{ background: "oklch(0.13 0.025 35 / 0.9)", backdropFilter: "blur(20px)" }}
+    >
+      {/* Animated red top bar */}
+      <div className="h-0.5 w-full gradient-red" style={{
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.5s linear infinite",
+      }} />
+
+      <div className="p-6 sm:p-8 space-y-6">
+        {/* Step row */}
         <div className="flex items-center gap-3">
-          {/* Step 1 — Upload */}
-          <div className="flex items-center gap-2.5">
-            <div
-              className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-all",
-                isUploading
-                  ? "gradient-violet glow-violet-sm text-white"
-                  : phase === "creating" || phase === "done"
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                    : "bg-white/8 text-muted-foreground"
-              )}
-            >
-              {isUploading ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : phase === "creating" || phase === "done" ? (
-                <CheckCircle2 className="h-3.5 w-3.5" />
-              ) : (
-                "1"
+          {steps.map(({ label, active, done }, i) => (
+            <div key={label} className="flex items-center gap-2 flex-1">
+              <div
+                className={cn(
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-bold transition-all duration-300",
+                  active ? "gradient-red glow-red-sm text-white"
+                         : done  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                 : "bg-white/6 text-muted-foreground border border-white/10"
+                )}
+              >
+                {active ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        : done  ? <CheckCircle2 className="h-3.5 w-3.5" />
+                                : i + 1}
+              </div>
+
+              <span className={cn(
+                "text-sm font-medium transition-colors",
+                active ? "text-foreground" : done ? "text-emerald-400" : "text-muted-foreground"
+              )}>
+                {label}
+              </span>
+
+              {i === 0 && (
+                <div className={cn(
+                  "hidden sm:block h-px flex-1 mx-2 transition-all duration-700",
+                  done ? "bg-gradient-to-r from-emerald-500/40 to-white/10" : "bg-white/8"
+                )} />
               )}
             </div>
-            <span
-              className={cn(
-                "text-sm font-medium",
-                isUploading ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              Uploading audio
-            </span>
-          </div>
-
-          {/* Connector */}
-          <div
-            className={cn(
-              "h-px flex-1 transition-all duration-500",
-              phase === "creating" || phase === "done"
-                ? "bg-red-500/40"
-                : "bg-white/10"
-            )}
-          />
-
-          {/* Step 2 — Create */}
-          <div className="flex items-center gap-2.5">
-            <div
-              className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-all",
-                isCreating
-                  ? "gradient-violet glow-violet-sm text-white"
-                  : phase === "done"
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                    : "bg-white/8 text-muted-foreground"
-              )}
-            >
-              {isCreating ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : phase === "done" ? (
-                <CheckCircle2 className="h-3.5 w-3.5" />
-              ) : (
-                "2"
-              )}
-            </div>
-            <span
-              className={cn(
-                "text-sm font-medium",
-                isCreating ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              Creating interview
-            </span>
-          </div>
+          ))}
         </div>
 
-        {/* Progress bar — only during upload */}
+        {/* Progress bar */}
         {isUploading && (
-          <div className="space-y-1.5">
-            <Progress
-              value={progress}
-              className="[&_[data-slot=progress-track]]:bg-white/8 [&_[data-slot=progress-indicator]]:gradient-violet"
-            />
-            <p className="text-xs text-muted-foreground text-right tabular-nums">
-              {progress}%
-            </p>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">Uploading…</span>
+              <span className="text-xs font-bold tabular-nums text-red-400">{progress}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-white/8 overflow-hidden">
+              <div
+                className="h-full rounded-full gradient-red transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+
+        {isCreating && (
+          <p className="text-sm text-muted-foreground animate-pulse">
+            Setting up your interview session…
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 
-// ── Main page ───────────────────────────────────────────────────────────────
+// ── Section header — numbered step pill + title ───────────────────────────────
+
+function StepHeader({
+  n,
+  title,
+  subtitle,
+  accent = "red",
+}: {
+  n: string;
+  title: string;
+  subtitle: string;
+  accent?: "red" | "blue";
+}) {
+  return (
+    <div className="flex items-start gap-4 mb-6">
+      <div
+        className={cn(
+          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white mt-0.5",
+          accent === "red"
+            ? "gradient-red glow-red-sm"
+            : "bg-gradient-to-br from-blue-500 to-blue-600"
+        )}
+        style={accent === "blue" ? { boxShadow: "0 0 14px oklch(0.58 0.22 264 / 0.30)" } : undefined}
+      >
+        {n}
+      </div>
+      <div>
+        <h2 className="text-base font-semibold leading-none mb-1">{title}</h2>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Field wrapper — consistent label + input + error treatment ────────────────
+
+function Field({
+  label,
+  htmlFor,
+  required,
+  optional,
+  error,
+  children,
+}: {
+  label: string;
+  htmlFor?: string;
+  required?: boolean;
+  optional?: boolean;
+  error?: string | null;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={htmlFor} className="text-sm font-medium flex items-center gap-1.5">
+        {label}
+        {required && <span className="text-red-400 text-xs">*</span>}
+        {optional && <span className="text-muted-foreground/60 text-xs font-normal">(optional)</span>}
+      </Label>
+      {children}
+      {error && (
+        <p className="flex items-center gap-1.5 text-xs text-red-400 animate-in slide-in-from-top-1 duration-150">
+          <AlertCircle className="h-3 w-3 shrink-0" />
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ── Styled input — shared class string ───────────────────────────────────────
+
+const inputCls =
+  "bg-white/4 border-white/10 hover:border-white/18 focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-all placeholder:text-white/25 h-10";
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function NewInterviewPage() {
   const { user } = useAuth();
-  const router = useRouter();
+  const router   = useRouter();
 
-  // ── Form fields
-  const [title, setTitle] = useState("");
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
+  const [title,         setTitle]         = useState("");
+  const [company,       setCompany]       = useState("");
+  const [role,          setRole]          = useState("");
   const [interviewType, setInterviewType] = useState<InterviewType>("behavioral");
 
-  // ── Audio source
-  const [activeTab, setActiveTab] = useState("file");
-  const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioDuration, setAudioDuration] = useState(0); // seconds
+  const [activeTab,     setActiveTab]     = useState("file");
+  const [audioFile,     setAudioFile]     = useState<File | null>(null);
+  const [audioBlob,     setAudioBlob]     = useState<Blob | null>(null);
+  const [audioDuration, setAudioDuration] = useState(0);
 
-  // ── Upload state
-  const [phase, setPhase] = useState<UploadPhase>("idle");
+  const [phase,          setPhase]          = useState<UploadPhase>("idle");
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
-  // ── Field-level validation messages
-  const [titleError, setTitleError] = useState<string | null>(null);
-  const [audioError, setAudioError] = useState<string | null>(null);
+  const [submitError,    setSubmitError]    = useState<string | null>(null);
+  const [titleError,     setTitleError]     = useState<string | null>(null);
+  const [audioError,     setAudioError]     = useState<string | null>(null);
 
   const isSubmitting = phase === "uploading" || phase === "creating";
-  const activeAudio: File | Blob | null =
-    activeTab === "file" ? audioFile : audioBlob;
-
-  // ── Handlers ────────────────────────────────────────────────
+  const activeAudio: File | Blob | null = activeTab === "file" ? audioFile : audioBlob;
+  const isReady = !!title.trim() && !!activeAudio;
 
   const handleFileSelected = useCallback(async (file: File) => {
     setAudioFile(file);
@@ -188,7 +235,7 @@ export default function NewInterviewPage() {
       const dur = await getAudioDuration(file);
       setAudioDuration(Math.round(dur));
     } catch {
-      setAudioDuration(0); // duration unknown — still allow upload
+      setAudioDuration(0);
     }
   }, []);
 
@@ -197,47 +244,34 @@ export default function NewInterviewPage() {
     setAudioDuration(0);
   }, []);
 
-  const handleRecordingComplete = useCallback(
-    (blob: Blob, duration: number) => {
-      setAudioBlob(blob);
-      setAudioDuration(duration);
-      setAudioError(null);
-    },
-    []
-  );
+  const handleRecordingComplete = useCallback((blob: Blob, duration: number) => {
+    setAudioBlob(blob);
+    setAudioDuration(duration);
+    setAudioError(null);
+  }, []);
 
   const handleTabChange = useCallback((tab: string) => {
     setActiveTab(tab);
-    // Clear whichever source isn't active so stale data isn't submitted
     setAudioFile(null);
     setAudioBlob(null);
     setAudioDuration(0);
     setAudioError(null);
   }, []);
 
-  // ── Submit ───────────────────────────────────────────────────
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // Validate
     let valid = true;
-    if (!title.trim()) {
-      setTitleError("Interview title is required.");
-      valid = false;
-    } else {
-      setTitleError(null);
-    }
+    if (!title.trim()) { setTitleError("Interview title is required."); valid = false; }
+    else setTitleError(null);
+
     if (!activeAudio) {
-      setAudioError(
-        activeTab === "file"
-          ? "Please select an audio file."
-          : "Please record your interview first."
-      );
+      setAudioError(activeTab === "file"
+        ? "Please select an audio file."
+        : "Please record your interview first.");
       valid = false;
-    } else {
-      setAudioError(null);
-    }
+    } else setAudioError(null);
+
     if (!valid || !user) return;
 
     setPhase("uploading");
@@ -245,185 +279,186 @@ export default function NewInterviewPage() {
     setSubmitError(null);
 
     try {
-      // 1. Upload the audio file to Firebase Storage
-      const { path } = await uploadAudioFile(
-        user.uid,
-        activeAudio!,
-        (pct) => setUploadProgress(pct)
-      );
+      const { path } = await uploadAudioFile(user.uid, activeAudio!, (pct) => setUploadProgress(pct));
 
-      // 2. Create the Firestore document
       setPhase("creating");
       const interviewId = await createInterview({
-        userId: user.uid,
-        title: title.trim(),
-        company: company.trim() || null,
-        role: role.trim() || null,
+        userId:            user.uid,
+        title:             title.trim(),
+        company:           company.trim() || null,
+        role:              role.trim() || null,
         interviewType,
-        recordingPath: path,
+        recordingPath:     path,
         recordingDuration: audioDuration,
-        recordingSize: activeAudio!.size,
-        mimeType: activeAudio!.type || "audio/webm",
+        recordingSize:     activeAudio!.size,
+        mimeType:          activeAudio!.type || "audio/webm",
       });
 
-      // 3. Redirect to the interview status page
       setPhase("done");
       router.push(`/interview/${interviewId}` as Route);
     } catch (err) {
       console.error("Upload failed:", err);
       setPhase("error");
-      setSubmitError("Something went wrong. Please try again.");
+      setSubmitError("Something went wrong during upload. Please try again.");
     }
   }
 
-  // ── Render ───────────────────────────────────────────────────
-
   return (
-    <div className="max-w-2xl space-y-0">
-      <DashboardHeader
-        title="New Interview"
-        description="Upload a recording or capture directly in your browser."
-      />
+    <div className="max-w-2xl mx-auto">
+
+      {/* ── Page header ──────────────────────────────────────────── */}
+      <div className="mb-8">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5 group"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+          Back to Dashboard
+        </Link>
+
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-red glow-red">
+            <Sparkles className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight gradient-text-brand">
+              New Interview
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Add your details, upload or record, and get AI coaching in under 3 minutes.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
-        {/* ── Section 1: Interview Details ─────────────────── */}
-        <Card className="glass border-white/8">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-base flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/20 text-red-300 text-xs font-semibold">
-                1
-              </span>
-              Interview Details
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Give this session a name so you can find it later.
-            </CardDescription>
-          </CardHeader>
+        {/* ══ Section 1: Interview Details ════════════════════════ */}
+        <div
+          className="rounded-2xl border border-white/8 overflow-hidden"
+          style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
+        >
+          {/* Thin red accent top border */}
+          <div className="h-0.5 gradient-red opacity-60" />
 
-          <CardContent className="space-y-4">
-            {/* Title */}
-            <div className="space-y-1.5">
-              <Label htmlFor="title" className="text-sm">
-                Title
-                <span className="text-red-400 ml-0.5">*</span>
-              </Label>
-              <Input
-                id="title"
-                placeholder="e.g. Senior PM Interview at Google"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  if (titleError) setTitleError(null);
-                }}
-                disabled={isSubmitting}
-                className={cn(
-                  "bg-white/5 border-white/10 focus:border-red-500/50 transition-colors",
-                  titleError && "border-red-500/50 focus:border-red-500/50"
-                )}
-              />
-              {titleError && (
-                <p className="flex items-center gap-1.5 text-xs text-red-400">
-                  <AlertCircle className="h-3 w-3" />
-                  {titleError}
-                </p>
-              )}
-            </div>
+          <div className="p-5 sm:p-7">
+            <StepHeader
+              n="01"
+              title="Interview Details"
+              subtitle="Give this session a name so you can find it later."
+              accent="red"
+            />
 
-            {/* Company + Role on one row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="company" className="text-sm">
-                  Company
-                  <span className="text-muted-foreground ml-1 text-xs">(optional)</span>
-                </Label>
+            <div className="space-y-4">
+              {/* Title */}
+              <Field label="Title" htmlFor="title" required error={titleError}>
                 <Input
-                  id="company"
-                  placeholder="e.g. Google"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
+                  id="title"
+                  placeholder="e.g. Senior PM Interview at Google"
+                  value={title}
+                  onChange={(e) => { setTitle(e.target.value); if (titleError) setTitleError(null); }}
                   disabled={isSubmitting}
-                  className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
+                  className={cn(inputCls, titleError && "border-red-500/40")}
                 />
+              </Field>
+
+              {/* Company + Role */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="Company" htmlFor="company" optional>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50 pointer-events-none" />
+                    <Input
+                      id="company"
+                      placeholder="Google"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      disabled={isSubmitting}
+                      className={cn(inputCls, "pl-8")}
+                    />
+                  </div>
+                </Field>
+
+                <Field label="Role" htmlFor="role" optional>
+                  <div className="relative">
+                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50 pointer-events-none" />
+                    <Input
+                      id="role"
+                      placeholder="Product Manager"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      disabled={isSubmitting}
+                      className={cn(inputCls, "pl-8")}
+                    />
+                  </div>
+                </Field>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="role" className="text-sm">
-                  Role
-                  <span className="text-muted-foreground ml-1 text-xs">(optional)</span>
-                </Label>
-                <Input
-                  id="role"
-                  placeholder="e.g. Product Manager"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  disabled={isSubmitting}
-                  className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
-                />
-              </div>
+              {/* Interview type */}
+              <Field label="Interview Type" htmlFor="type">
+                <div className="relative">
+                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50 pointer-events-none z-10" />
+                  <Select
+                    value={interviewType}
+                    onValueChange={(val) => { if (val) setInterviewType(val as InterviewType); }}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger className={cn(inputCls, "pl-8 w-full")}>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {INTERVIEW_TYPES.map(({ value, label }) => (
+                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </Field>
             </div>
+          </div>
+        </div>
 
-            {/* Interview Type */}
-            <div className="space-y-1.5">
-              <Label className="text-sm">Interview Type</Label>
-              <Select
-                value={interviewType}
-                onValueChange={(val) => {
-                  if (val) setInterviewType(val as InterviewType);
-                }}
-                disabled={isSubmitting}
-              >
-                <SelectTrigger className="w-full bg-white/5 border-white/10 focus:border-red-500/50">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {INTERVIEW_TYPES.map(({ value, label }) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+        {/* ══ Section 2: Audio Recording ══════════════════════════ */}
+        <div
+          className="rounded-2xl border border-white/8 overflow-hidden"
+          style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
+        >
+          {/* Thin blue accent top border */}
+          <div className="h-0.5" style={{ background: "linear-gradient(90deg, oklch(0.58 0.22 264), oklch(0.70 0.18 264))", opacity: 0.6 }} />
 
-        {/* ── Section 2: Audio Source ───────────────────────── */}
-        <Card className="glass border-white/8">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-base flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/20 text-red-300 text-xs font-semibold">
-                2
-              </span>
-              Audio Recording
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Upload an existing file or record directly in your browser.
-            </CardDescription>
-          </CardHeader>
+          <div className="p-5 sm:p-7">
+            <StepHeader
+              n="02"
+              title="Your Recording"
+              subtitle="Upload an existing file or record directly in your browser."
+              accent="blue"
+            />
 
-          <CardContent>
-            <Tabs
-              defaultValue="file"
-              onValueChange={handleTabChange}
-              className="space-y-4"
-            >
-              <TabsList className="w-full">
+            <Tabs defaultValue="file" onValueChange={handleTabChange} className="space-y-5">
+              {/* Custom tab list */}
+              <TabsList className="w-full h-11 p-1 rounded-xl bg-white/4 border border-white/8">
                 <TabsTrigger
                   value="file"
-                  className="flex-1 gap-2"
                   disabled={isSubmitting}
+                  className={cn(
+                    "flex-1 h-9 gap-2 rounded-lg text-sm font-medium transition-all",
+                    "data-active:bg-red-500/15 data-active:text-red-300 data-active:border data-active:border-red-500/20",
+                    "text-muted-foreground hover:text-foreground"
+                  )}
                 >
-                  <FileAudio className="h-3.5 w-3.5" />
-                  Upload File
+                  <FileAudio className="h-4 w-4" />
+                  <span>Upload File</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="record"
-                  className="flex-1 gap-2"
                   disabled={isSubmitting}
+                  className={cn(
+                    "flex-1 h-9 gap-2 rounded-lg text-sm font-medium transition-all",
+                    "data-active:bg-blue-500/15 data-active:text-blue-300 data-active:border data-active:border-blue-500/20",
+                    "text-muted-foreground hover:text-foreground"
+                  )}
                 >
-                  <Mic className="h-3.5 w-3.5" />
-                  Record Audio
+                  <Mic className="h-4 w-4" />
+                  <span>Record Audio</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -443,60 +478,84 @@ export default function NewInterviewPage() {
               </TabsContent>
             </Tabs>
 
-            {/* Audio-level validation error */}
             {audioError && (
-              <p className="mt-3 flex items-center gap-1.5 text-xs text-red-400">
-                <AlertCircle className="h-3 w-3" />
+              <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-500/8 border border-red-500/20 px-3 py-2.5 text-xs text-red-400 animate-in slide-in-from-top-1 duration-150">
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                 {audioError}
-              </p>
+              </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* ── Upload progress card (replaces submit when active) ── */}
+        {/* ══ Upload progress (replaces submit footer while active) ══ */}
         {isSubmitting && (
           <UploadProgress phase={phase} progress={uploadProgress} />
         )}
 
-        {/* ── Submit error ──────────────────────────────────── */}
+        {/* ══ Submit error ════════════════════════════════════════ */}
         {phase === "error" && submitError && (
-          <div className="flex items-start gap-3 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
-            <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+          <div className="flex items-start gap-3 rounded-2xl bg-red-500/8 border border-red-500/20 px-5 py-4 text-sm text-red-400 animate-in slide-in-from-top-1 duration-200">
+            <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
             <div>
-              <p className="font-medium">Upload failed</p>
-              <p className="text-xs mt-0.5 text-red-400/80">{submitError}</p>
+              <p className="font-semibold">Upload failed</p>
+              <p className="text-xs mt-0.5 text-red-400/70">{submitError}</p>
             </div>
           </div>
         )}
 
-        {/* ── Submit button ─────────────────────────────────── */}
+        {/* ══ Submit footer ═══════════════════════════════════════ */}
         {!isSubmitting && (
-          <div className="flex items-center justify-between pt-1">
-            {/* Readiness summary */}
-            <p className="text-xs text-muted-foreground">
-              {activeAudio && title.trim() ? (
-                <span className="flex items-center gap-1.5 text-emerald-400">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Ready to analyse
-                </span>
-              ) : (
-                "Fill in the title and add a recording to continue."
-              )}
-            </p>
+          <div
+            className="rounded-2xl border border-white/8 p-5 sm:p-6"
+            style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
+          >
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Readiness indicator */}
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all",
+                  isReady
+                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                    : "bg-white/6 border-white/10 text-muted-foreground"
+                )}>
+                  <CheckCircle2 className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className={cn(
+                    "text-sm font-medium transition-colors",
+                    isReady ? "text-emerald-400" : "text-muted-foreground"
+                  )}>
+                    {isReady ? "Ready to analyse" : "Almost there…"}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                    {!title.trim() && !activeAudio
+                      ? "Add a title and recording to continue"
+                      : !title.trim()
+                        ? "Add a title to continue"
+                        : !activeAudio
+                          ? "Add a recording to continue"
+                          : "AI analysis takes under 3 minutes"}
+                  </p>
+                </div>
+              </div>
 
-            <Button
-              type="submit"
-              disabled={!title.trim() || !activeAudio || !user}
-              className={cn(
-                "gradient-violet hover:opacity-90 transition-opacity px-6",
-                (!title.trim() || !activeAudio) && "opacity-50"
-              )}
-            >
-              Analyse Interview
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
+              {/* Submit button */}
+              <Button
+                type="submit"
+                disabled={!isReady || !user}
+                className={cn(
+                  "w-full sm:w-auto gradient-red glow-red-sm px-8 h-11 text-sm font-bold",
+                  "hover:opacity-90 active:scale-[0.97] transition-all",
+                  !isReady && "opacity-40 cursor-not-allowed"
+                )}
+              >
+                Analyse Interview
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
           </div>
         )}
+
       </form>
     </div>
   );
