@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Bell, Mic, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,6 +24,8 @@ interface NavbarProps {
 }
 
 export function Navbar({ user }: NavbarProps) {
+  const router = useRouter();
+
   const initials = user?.displayName
     ?.split(" ")
     .map((n) => n[0])
@@ -48,29 +52,31 @@ export function Navbar({ user }: NavbarProps) {
           {user ? (
             <>
               {/* New Interview CTA */}
-              <Button asChild size="sm" className="gradient-violet glow-violet-sm hover:opacity-90 transition-opacity hidden sm:flex">
-                <Link href="/interview/new">
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  New Interview
-                </Link>
-              </Button>
+              <Link
+                href="/interview/new"
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "gradient-violet glow-violet-sm hover:opacity-90 transition-opacity hidden sm:flex"
+                )}
+              >
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                New Interview
+              </Link>
 
               {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative h-9 w-9 text-muted-foreground hover:text-foreground">
+              <button className="relative flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors">
                 <Bell className="h-4 w-4" />
-              </Button>
+              </button>
 
               {/* User menu */}
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-9 w-9 rounded-full p-0">
-                    <Avatar className="h-8 w-8 ring-2 ring-violet-500/30">
-                      <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName} />
-                      <AvatarFallback className="bg-violet-500/20 text-violet-300 text-xs font-medium">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
+                <DropdownMenuTrigger className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
+                  <Avatar className="h-8 w-8 ring-2 ring-violet-500/30">
+                    <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName} />
+                    <AvatarFallback className="bg-violet-500/20 text-violet-300 text-xs font-medium">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 glass-strong border-white/10">
                   <DropdownMenuLabel className="font-normal">
@@ -80,17 +86,17 @@ export function Navbar({ user }: NavbarProps) {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-white/8" />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                    Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/history">Interview History</Link>
+                  <DropdownMenuItem onClick={() => router.push("/history")}>
+                    Interview History
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings">Settings</Link>
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-white/8" />
-                  <DropdownMenuItem className="text-red-400 focus:text-red-400">
+                  <DropdownMenuItem variant="destructive">
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -98,12 +104,24 @@ export function Navbar({ user }: NavbarProps) {
             </>
           ) : (
             <>
-              <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                <Link href="/login">Sign in</Link>
-              </Button>
-              <Button asChild size="sm" className="gradient-violet hover:opacity-90 transition-opacity">
-                <Link href="/signup">Get started</Link>
-              </Button>
+              <Link
+                href="/login"
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "gradient-violet hover:opacity-90 transition-opacity"
+                )}
+              >
+                Get started
+              </Link>
             </>
           )}
         </div>

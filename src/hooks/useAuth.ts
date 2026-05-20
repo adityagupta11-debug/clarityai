@@ -1,4 +1,3 @@
 "use client";
 
-// useAuth — implemented in Phase 2
-export {};
+export { useAuthContext as useAuth } from "@/contexts/AuthContext";

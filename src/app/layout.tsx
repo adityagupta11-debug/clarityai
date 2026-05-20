@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -43,9 +44,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <TooltipProvider delayDuration={300}>
-          {children}
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider delay={300}>
+            {children}
+          </TooltipProvider>
+        </AuthProvider>
       </body>
     </html>
   );

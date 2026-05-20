@@ -29,6 +29,7 @@ export interface Interview {
   recordingSize: number;
   mimeType: string;
   assemblyaiTranscriptId: string | null;
+  overallScore: number | null;   // Denormalized from analysis subcollection on completion
   createdAt: Date;
   updatedAt: Date;
   completedAt: Date | null;
