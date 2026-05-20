@@ -46,6 +46,36 @@ export async function ensureUserDocument(user: FirebaseUser): Promise<void> {
   }
 }
 
+/** Fetch a user's profile preferences from Firestore */
+export async function getUserPreferences(userId: string): Promise<{
+  preferredRole: string | null;
+  experienceLevel: string;
+  plan: string;
+  createdAt: { toDate(): Date } | null;
+} | null> {
+  const snap = await getDoc(doc(db(), "users", userId));
+  if (!snap.exists()) return null;
+  const d = snap.data();
+  return {
+    preferredRole:   (d.preferredRole as string | null) ?? null,
+    experienceLevel: (d.experienceLevel as string) ?? "entry",
+    plan:            (d.plan as string) ?? "free",
+    createdAt:       (d.createdAt as { toDate(): Date } | null) ?? null,
+  };
+}
+
+/** Save editable profile preferences */
+export async function updateUserPreferences(
+  userId: string,
+  prefs: { preferredRole?: string | null; experienceLevel?: string }
+): Promise<void> {
+  await setDoc(
+    doc(db(), "users", userId),
+    { ...prefs, updatedAt: serverTimestamp() },
+    { merge: true }
+  );
+}
+
 // ── Interview queries ────────────────────────────────────────
 
 function toInterview(id: string, data: Record<string, unknown>): Interview {
