@@ -180,21 +180,21 @@ function GradientHeader({
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(135deg, oklch(0.18 0.07 293 / 0.95) 0%, oklch(0.11 0.04 290 / 0.98) 50%, oklch(0.09 0.02 295) 100%)",
+            "linear-gradient(135deg, oklch(0.15 0.04 25 / 0.90) 0%, oklch(0.11 0.03 35 / 0.98) 50%, oklch(0.09 0.025 35) 100%)",
         }}
       />
 
       {/* Ambient glow orbs */}
       <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, oklch(0.541 0.281 293 / 0.18) 0%, transparent 70%)" }} />
+        style={{ background: "radial-gradient(circle, oklch(0.55 0.25 25 / 0.14) 0%, transparent 70%)" }} />
       <div className="absolute -bottom-12 right-8 h-52 w-52 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, oklch(0.65 0.22 320 / 0.12) 0%, transparent 70%)" }} />
+        style={{ background: "radial-gradient(circle, oklch(0.58 0.22 264 / 0.10) 0%, transparent 70%)" }} />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-10">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
 
         {/* Top row: breadcrumb + score badge */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
           <Link
             href="/dashboard"
             className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors group"

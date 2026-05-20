@@ -85,7 +85,7 @@ function CategoryMiniCard({
 
 export function DashboardGrid({ analysis }: DashboardGridProps) {
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10 space-y-8">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
 
       {/* ── Row 1: Overall score gauge + category mini-cards ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">

@@ -85,19 +85,19 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
   return (
     <div className="space-y-4">
       {/* Recorder card */}
-      <div className="rounded-2xl glass border border-white/10 p-8">
+      <div className="rounded-2xl glass border border-white/10 p-5 sm:p-8">
 
         {/* ── Visual indicator + timer ── */}
-        <div className="flex flex-col items-center gap-4 mb-8">
+        <div className="flex flex-col items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
 
           {/* Animated mic ring */}
           <div className="relative flex items-center justify-center">
             {/* Outer ping rings — only visible while actively recording */}
             {isRecording && (
               <>
-                <span className="absolute inline-flex h-28 w-28 rounded-full bg-red-500/20 animate-ping" />
+                <span className="absolute inline-flex h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-red-500/20 animate-ping" />
                 <span
-                  className="absolute inline-flex h-24 w-24 rounded-full bg-red-500/15 animate-ping"
+                  className="absolute inline-flex h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-red-500/15 animate-ping"
                   style={{ animationDelay: "0.3s", animationDuration: "1.2s" }}
                 />
               </>
@@ -106,7 +106,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
             {/* Core circle */}
             <div
               className={cn(
-                "relative flex h-20 w-20 items-center justify-center rounded-full border-2 transition-all duration-300",
+                "relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border-2 transition-all duration-300",
                 isRecording
                   ? "border-red-500 bg-red-500/15 shadow-[0_0_20px_rgba(239,68,68,0.3)]"
                   : isPaused
@@ -118,7 +118,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
             >
               <Mic
                 className={cn(
-                  "h-8 w-8 transition-colors duration-300",
+                  "h-6 w-6 sm:h-8 sm:w-8 transition-colors duration-300",
                   isRecording
                     ? "text-red-400"
                     : isPaused
@@ -134,7 +134,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
           {/* Timer */}
           <div
             className={cn(
-              "font-mono text-5xl font-semibold tabular-nums tracking-widest transition-colors duration-300",
+              "font-mono text-4xl sm:text-5xl font-semibold tabular-nums tracking-widest transition-colors duration-300",
               isRecording
                 ? "text-red-400"
                 : isPaused
