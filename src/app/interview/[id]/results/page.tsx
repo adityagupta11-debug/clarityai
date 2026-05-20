@@ -62,6 +62,7 @@ function deserializeInterview(id: string, data: FirestoreData): SerializedInterv
     recordingDuration:       (data.recordingDuration as number) ?? 0,
     recordingSize:           (data.recordingSize as number) ?? 0,
     mimeType:                (data.mimeType as string) ?? "",
+    recordingUrl:            (data.recordingUrl as string | null) ?? null,
     assemblyaiTranscriptId:  (data.assemblyaiTranscriptId as string | null) ?? null,
     overallScore:            (data.overallScore as number | null) ?? null,
     createdAt:               tsToISO(data.createdAt),

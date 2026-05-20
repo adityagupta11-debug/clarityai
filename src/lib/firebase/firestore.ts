@@ -93,11 +93,33 @@ function toInterview(id: string, data: Record<string, unknown>): Interview {
     recordingSize: (data.recordingSize as number) ?? 0,
     mimeType: (data.mimeType as string) ?? "",
     assemblyaiTranscriptId: (data.assemblyaiTranscriptId as string | null) ?? null,
-    overallScore: (data.overallScore as number | null) ?? null,
+    recordingUrl:           (data.recordingUrl as string | null) ?? null,
+    overallScore:           (data.overallScore as number | null) ?? null,
     createdAt: (data.createdAt as { toDate(): Date } | null)?.toDate() ?? new Date(),
     updatedAt: (data.updatedAt as { toDate(): Date } | null)?.toDate() ?? new Date(),
     completedAt: (data.completedAt as { toDate(): Date } | null)?.toDate() ?? null,
   };
+}
+
+/** Subscribe to a single interview document — delivers status + errorMessage
+ *  to both the new-interview progress stepper and the status detail page. */
+export function subscribeToInterview(
+  interviewId: string,
+  onData: (status: string, errorMessage?: string | null) => void
+): () => void {
+  return onSnapshot(
+    doc(db(), "interviews", interviewId),
+    (snap) => {
+      if (snap.exists()) {
+        const d = snap.data();
+        onData(
+          (d.status as string) ?? "",
+          (d.errorMessage as string | null) ?? null
+        );
+      }
+    },
+    () => {} // ignore listener errors — don't crash the UI
+  );
 }
 
 export function subscribeToUserInterviews(
@@ -132,6 +154,7 @@ export interface CreateInterviewParams {
   role: string | null;
   interviewType: Interview["interviewType"];
   recordingPath: string;
+  recordingUrl: string;      // Firebase Storage download URL (needed by AssemblyAI)
   recordingDuration: number; // seconds
   recordingSize: number;     // bytes
   mimeType: string;
@@ -154,7 +177,8 @@ export async function createInterview(
     interviewType: params.interviewType,
     status: "uploaded",
     errorMessage: null,
-    recordingPath: params.recordingPath,
+    recordingPath:     params.recordingPath,
+    recordingUrl:      params.recordingUrl,
     recordingDuration: params.recordingDuration,
     recordingSize: params.recordingSize,
     mimeType: params.mimeType,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type Route } from "next";
@@ -38,22 +38,28 @@ import { FileUploader } from "@/components/interview/FileUploader";
 import { AudioRecorder } from "@/components/interview/AudioRecorder";
 import { useAuth } from "@/hooks/useAuth";
 import { uploadAudioFile } from "@/lib/firebase/storage";
-import { createInterview } from "@/lib/firebase/firestore";
+import { createInterview, subscribeToInterview } from "@/lib/firebase/firestore";
 import { getAudioDuration } from "@/lib/utils/audio";
 import { INTERVIEW_TYPES } from "@/lib/utils/constants";
 import { type InterviewType } from "@/types/interview";
 
-type UploadPhase = "idle" | "uploading" | "creating" | "done" | "error";
+type UploadPhase = "idle" | "uploading" | "creating" | "transcribing" | "analyzing" | "done" | "error";
 
 // ── Upload progress overlay ───────────────────────────────────────────────────
 
 function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: number }) {
-  const isUploading = phase === "uploading";
-  const isCreating  = phase === "creating";
+  const isUploading     = phase === "uploading";
+  const isCreating      = phase === "creating";
+  const isTranscribing  = phase === "transcribing";
+  const isAnalyzing     = phase === "analyzing";
+  const afterCreating   = ["transcribing", "analyzing", "done"].includes(phase);
+  const afterTranscribe = ["analyzing", "done"].includes(phase);
 
   const steps = [
-    { label: "Uploading audio",    active: isUploading, done: isCreating || phase === "done" },
-    { label: "Creating interview", active: isCreating,  done: phase === "done" },
+    { label: "Uploading",     active: isUploading,    done: !isUploading && phase !== "idle" },
+    { label: "Processing",    active: isCreating,      done: afterCreating },
+    { label: "Transcribing",  active: isTranscribing,  done: afterTranscribe },
+    { label: "Analysing",     active: isAnalyzing,     done: phase === "done" },
   ];
 
   return (
@@ -92,9 +98,9 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
                 {label}
               </span>
 
-              {i === 0 && (
+              {i < 3 && (
                 <div className={cn(
-                  "hidden sm:block h-px flex-1 mx-2 transition-all duration-700",
+                  "hidden sm:block h-px flex-1 mx-1 transition-all duration-700",
                   done ? "bg-gradient-to-r from-emerald-500/40 to-white/10" : "bg-white/8"
                 )} />
               )}
@@ -119,9 +125,13 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
         )}
 
         {isCreating && (
-          <p className="text-sm text-muted-foreground animate-pulse">
-            Setting up your interview session…
-          </p>
+          <p className="text-sm text-muted-foreground animate-pulse">Setting up your interview session…</p>
+        )}
+        {isTranscribing && (
+          <p className="text-sm text-muted-foreground animate-pulse">AssemblyAI is transcribing your audio — usually 20–60 seconds…</p>
+        )}
+        {isAnalyzing && (
+          <p className="text-sm text-muted-foreground animate-pulse">Gemini is analysing your responses — almost there…</p>
         )}
       </div>
     </div>
@@ -224,7 +234,19 @@ export default function NewInterviewPage() {
   const [titleError,     setTitleError]     = useState<string | null>(null);
   const [audioError,     setAudioError]     = useState<string | null>(null);
 
-  const isSubmitting = phase === "uploading" || phase === "creating";
+  // Mirror Firestore status → local phase while pipeline is running
+  const interviewIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    const id = interviewIdRef.current;
+    if (!id) return;
+    const unsub = subscribeToInterview(id, (status) => {
+      if      (status === "transcribing") setPhase("transcribing");
+      else if (status === "analyzing")    setPhase("analyzing");
+    });
+    return unsub;
+  }, [interviewIdRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isSubmitting = ["uploading", "creating", "transcribing", "analyzing"].includes(phase);
   const activeAudio: File | Blob | null = activeTab === "file" ? audioFile : audioBlob;
   const isReady = !!title.trim() && !!activeAudio;
 
@@ -279,27 +301,60 @@ export default function NewInterviewPage() {
     setSubmitError(null);
 
     try {
-      const { path } = await uploadAudioFile(user.uid, activeAudio!, (pct) => setUploadProgress(pct));
+      // Step 1 — upload audio to Firebase Storage
+      const { path, url } = await uploadAudioFile(
+        user.uid,
+        activeAudio!,
+        (pct) => setUploadProgress(pct)
+      );
 
+      // Step 2 — create the Firestore interview document
       setPhase("creating");
       const interviewId = await createInterview({
+
         userId:            user.uid,
         title:             title.trim(),
         company:           company.trim() || null,
         role:              role.trim() || null,
         interviewType,
         recordingPath:     path,
+        recordingUrl:      url,   // stored so /api/transcribe can pass it to AssemblyAI
         recordingDuration: audioDuration,
         recordingSize:     activeAudio!.size,
         mimeType:          activeAudio!.type || "audio/webm",
       });
 
+      // Store interview ID so the Firestore listener can subscribe to status updates
+      interviewIdRef.current = interviewId;
+
+      // Step 3 — run the full transcribe → analyse pipeline on the server.
+      // /api/transcribe updates Firestore status as it progresses; the
+      // subscribeToInterview listener above mirrors those changes to the
+      // local phase so the progress stepper reflects the real server state.
+      setPhase("transcribing");
+      const apiRes = await fetch("/api/transcribe", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ interviewId }),
+      });
+
+      if (!apiRes.ok) {
+        const { error } = await apiRes.json().catch(() => ({ error: "Pipeline failed" }));
+        throw new Error(error ?? "Pipeline failed");
+      }
+
+      // Step 4 — redirect straight to results
       setPhase("done");
-      router.push(`/interview/${interviewId}` as Route);
+      router.push(`/interview/${interviewId}/results` as Route);
+
     } catch (err) {
-      console.error("Upload failed:", err);
+      console.error("Pipeline failed:", err);
       setPhase("error");
-      setSubmitError("Something went wrong during upload. Please try again.");
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again."
+      );
     }
   }
 
