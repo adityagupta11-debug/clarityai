@@ -71,9 +71,9 @@ export function Navbar({ user }: NavbarProps) {
               {/* User menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
-                  <Avatar className="h-8 w-8 ring-2 ring-violet-500/30">
+                  <Avatar className="h-8 w-8 ring-2 ring-red-500/30">
                     <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName} />
-                    <AvatarFallback className="bg-violet-500/20 text-violet-300 text-xs font-medium">
+                    <AvatarFallback className="bg-red-500/20 text-red-300 text-xs font-medium">
                       {initials}
                     </AvatarFallback>
                   </Avatar>

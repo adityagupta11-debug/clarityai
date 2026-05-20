@@ -56,7 +56,7 @@ function UploadProgress({
   const isCreating = phase === "creating";
 
   return (
-    <Card className="glass border-violet-500/20">
+    <Card className="glass border-red-500/20">
       <CardContent className="py-7 space-y-5">
         {/* Steps */}
         <div className="flex items-center gap-3">
@@ -95,7 +95,7 @@ function UploadProgress({
             className={cn(
               "h-px flex-1 transition-all duration-500",
               phase === "creating" || phase === "done"
-                ? "bg-violet-500/40"
+                ? "bg-red-500/40"
                 : "bg-white/10"
             )}
           />
@@ -291,7 +291,7 @@ export default function NewInterviewPage() {
         <Card className="glass border-white/8">
           <CardHeader className="pb-4">
             <CardTitle className="text-base flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/20 text-violet-300 text-xs font-semibold">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/20 text-red-300 text-xs font-semibold">
                 1
               </span>
               Interview Details
@@ -318,7 +318,7 @@ export default function NewInterviewPage() {
                 }}
                 disabled={isSubmitting}
                 className={cn(
-                  "bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors",
+                  "bg-white/5 border-white/10 focus:border-red-500/50 transition-colors",
                   titleError && "border-red-500/50 focus:border-red-500/50"
                 )}
               />
@@ -343,7 +343,7 @@ export default function NewInterviewPage() {
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   disabled={isSubmitting}
-                  className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+                  className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
                 />
               </div>
 
@@ -358,7 +358,7 @@ export default function NewInterviewPage() {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   disabled={isSubmitting}
-                  className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+                  className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
                 />
               </div>
             </div>
@@ -373,7 +373,7 @@ export default function NewInterviewPage() {
                 }}
                 disabled={isSubmitting}
               >
-                <SelectTrigger className="w-full bg-white/5 border-white/10 focus:border-violet-500/50">
+                <SelectTrigger className="w-full bg-white/5 border-white/10 focus:border-red-500/50">
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -392,7 +392,7 @@ export default function NewInterviewPage() {
         <Card className="glass border-white/8">
           <CardHeader className="pb-4">
             <CardTitle className="text-base flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/20 text-violet-300 text-xs font-semibold">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/20 text-red-300 text-xs font-semibold">
                 2
               </span>
               Audio Recording

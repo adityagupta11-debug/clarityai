@@ -110,7 +110,7 @@ export function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
             />
           </div>
 
@@ -127,7 +127,7 @@ export function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
             />
           </div>
 
@@ -153,7 +153,7 @@ export function LoginForm() {
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="text-violet-400 hover:text-violet-300 transition-colors font-medium"
+            className="text-red-400 hover:text-red-300 transition-colors font-medium"
           >
             Sign up free
           </Link>

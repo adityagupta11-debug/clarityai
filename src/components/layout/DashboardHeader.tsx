@@ -47,9 +47,9 @@ export function DashboardHeader({ title, description }: DashboardHeaderProps) {
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
-            <Avatar className="h-9 w-9 ring-2 ring-violet-500/30 transition-all hover:ring-violet-500/60">
+            <Avatar className="h-9 w-9 ring-2 ring-red-500/30 transition-all hover:ring-red-500/60">
               <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? "User"} />
-              <AvatarFallback className="bg-violet-500/20 text-violet-300 text-sm font-medium">
+              <AvatarFallback className="bg-red-500/20 text-red-300 text-sm font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>

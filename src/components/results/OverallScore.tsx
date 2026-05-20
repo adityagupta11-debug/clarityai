@@ -88,8 +88,8 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
               x1="0" y1="0" x2={SVG_SIZE} y2={SVG_SIZE}
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%"   stopColor="oklch(0.70 0.22 293)" />  {/* violet-400 */}
-              <stop offset="55%"  stopColor="oklch(0.606 0.25 293)" /> {/* violet-500 */}
+              <stop offset="0%"   stopColor="oklch(0.70 0.22 293)" />  {/* red-400 */}
+              <stop offset="55%"  stopColor="oklch(0.606 0.25 293)" /> {/* red-500 */}
               <stop offset="100%" stopColor="oklch(0.65 0.22 330)" />  {/* fuchsia */}
             </linearGradient>
 
@@ -170,7 +170,7 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
       {/* Model badge */}
       {modelUsed && (
         <div className="relative z-10 flex items-center gap-1.5 rounded-full border border-white/8 bg-white/4 px-3 py-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
           <span className="text-[10px] text-muted-foreground font-medium">{modelUsed}</span>
         </div>
       )}

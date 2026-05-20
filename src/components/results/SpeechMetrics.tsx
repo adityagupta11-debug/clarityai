@@ -54,7 +54,7 @@ function FillerTooltip({
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
         {label}
       </p>
-      <p className="text-sm font-black text-violet-300 tabular-nums">
+      <p className="text-sm font-black text-red-300 tabular-nums">
         {payload[0]?.value}{" "}
         <span className="text-xs font-normal text-muted-foreground">
           {payload[0]?.value === 1 ? "time" : "times"}
@@ -269,7 +269,7 @@ export function SpeechMetrics({ metrics }: SpeechMetricsProps) {
             icon={Mic}
             label="Speaking Time"
             value={formatDuration(totalSpeakingTime / 1000)}
-            accent="text-violet-300"
+            accent="text-red-300"
           />
           <StatCard
             icon={Gauge}

@@ -51,8 +51,8 @@ function ImprovedPanel({ text }: { text: string }) {
   return (
     <div className="flex flex-col gap-2 h-full">
       <div className="flex items-center gap-2">
-        <Sparkles className="h-3.5 w-3.5 text-violet-400 shrink-0" />
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-violet-400">
+        <Sparkles className="h-3.5 w-3.5 text-red-400 shrink-0" />
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-red-400">
           How to Improve
         </span>
       </div>
@@ -61,14 +61,14 @@ function ImprovedPanel({ text }: { text: string }) {
       <div
         className="flex-1 rounded-xl p-4"
         style={{
-          background:  "linear-gradient(135deg, oklch(0.606 0.25 293 / 0.07), oklch(0.65 0.22 330 / 0.07))",
-          boxShadow:   "inset 0 0 0 1px oklch(0.606 0.25 293 / 0.30), 0 0 24px oklch(0.606 0.25 293 / 0.10)",
+          background:  "linear-gradient(135deg, oklch(0.55 0.25 25 / 0.07), oklch(0.48 0.22 15 / 0.07))",
+          boxShadow:   "inset 0 0 0 1px oklch(0.55 0.25 25 / 0.30), 0 0 24px oklch(0.55 0.25 25 / 0.10)",
         }}
       >
         {/* Subtle AI badge */}
         <div className="flex items-center gap-1.5 mb-3">
-          <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-pulse" />
-          <span className="text-[9px] font-bold uppercase tracking-widest text-violet-400/80">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-red-400/80">
             AI-enhanced response
           </span>
         </div>
@@ -101,7 +101,7 @@ function QuestionItem({ qa, index }: QuestionItemProps) {
         )}
       >
         {/* Question index badge */}
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-[10px] font-black text-violet-300 mt-0.5">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-[10px] font-black text-red-300 mt-0.5">
           {index + 1}
         </span>
 
@@ -197,7 +197,7 @@ function SectionHeader({ count }: { count: number }) {
         Question Deep Dive
       </h2>
       {count > 0 && (
-        <span className="rounded-full border border-violet-500/25 bg-violet-500/10 px-2 py-0.5 text-xs font-bold text-violet-400">
+        <span className="rounded-full border border-red-500/25 bg-red-500/10 px-2 py-0.5 text-xs font-bold text-red-400">
           {count} questions
         </span>
       )}

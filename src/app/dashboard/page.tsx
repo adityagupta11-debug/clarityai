@@ -54,7 +54,7 @@ export default function DashboardPage() {
       label: "Total Interviews",
       value: String(interviews.length),
       icon: Mic,
-      color: "text-violet-400",
+      color: "text-red-400",
     },
     {
       label: "Avg. Score",
@@ -94,7 +94,7 @@ export default function DashboardPage() {
           {interviews.length > 0 && (
             <Link
               href="/history"
-              className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+              className="text-xs text-red-400 hover:text-red-300 transition-colors"
             >
               View all →
             </Link>

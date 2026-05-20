@@ -149,7 +149,7 @@ export function SignupForm() {
               onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function SignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
             />
           </div>
 
@@ -179,7 +179,7 @@ export function SignupForm() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-violet-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
             />
             <PasswordStrength password={password} />
           </div>
@@ -206,7 +206,7 @@ export function SignupForm() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-violet-400 hover:text-violet-300 transition-colors font-medium"
+            className="text-red-400 hover:text-red-300 transition-colors font-medium"
           >
             Sign in
           </Link>

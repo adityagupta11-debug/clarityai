@@ -137,7 +137,7 @@ function MetaPill({
 }) {
   return (
     <span className="flex items-center gap-1.5 text-sm text-foreground/70">
-      <Icon className="h-3.5 w-3.5 text-violet-400/80 shrink-0" />
+      <Icon className="h-3.5 w-3.5 text-red-400/80 shrink-0" />
       {label}
     </span>
   );
@@ -271,7 +271,7 @@ function AnalysisNotReady({
 
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Dashboard

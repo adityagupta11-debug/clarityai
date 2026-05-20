@@ -161,10 +161,10 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
           "transition-all duration-200 select-none outline-none",
           "focus-visible:ring-2 focus-visible:ring-ring/50",
           isDragOver
-            ? "border-violet-500 bg-violet-500/10 scale-[1.01] cursor-copy"
+            ? "border-red-500 bg-red-500/10 scale-[1.01] cursor-copy"
             : error
               ? "border-red-500/40 bg-red-500/5 cursor-pointer hover:border-red-500/60"
-              : "border-white/15 cursor-pointer hover:border-violet-500/40 hover:bg-white/3",
+              : "border-white/15 cursor-pointer hover:border-red-500/40 hover:bg-white/3",
           disabled && "opacity-50 cursor-not-allowed pointer-events-none"
         )}
       >
@@ -203,7 +203,7 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
           </p>
           <p className="text-xs text-muted-foreground">
             or{" "}
-            <span className="text-violet-400 underline underline-offset-2">
+            <span className="text-red-400 underline underline-offset-2">
               click to browse
             </span>
             {" "}· MP3, WAV, M4A, WebM, OGG up to 500 MB

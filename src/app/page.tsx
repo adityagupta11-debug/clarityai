@@ -276,10 +276,10 @@ export default function LandingPage() {
 
               {/* Trust indicators */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 text-sm text-white/40">
-                {["No credit card", "100 hrs free analysis", "Results in &lt; 3 min"].map((t) => (
+                {(["No credit card", "100 hrs free analysis", "Results in < 3 min"] as const).map((t) => (
                   <span key={t} className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500/70" />
-                    <span dangerouslySetInnerHTML={{ __html: t }} />
+                    {t}
                   </span>
                 ))}
               </div>
@@ -437,9 +437,9 @@ export default function LandingPage() {
       {/* ── SOCIAL PROOF BAND ─────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 border-y border-white/6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-white/30 mb-10">
+          <h2 className="text-center text-xs font-semibold uppercase tracking-widest text-white/30 mb-10">
             What candidates say
-          </p>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {

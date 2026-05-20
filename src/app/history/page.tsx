@@ -7,7 +7,7 @@ export default function HistoryPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-          <History className="h-6 w-6 text-violet-400" />
+          <History className="h-6 w-6 text-red-400" />
           Interview History
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">
