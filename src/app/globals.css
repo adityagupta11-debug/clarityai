@@ -1,0 +1,316 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   ClarityAI Design Tokens — Purple/Violet Dark Mode Theme
+   ============================================================ */
+
+@theme inline {
+  /* Color mappings to CSS vars */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+
+  /* Radii */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ClarityAI brand violet palette — available as Tailwind colors */
+  --color-violet-50: oklch(0.97 0.04 293);
+  --color-violet-100: oklch(0.94 0.07 293);
+  --color-violet-200: oklch(0.88 0.12 293);
+  --color-violet-300: oklch(0.79 0.17 293);
+  --color-violet-400: oklch(0.70 0.195 293);
+  --color-violet-500: oklch(0.606 0.25 293);
+  --color-violet-600: oklch(0.541 0.281 293);
+  --color-violet-700: oklch(0.491 0.27 293);
+  --color-violet-800: oklch(0.41 0.22 293);
+  --color-violet-900: oklch(0.33 0.17 293);
+  --color-violet-950: oklch(0.22 0.11 293);
+}
+
+/* ── Light mode (fallback, app defaults to dark) ── */
+:root {
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.12 0.015 295);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.12 0.015 295);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.12 0.015 295);
+  --primary: oklch(0.541 0.281 293);       /* violet-600 */
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.94 0.04 293);
+  --secondary-foreground: oklch(0.35 0.1 293);
+  --muted: oklch(0.95 0.02 293);
+  --muted-foreground: oklch(0.5 0.04 293);
+  --accent: oklch(0.92 0.06 293);
+  --accent-foreground: oklch(0.35 0.12 293);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.88 0.03 293);
+  --input: oklch(0.91 0.03 293);
+  --ring: oklch(0.606 0.25 293);
+  --chart-1: oklch(0.606 0.25 293);
+  --chart-2: oklch(0.65 0.22 320);
+  --chart-3: oklch(0.55 0.22 230);
+  --chart-4: oklch(0.62 0.18 150);
+  --chart-5: oklch(0.72 0.16 60);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.96 0.02 293);
+  --sidebar-foreground: oklch(0.12 0.015 295);
+  --sidebar-primary: oklch(0.541 0.281 293);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.92 0.05 293);
+  --sidebar-accent-foreground: oklch(0.35 0.1 293);
+  --sidebar-border: oklch(0.88 0.03 293);
+  --sidebar-ring: oklch(0.606 0.25 293);
+}
+
+/* ── Dark mode — ClarityAI premium dark (deep purple-tinted) ── */
+.dark {
+  --background: oklch(0.09 0.02 295);       /* #0d0b14 — very dark purple-tinted */
+  --foreground: oklch(0.96 0.005 295);      /* near-white, faint violet cast */
+  --card: oklch(0.135 0.028 295);           /* dark card surface */
+  --card-foreground: oklch(0.96 0.005 295);
+  --popover: oklch(0.14 0.03 295);
+  --popover-foreground: oklch(0.96 0.005 295);
+  --primary: oklch(0.606 0.25 293);         /* violet-500 */
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.19 0.04 295);
+  --secondary-foreground: oklch(0.82 0.06 293);
+  --muted: oklch(0.18 0.035 295);
+  --muted-foreground: oklch(0.58 0.05 293);
+  --accent: oklch(0.22 0.06 293);
+  --accent-foreground: oklch(0.88 0.08 293);
+  --destructive: oklch(0.65 0.22 25);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 8%);
+  --ring: oklch(0.606 0.25 293);
+  --chart-1: oklch(0.606 0.25 293);         /* violet */
+  --chart-2: oklch(0.65 0.22 320);          /* purple-pink */
+  --chart-3: oklch(0.55 0.22 230);          /* blue-violet */
+  --chart-4: oklch(0.62 0.18 150);          /* teal */
+  --chart-5: oklch(0.72 0.16 60);           /* amber */
+  --sidebar: oklch(0.11 0.025 295);
+  --sidebar-foreground: oklch(0.96 0.005 295);
+  --sidebar-primary: oklch(0.606 0.25 293);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.18 0.04 295);
+  --sidebar-accent-foreground: oklch(0.88 0.06 293);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.606 0.25 293);
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  ::selection {
+    background: oklch(0.606 0.25 293 / 35%);
+    color: oklch(0.96 0.005 295);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.606 0.25 293 / 40%);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.606 0.25 293 / 70%);
+  }
+}
+
+/* ============================================================
+   Utility Classes — Glassmorphism & Brand Effects
+   ============================================================ */
+@layer utilities {
+  /* Glass card — primary glassmorphism effect */
+  .glass {
+    background: oklch(1 0 0 / 4%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid oklch(1 0 0 / 10%);
+  }
+
+  /* Stronger glass for modals/sheets */
+  .glass-strong {
+    background: oklch(0.14 0.03 295 / 85%);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid oklch(1 0 0 / 12%);
+  }
+
+  /* Violet glow effect for highlights */
+  .glow-violet {
+    box-shadow: 0 0 24px oklch(0.606 0.25 293 / 30%),
+                0 0 48px oklch(0.606 0.25 293 / 15%);
+  }
+
+  .glow-violet-sm {
+    box-shadow: 0 0 12px oklch(0.606 0.25 293 / 25%);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      oklch(0.88 0.12 293) 0%,
+      oklch(0.606 0.25 293) 50%,
+      oklch(0.65 0.22 320) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Violet gradient background */
+  .gradient-violet {
+    background: linear-gradient(135deg, oklch(0.541 0.281 293), oklch(0.65 0.22 320));
+  }
+
+  /* Subtle gradient background for sections */
+  .gradient-surface {
+    background: linear-gradient(
+      180deg,
+      oklch(0.09 0.02 295) 0%,
+      oklch(0.11 0.03 285) 100%
+    );
+  }
+
+  /* Animated border gradient */
+  .border-gradient {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+
+  .border-gradient::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, oklch(0.606 0.25 293 / 60%), oklch(0.65 0.22 320 / 60%));
+    z-index: -1;
+  }
+
+  /* Score ring colors by tier */
+  .score-excellent { color: oklch(0.75 0.18 145); }   /* green */
+  .score-good      { color: oklch(0.72 0.16 170); }   /* teal */
+  .score-fair      { color: oklch(0.78 0.18 60); }    /* amber */
+  .score-poor      { color: oklch(0.65 0.22 25); }    /* red */
+
+  /* Status pill backgrounds */
+  .status-uploading    { @apply bg-blue-500/15 text-blue-400 border border-blue-500/30; }
+  .status-transcribing { @apply bg-violet-500/15 text-violet-400 border border-violet-500/30; }
+  .status-analyzing    { @apply bg-purple-500/15 text-purple-400 border border-purple-500/30; }
+  .status-completed    { @apply bg-emerald-500/15 text-emerald-400 border border-emerald-500/30; }
+  .status-failed       { @apply bg-red-500/15 text-red-400 border border-red-500/30; }
+
+  /* Smooth hover lift */
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px oklch(0 0 0 / 30%);
+  }
+
+  /* Focus ring override for brand consistency */
+  .focus-brand:focus-visible {
+    outline: 2px solid oklch(0.606 0.25 293);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+   Radial gradient ambient background (applied to main layout)
+   ============================================================ */
+.ambient-bg {
+  position: relative;
+}
+
+.ambient-bg::before {
+  content: "";
+  position: fixed;
+  top: -30%;
+  left: -10%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(ellipse, oklch(0.541 0.281 293 / 8%) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambient-bg::after {
+  content: "";
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 50%;
+  height: 70%;
+  background: radial-gradient(ellipse, oklch(0.65 0.22 320 / 6%) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
