@@ -46,3 +46,10 @@
 - TypeScript types live in `src/types/`
 - Prompt templates in `src/lib/prompts/`
 - Security: transcript and analysis subcollections are server-write-only (Admin SDK). Client can only read.
+
+## Phase 3 Specific Rules (Upload & Record)
+- **Audio Recording Memory Management**: ALWAYS clean up object URLs (`URL.revokeObjectURL`) when the audio blob changes or the component unmounts to prevent memory leaks. Clean up `setInterval` timers used for the recording duration.
+- **Microphone Permissions**: Handle `navigator.mediaDevices.getUserMedia` errors gracefully (e.g., user denied permission, no microphone found). Provide clear error states in the UI.
+- **Drag-and-Drop Optimization**: Use pure HTML5 drag-and-drop events (`onDragOver`, `onDragLeave`, `onDrop`) using React synthetic events. Use `e.preventDefault()` to avoid browser default behaviors (like opening the file in a new tab).
+- **Storage Uploads**: Use Firebase's `uploadBytesResumable` to get precise progress updates (0-100%). Unsubscribe from the upload task observer on component unmount if the upload is incomplete.
+- **Audio Formats**: Ensure accepted MIME types are strict (`audio/webm`, `audio/mp4`, `audio/mp3`, `audio/wav`, `audio/x-m4a`). When using `MediaRecorder`, default to `audio/webm;codecs=opus` but fall back to browser defaults if unsupported.

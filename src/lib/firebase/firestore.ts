@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  addDoc,
   collection,
   query,
   where,
@@ -90,4 +91,49 @@ export function subscribeToUserInterviews(
     },
     onError
   );
+}
+
+// ── Interview mutations ──────────────────────────────────────
+
+export interface CreateInterviewParams {
+  userId: string;
+  title: string;
+  company: string | null;
+  role: string | null;
+  interviewType: Interview["interviewType"];
+  recordingPath: string;
+  recordingDuration: number; // seconds
+  recordingSize: number;     // bytes
+  mimeType: string;
+}
+
+/**
+ * Creates a new interview document in Firestore.
+ * Call this after the audio file has been successfully uploaded to Storage.
+ * Returns the auto-generated Firestore document ID (used as the interview ID
+ * throughout the app and in all subsequent API calls).
+ */
+export async function createInterview(
+  params: CreateInterviewParams
+): Promise<string> {
+  const docRef = await addDoc(collection(db(), "interviews"), {
+    userId: params.userId,
+    title: params.title,
+    company: params.company,
+    role: params.role,
+    interviewType: params.interviewType,
+    status: "uploaded",
+    errorMessage: null,
+    recordingPath: params.recordingPath,
+    recordingDuration: params.recordingDuration,
+    recordingSize: params.recordingSize,
+    mimeType: params.mimeType,
+    assemblyaiTranscriptId: null,
+    overallScore: null,
+    completedAt: null,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+
+  return docRef.id;
 }
