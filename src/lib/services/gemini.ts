@@ -7,7 +7,7 @@ import {
 } from "@/lib/prompts/scoring-rubric";
 
 // ── Constants exported so the /api/analyze route can stamp them on the doc ──
-export const MODEL_ID       = "gemini-1.5-flash";
+export const MODEL_ID       = "gemini-2.5-flash";
 export const PROMPT_VERSION = "1.0.0";
 
 // 2-minute ceiling — a 30-min transcript can produce ~40k token outputs
