@@ -18,9 +18,17 @@ function getAdminApp(): App {
   const projectId   = process.env.FIREBASE_ADMIN_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
 
-  // .env.local stores newlines as the two-char sequence \n — replace with
-  // real newlines so the RSA key is valid. Vercel env vars preserve them.
-  const privateKey  = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  // Support three storage formats for the private key:
+  // 1. FIREBASE_ADMIN_PRIVATE_KEY_BASE64 — base64-encoded PEM (most reliable on Vercel)
+  // 2. FIREBASE_ADMIN_PRIVATE_KEY with \n literals (single-line Vercel format)
+  // 3. FIREBASE_ADMIN_PRIVATE_KEY with real newlines (.env.local multiline format)
+  let privateKey: string | undefined;
+  const b64Key = process.env.FIREBASE_ADMIN_PRIVATE_KEY_BASE64;
+  if (b64Key) {
+    privateKey = Buffer.from(b64Key, "base64").toString("utf8");
+  } else {
+    privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  }
 
   if (!projectId || !clientEmail || !privateKey) {
     throw new Error(
