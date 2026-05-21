@@ -22,12 +22,19 @@ let _client: GoogleGenAI | undefined;
 
 function getClient(): GoogleGenAI {
   if (_client) return _client;
-  const apiKey = process.env.GEMINI_API_KEY;
+
+  // Prefer the dedicated Gemini key; fall back to the Firebase web API key
+  // (same project, different quota pool — useful when prepaid credits deplete).
+  const apiKey =
+    process.env.GEMINI_API_KEY ||
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
   if (!apiKey) {
     throw new Error(
-      "GEMINI_API_KEY is not set. Add it to .env.local and restart the dev server."
+      "No Gemini API key found. Set GEMINI_API_KEY in .env.local."
     );
   }
+
   _client = new GoogleGenAI({ apiKey });
   return _client;
 }
