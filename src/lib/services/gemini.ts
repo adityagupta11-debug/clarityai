@@ -65,31 +65,41 @@ export async function analyzeInterviewTranscript(
 
   const client = getClient();
 
-  // ── 1. Call Gemini ─────────────────────────────────────────────────────────
-  let rawText: string;
-  try {
-    const response = await client.models.generateContent({
-      model: MODEL_ID,
-      contents: buildUserPrompt(transcriptText),
-      config: {
-        // System instructions steer the model's persona and output criteria
-        systemInstruction: INTERVIEW_ANALYSIS_PROMPT,
+  // ── 1. Call Gemini (with retry on 429 rate-limit) ────────────────────────
+  let rawText!: string; // definite assignment — always set before use (loop throws otherwise)
+  const MAX_ATTEMPTS = 3;
 
-        // Enforce JSON output — with responseSchema set, the model is
-        // constrained to return a JSON object matching the schema exactly.
-        responseMimeType: "application/json",
-        responseSchema: GEMINI_JSON_SCHEMA,
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const response = await client.models.generateContent({
+        model: MODEL_ID,
+        contents: buildUserPrompt(transcriptText),
+        config: {
+          systemInstruction: INTERVIEW_ANALYSIS_PROMPT,
+          responseMimeType:  "application/json",
+          responseSchema:    GEMINI_JSON_SCHEMA,
+          httpOptions:       { timeout: TIMEOUT_MS },
+        },
+      });
 
-        // Per-request timeout — long transcripts can produce large outputs
-        httpOptions: { timeout: TIMEOUT_MS },
-      },
-    });
+      rawText = response.text ?? "";
+      break; // success — exit retry loop
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const is429    = message.includes("429") || message.includes("RESOURCE_EXHAUSTED");
 
-    rawText = response.text ?? "";
-  } catch (err) {
-    // Wrap low-level network/API errors with context
-    const message = err instanceof Error ? err.message : String(err);
-    throw new Error(`Gemini API request failed: ${message}`);
+      // Extract the retry delay suggested by the API, default to 35 s
+      const retryMatch = message.match(/retryDelay["\s:]+(\d+)/);
+      const retryMs    = retryMatch ? (parseInt(retryMatch[1], 10) + 5) * 1000 : 35_000;
+
+      if (is429 && attempt < MAX_ATTEMPTS) {
+        console.warn(`[Gemini] 429 rate limit on attempt ${attempt}/${MAX_ATTEMPTS} — waiting ${retryMs / 1000}s`);
+        await new Promise((r) => setTimeout(r, retryMs));
+        continue;
+      }
+
+      throw new Error(`Gemini API request failed: ${message}`);
+    }
   }
 
   // ── 2. Guard against empty response ────────────────────────────────────────
