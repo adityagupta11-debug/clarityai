@@ -50,9 +50,9 @@ export async function submitTranscription(audioUrl: string): Promise<string> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      audio_url:         audioUrl,
-      speaker_labels:    true,
-      speakers_expected: 2,        // interviewer + candidate
+      audio_url:      audioUrl,
+      speaker_labels: true,
+      speech_model:   "best",   // required by AssemblyAI when using speaker diarization
     }),
   });
 
