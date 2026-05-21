@@ -52,7 +52,7 @@ export async function submitTranscription(audioUrl: string): Promise<string> {
     body: JSON.stringify({
       audio_url:      audioUrl,
       speaker_labels: true,
-      speech_model:   "best",   // required by AssemblyAI when using speaker diarization
+      speech_models:  ["universal-2"],  // plural array, required by AssemblyAI API
     }),
   });
 
