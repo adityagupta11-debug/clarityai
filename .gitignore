@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude / agent instructions — kept locally, not for public repos
+CLAUDE.md
+AGENTS.md
+
+# internal planning docs
+/docs

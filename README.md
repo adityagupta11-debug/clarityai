@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ClarityAI
 
-## Getting Started
+AI-powered interview coaching. Upload any recording, get a full breakdown of your communication, confidence, vocabulary, structure, and relevance — with per-question feedback and AI-rewritten ideal answers.
 
-First, run the development server:
+**Live:** [clarityai.vercel.app](https://clarityai.vercel.app)
+
+---
+
+## What it does
+
+- **Transcription** — AssemblyAI with speaker diarization identifies who said what
+- **AI Analysis** — Gemini 2.5 Flash scores 5 categories per interview and gives coaching feedback
+- **Question Deep Dive** — side-by-side view of your answer vs. an AI-rewritten ideal response
+- **Speech Metrics** — filler word count, speaking pace (WPM), longest pause, talk time
+- **Progress Tracking** — all interviews saved, scores tracked over time
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router) + TypeScript |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Auth | Firebase Auth (Google + email/password) |
+| Database | Firebase Firestore |
+| File Storage | Firebase Cloud Storage |
+| Transcription | AssemblyAI |
+| AI Analysis | Gemini 2.5 Flash via Firebase AI Logic |
+| Deployment | Vercel |
+
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file (see `.env.example` for the full list):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Firebase (client)
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
 
-## Learn More
+# Firebase Admin (server)
+FIREBASE_ADMIN_PROJECT_ID=
+FIREBASE_ADMIN_CLIENT_EMAIL=
+FIREBASE_ADMIN_PRIVATE_KEY_BASE64=
 
-To learn more about Next.js, take a look at the following resources:
+# AssemblyAI
+ASSEMBLYAI_API_KEY=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# App URL (used for webhook callback)
+APP_URL=http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> `FIREBASE_ADMIN_PRIVATE_KEY_BASE64` is the service account private key base64-encoded to avoid newline issues on Vercel. Generate it with:
+> ```bash
+> echo -n "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n" | base64
+> ```
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/
+│   ├── (auth)/          # Login + signup pages
+│   ├── api/             # API routes (transcribe, analyze, webhooks)
+│   ├── dashboard/       # Main dashboard
+│   ├── history/         # Interview history with search/filter
+│   ├── interview/       # New interview + results pages
+│   └── settings/        # User preferences
+├── components/
+│   ├── interview/       # AudioRecorder, FileUploader, InterviewCard
+│   ├── layout/          # Sidebar, DashboardHeader, ProtectedRoute
+│   ├── results/         # OverallScore, CategoryGrid, QuestionBreakdown, SpeechMetrics
+│   └── ui/              # shadcn/ui primitives
+├── hooks/               # useAuth, useInterviews, useInterview, useAnalysis
+├── lib/
+│   ├── firebase/        # Client SDK, Admin SDK, Auth, Firestore, Storage
+│   ├── prompts/         # Gemini prompt templates
+│   ├── services/        # AssemblyAI + Gemini service wrappers
+│   └── utils/           # Formatting, audio helpers, constants
+└── types/               # TypeScript types for Interview, Analysis, Transcript
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Commands
+
+```bash
+npm run dev     # Start dev server (localhost:3000)
+npm run build   # Production build
+npm run lint    # ESLint
+```
