@@ -41,9 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude / agent instructions — kept locally, not for public repos
+# claude / agent instructions and local config — kept locally, not for public repos
 CLAUDE.md
 AGENTS.md
+.claude/
 
 # internal planning docs
 /docs
