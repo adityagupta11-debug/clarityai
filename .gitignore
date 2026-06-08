@@ -48,3 +48,8 @@ AGENTS.md
 
 # internal planning docs
 /docs
+
+# raw source assets (intermediate exports, not for production)
+/clarity-imgs
+/clarity-ai
+/frames

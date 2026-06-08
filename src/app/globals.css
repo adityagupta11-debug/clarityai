@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   ClarityAI Design Tokens — Red · Moka Brown · Blue Theme
+   ClarityAI Design Tokens — Premium Charcoal & Cyan Theme
    ============================================================ */
 
 @theme inline {
@@ -28,23 +28,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  /* Fonts */
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
+  
+  /* Fonts — Kintsugi: serif display/body + mono for chrome & numerals */
+  --font-sans: var(--font-newsreader);
+  --font-serif: var(--font-newsreader);
+  --font-mono: var(--font-spline-mono);
 
   /* Radii */
   --radius-sm: calc(var(--radius) * 0.6);
@@ -53,98 +41,59 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* Brand red scale — available as Tailwind colors */
-  --color-brand-red-300: oklch(0.78 0.18 25);
-  --color-brand-red-400: oklch(0.68 0.22 25);
-  --color-brand-red-500: oklch(0.55 0.25 25);
-  --color-brand-red-600: oklch(0.48 0.24 20);
-
-  /* Brand blue scale */
-  --color-brand-blue-400: oklch(0.70 0.18 264);
-  --color-brand-blue-500: oklch(0.58 0.22 264);
-
-  /* Brand moka-brown scale */
-  --color-brand-moka-100: oklch(0.90 0.02 35);
-  --color-brand-moka-900: oklch(0.13 0.025 35);
-  --color-brand-moka-950: oklch(0.09 0.025 35);
+  /* Premium Brand Scale */
+  --color-brand-cyan: #00D6FF;
+  --color-brand-blue: #0050FF;
+  --color-brand-charcoal-900: #0A0A0C;
+  --color-brand-charcoal-950: #050505;
 }
 
-/* ── Light mode (fallback, app defaults to dark) ── */
+/* ── Light mode — warm Mocha & Cream ── */
 :root {
-  --background: oklch(0.985 0.005 35);
-  --foreground: oklch(0.12 0.015 35);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.12 0.015 35);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.12 0.015 35);
-  --primary: oklch(0.55 0.25 25);            /* brand red */
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.94 0.02 35);
-  --secondary-foreground: oklch(0.35 0.05 35);
-  --muted: oklch(0.95 0.015 35);
-  --muted-foreground: oklch(0.50 0.03 35);
-  --accent: oklch(0.92 0.03 35);
-  --accent-foreground: oklch(0.35 0.06 35);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.02 35);
-  --input: oklch(0.91 0.02 35);
-  --ring: oklch(0.55 0.25 25);
-  --chart-1: oklch(0.55 0.25 25);
-  --chart-2: oklch(0.58 0.22 264);
-  --chart-3: oklch(0.75 0.15 60);
-  --chart-4: oklch(0.62 0.18 150);
-  --chart-5: oklch(0.50 0.08 35);
+  --background: #F8F5F2;          /* soft off-white canvas */
+  --foreground: #3E2723;          /* deep mocha brown */
+  --card: #FFFFFF;                /* crisp white cards */
+  --card-foreground: #3E2723;
+  --popover: #FFFFFF;
+  --popover-foreground: #3E2723;
+  --primary: #6F4E37;            /* rich mocha */
+  --primary-foreground: #FBF7F4;
+  --secondary: #EFE7DF;
+  --secondary-foreground: #4A3B32;
+  --muted: #EFE7DF;
+  --muted-foreground: #8C7B6B;    /* warm brown-gray */
+  --accent: #EAE0D6;             /* caramel tint */
+  --accent-foreground: #4A3B32;
+  --destructive: #C0392B;
+  --border: rgba(62, 39, 35, 0.12);
+  --input: rgba(62, 39, 35, 0.14);
+  --ring: #6F4E37;
   --radius: 0.75rem;
-  --sidebar: oklch(0.96 0.015 35);
-  --sidebar-foreground: oklch(0.12 0.015 35);
-  --sidebar-primary: oklch(0.55 0.25 25);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.92 0.025 35);
-  --sidebar-accent-foreground: oklch(0.35 0.06 35);
-  --sidebar-border: oklch(0.88 0.02 35);
-  --sidebar-ring: oklch(0.55 0.25 25);
 }
 
-/* ── Dark mode — ClarityAI premium dark (moka brown-tinted) ── */
+/* ── Dark mode — Hyper-premium Charcoal ── */
 .dark {
-  --background: oklch(0.09 0.025 35);       /* very dark moka-tinted */
-  --foreground: oklch(0.96 0.005 35);       /* warm near-white */
-  --card: oklch(0.135 0.025 35);            /* moka card surface */
-  --card-foreground: oklch(0.96 0.005 35);
-  --popover: oklch(0.14 0.028 35);
-  --popover-foreground: oklch(0.96 0.005 35);
-  --primary: oklch(0.55 0.25 25);           /* brand red */
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.19 0.035 35);
-  --secondary-foreground: oklch(0.82 0.04 35);
-  --muted: oklch(0.18 0.03 35);
-  --muted-foreground: oklch(0.58 0.04 35);
-  --accent: oklch(0.22 0.05 35);
-  --accent-foreground: oklch(0.88 0.04 35);
-  --destructive: oklch(0.65 0.22 25);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 8%);
-  --ring: oklch(0.55 0.25 25);              /* brand red */
-  --chart-1: oklch(0.55 0.25 25);           /* red */
-  --chart-2: oklch(0.58 0.22 264);          /* blue */
-  --chart-3: oklch(0.75 0.15 60);           /* amber */
-  --chart-4: oklch(0.62 0.18 150);          /* teal */
-  --chart-5: oklch(0.50 0.08 35);           /* moka */
-  --sidebar: oklch(0.11 0.025 35);
-  --sidebar-foreground: oklch(0.96 0.005 35);
-  --sidebar-primary: oklch(0.55 0.25 25);   /* brand red */
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.18 0.035 35);
-  --sidebar-accent-foreground: oklch(0.88 0.04 35);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.55 0.25 25);      /* brand red */
+  --background: #050505;       /* deep charcoal */
+  --foreground: #ffffff;
+  --card: #0A0A0C;
+  --card-foreground: #ffffff;
+  --popover: #0A0A0C;
+  --popover-foreground: #ffffff;
+  --primary: #00D6FF;           /* electric cyan */
+  --primary-foreground: #050505;
+  --secondary: #1a1a1c;
+  --secondary-foreground: #fafafa;
+  --muted: #1a1a1c;
+  --muted-foreground: rgba(255, 255, 255, 0.6);
+  --accent: #1a1a1c;
+  --accent-foreground: #fafafa;
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #00D6FF;
 }
 
-/* ============================================================
-   Base Styles
-   ============================================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -152,7 +101,7 @@
 
   html {
     @apply scroll-smooth;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-feature-settings: "liga", "kern", "onum";
   }
 
   body {
@@ -160,241 +109,237 @@
   }
 
   ::selection {
-    background: oklch(0.55 0.25 25 / 35%);
-    color: oklch(0.96 0.005 35);
+    background: rgba(0, 214, 255, 0.2);
+    color: #ffffff;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: oklch(0.55 0.25 25 / 40%);
-    border-radius: 3px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.55 0.25 25 / 70%);
+    width: 0px;
+    height: 0px;
   }
 }
 
 /* ============================================================
-   Utility Classes — Glassmorphism & Brand Effects
+   Apple-Level Cinematic Utilities
    ============================================================ */
 @layer utilities {
-  /* Glass card — primary glassmorphism effect */
-  .glass {
-    background: oklch(1 0 0 / 4%);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid oklch(1 0 0 / 10%);
+  /* Apple-style sticky nav blur */
+  .apple-glass {
+    background: rgba(5, 5, 5, 0.6);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
 
-  /* Stronger glass for modals/sheets */
-  .glass-strong {
-    background: oklch(0.14 0.03 295 / 85%);
-    backdrop-filter: blur(24px) saturate(200%);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
-    border: 1px solid oklch(1 0 0 / 12%);
+  /* Scrollytelling gradients */
+  .gradient-blue-cyan {
+    background: linear-gradient(135deg, #0050FF, #00D6FF);
   }
 
-  /* Primary (red) glow */
-  .glow-violet {
-    box-shadow: 0 0 24px oklch(0.55 0.25 25 / 30%),
-                0 0 48px oklch(0.55 0.25 25 / 15%);
-  }
-
-  .glow-violet-sm {
-    box-shadow: 0 0 12px oklch(0.55 0.25 25 / 25%);
-  }
-
-  /* Gradient text — red → amber → blue */
-  .gradient-text {
-    background: linear-gradient(
-      135deg,
-      oklch(0.78 0.18 25)  0%,
-      oklch(0.80 0.16 55)  50%,
-      oklch(0.68 0.18 264) 100%
-    );
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #ffffff 30%, #00D6FF 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
-  /* Primary (red) gradient background */
-  .gradient-violet {
-    background: linear-gradient(135deg, oklch(0.55 0.25 25), oklch(0.48 0.22 15));
+  .text-gradient-blue {
+    background: linear-gradient(135deg, #ffffff 30%, #0050FF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  /* Subtle gradient background for sections */
-  .gradient-surface {
-    background: linear-gradient(
-      180deg,
-      oklch(0.09 0.025 35) 0%,
-      oklch(0.11 0.03 35) 100%
-    );
-  }
-
-  /* Animated border gradient */
-  .border-gradient {
-    border: 1px solid transparent;
-    background-clip: padding-box;
+  .btn-gradient-border {
     position: relative;
+    background: #050505;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
   }
 
-  .border-gradient::before {
-    content: "";
+  .btn-gradient-border::before {
+    content: '';
     position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, oklch(0.55 0.25 25 / 60%), oklch(0.48 0.22 15 / 60%));
+    top: 0; right: 0; bottom: 0; left: 0;
     z-index: -1;
+    margin: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(0, 80, 255, 0.5), rgba(0, 214, 255, 0.5));
   }
 
-  /* Score ring colors by tier */
-  .score-excellent { color: oklch(0.75 0.18 145); }   /* green */
-  .score-good      { color: oklch(0.72 0.16 170); }   /* teal */
-  .score-fair      { color: oklch(0.78 0.18 60); }    /* amber */
-  .score-poor      { color: oklch(0.65 0.22 25); }    /* red */
-
-  /* Status pill backgrounds */
-  .status-uploading    { @apply bg-blue-500/15 text-blue-400 border border-blue-500/30; }
-  .status-transcribing { @apply bg-red-500/15 text-red-400 border border-red-500/30; }
-  .status-analyzing    { @apply bg-amber-500/15 text-amber-400 border border-amber-500/30; }
-  .status-completed    { @apply bg-emerald-500/15 text-emerald-400 border border-emerald-500/30; }
-  .status-failed       { @apply bg-rose-500/15 text-rose-400 border border-rose-500/30; }
-
-  /* Smooth hover lift */
-  .hover-lift {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .glow-cyan {
+    box-shadow: 0 0 40px rgba(0, 214, 255, 0.15);
   }
 
-  .hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px oklch(0 0 0 / 30%);
+  /* Radial background for hero */
+  .hero-radial-glow {
+    background: radial-gradient(circle at 50% 50%, #050815 0%, #050505 60%);
   }
 
-  /* Focus ring override for brand consistency */
-  .focus-brand:focus-visible {
-    outline: 2px solid oklch(0.606 0.25 293);
-    outline-offset: 2px;
-  }
-}
-
-/* ============================================================
-   Landing page — new brand utilities (Red · Moka Brown · Blue)
-   ============================================================ */
-@layer utilities {
-  /* Gradient headline text: red → amber → blue */
-  .gradient-text-brand {
-    background: linear-gradient(
-      120deg,
-      oklch(0.72 0.22 25)  0%,
-      oklch(0.82 0.16 55)  45%,
-      oklch(0.70 0.20 264) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  /* Red CTA button */
-  .gradient-red {
-    background: linear-gradient(135deg, oklch(0.55 0.25 25), oklch(0.48 0.22 15));
-  }
-
-  /* Red glow */
-  .glow-red {
-    box-shadow: 0 0 28px oklch(0.55 0.25 25 / 0.40),
-                0 0 56px oklch(0.55 0.25 25 / 0.18);
-  }
-
-  .glow-red-sm {
-    box-shadow: 0 0 14px oklch(0.55 0.25 25 / 0.30);
-  }
-
-  /* Blue glow */
-  .glow-blue {
-    box-shadow: 0 0 24px oklch(0.58 0.22 264 / 0.35),
-                0 0 48px oklch(0.58 0.22 264 / 0.15);
-  }
-
-  /* Moka brown glass card surface */
-  .glass-moka {
-    background: oklch(0.13 0.025 35 / 0.85);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid oklch(1 0 0 / 0.09);
-  }
-
-  /* Float animations */
+  /* Gentle floating motion for focal elements */
   .animate-float {
-    animation: lp-float 5s ease-in-out infinite;
-  }
-  .animate-float-slow {
-    animation: lp-float 8s ease-in-out infinite;
-  }
-  .animate-float-delayed {
-    animation: lp-float 6s ease-in-out 2.5s infinite;
-  }
-  .animate-float-reverse {
-    animation: lp-float-reverse 7s ease-in-out infinite;
-  }
-  .animate-drift {
-    animation: lp-drift 20s ease-in-out infinite;
-  }
-  .animate-drift-slow {
-    animation: lp-drift 28s ease-in-out 6s infinite reverse;
+    animation: float 6s ease-in-out infinite;
   }
 }
 
-@keyframes lp-float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-14px); }
-}
-@keyframes lp-float-reverse {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(12px); }
-}
-@keyframes lp-drift {
-  0%   { transform: translate(0px, 0px) rotate(0deg); }
-  33%  { transform: translate(18px, -12px) rotate(2deg); }
-  66%  { transform: translate(-12px, 8px) rotate(-1deg); }
-  100% { transform: translate(0px, 0px) rotate(0deg); }
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
 }
 
-/* ============================================================
-   Radial gradient ambient background (applied to main layout)
-   ============================================================ */
-.ambient-bg {
-  position: relative;
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
-.ambient-bg::before {
-  content: "";
-  position: fixed;
-  top: -30%;
-  left: -10%;
-  width: 60%;
-  height: 80%;
-  background: radial-gradient(ellipse, oklch(0.55 0.25 25 / 7%) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+/* ── Ambient "breathing" glow for headline + subtitle (gold-matched) ── */
+@layer utilities {
+  .animate-title-breathe {
+    animation: title-breathe 3.6s ease-in-out infinite;
+    will-change: text-shadow;
+  }
+  .animate-subtitle-pulse {
+    animation: subtitle-pulse 3.6s ease-in-out infinite;
+    will-change: opacity;
+  }
 }
 
-.ambient-bg::after {
-  content: "";
-  position: fixed;
-  bottom: -20%;
-  right: -10%;
-  width: 50%;
-  height: 70%;
-  background: radial-gradient(ellipse, oklch(0.58 0.22 264 / 6%) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+@keyframes title-breathe {
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(0, 163, 255, 0.12);
+  }
+  50% {
+    text-shadow:
+      0 0 20px rgba(0, 163, 255, 0.30),
+      0 0 38px rgba(0, 163, 255, 0.15);
+  }
+}
+
+@keyframes subtitle-pulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    text-shadow: 0 0 0 rgba(0, 163, 255, 0);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(0, 163, 255, 0.14);
+  }
+}
+
+/* ── Animated mesh backdrop — extremely dark, slow drifting gradient ── */
+@layer utilities {
+  .bg-mesh-drift {
+    background-color: #050505;
+    background-image:
+      radial-gradient(at 18% 26%, rgba(0, 163, 255, 0.05) 0px, transparent 42%),
+      radial-gradient(at 82% 68%, rgba(0, 80, 255, 0.04) 0px, transparent 42%),
+      radial-gradient(at 50% 94%, rgba(124, 58, 237, 0.035) 0px, transparent 46%);
+    background-size: 200% 200%;
+    animation: mesh-drift 18s ease-in-out infinite alternate;
+    will-change: background-position;
+  }
+}
+
+@keyframes mesh-drift {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bg-mesh-drift {
+    animation: none;
+  }
+}
+
+/* ── Analytics dashboard interactions ── */
+@layer utilities {
+  /* Premium card hover: subtle lift + soft diffused blue ambient shadow */
+  .dash-card {
+    transition:
+      transform 300ms ease-in-out,
+      box-shadow 300ms ease-in-out,
+      background-color 300ms ease-in-out,
+      border-color 300ms ease-in-out;
+  }
+  .dash-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 34px -10px rgba(0, 214, 255, 0.28);
+  }
+
+  /* Tactile text boxes: faint fill + soft blue border on hover */
+  .tactile {
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+  .tactile:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(0, 214, 255, 0.22);
+  }
+
+  /* AI Insight box — slow breathing cyan ambient glow */
+  .animate-insight-breathe {
+    animation: insight-breathe 4s ease-in-out infinite;
+  }
+}
+
+@keyframes insight-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 22px -12px rgba(0, 214, 255, 0.28);
+  }
+  50% {
+    box-shadow: 0 0 36px -6px rgba(0, 214, 255, 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-insight-breathe {
+    animation: none;
+  }
+}
+
+/* ── Dashboard hero "breathing" text — gentle scale + opacity pulse ── */
+@layer utilities {
+  .animate-breathe {
+    animation: breathe 3.6s ease-in-out infinite;
+    transform-origin: center;
+    will-change: transform, opacity;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+    text-shadow: 0 0 12px rgba(0, 214, 255, 0.15);
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+    text-shadow: 0 0 26px rgba(0, 214, 255, 0.45), 0 0 52px rgba(0, 214, 255, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-breathe {
+    animation: none;
+    opacity: 1;
+  }
 }

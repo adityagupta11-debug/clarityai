@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Mic, TrendingUp, Clock, Sparkles, BarChart2 } from "lucide-react";
+import { Mic, TrendingUp, Clock, BarChart2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardHeader } from "@/components/layout/DashboardHeader";
 import { InterviewCard } from "@/components/interview/InterviewCard";
+import { DashboardAnalytics } from "@/components/dashboard/DashboardAnalytics";
 import { useInterviews } from "@/hooks/useInterviews";
 import { useAuth } from "@/hooks/useAuth";
+
+// Shared premium frosted-glass surface
+const CARD_BASE =
+  "rounded-3xl bg-white/[0.02] backdrop-blur-2xl border border-white/5 shadow-2xl";
 
 function StatCard({
   label,
@@ -25,21 +28,25 @@ function StatCard({
   loading: boolean;
 }) {
   return (
-    <Card className="glass border-white/8">
-      <CardHeader className="pb-2 pt-4 px-5">
-        <CardTitle className="flex items-center justify-between text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          {label}
-          <Icon className={cn("h-4 w-4", color)} />
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="px-5 pb-4">
-        {loading ? (
-          <Skeleton className="h-8 w-16 bg-white/5" />
-        ) : (
-          <p className="text-3xl font-bold tracking-tight tabular-nums">{value}</p>
-        )}
-      </CardContent>
-    </Card>
+    <div
+      className={cn(
+        CARD_BASE,
+        "p-6 transition-all duration-300 ease-out",
+        "hover:scale-[1.02] hover:-translate-y-1 hover:bg-white/[0.04] hover:shadow-[0_10px_40px_-10px_rgba(0,214,255,0.15)]"
+      )}
+    >
+      <div className="flex items-start justify-between">
+        <span className="text-sm font-medium text-white/40">{label}</span>
+        <Icon className={cn("h-4 w-4 shrink-0", color)} />
+      </div>
+      {loading ? (
+        <Skeleton className="mt-4 h-9 w-16 bg-white/5" />
+      ) : (
+        <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums text-white">
+          {value}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -54,7 +61,7 @@ export default function DashboardPage() {
       label: "Total Interviews",
       value: String(interviews.length),
       icon: Mic,
-      color: "text-red-400",
+      color: "text-[#00D6FF]",
     },
     {
       label: "Avg. Score",
@@ -78,35 +85,40 @@ export default function DashboardPage() {
       />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         {stats.map((s) => (
           <StatCard key={s.label} {...s} loading={loading} />
         ))}
       </div>
 
-      {/* Interview list */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-            <TrendingUp className="h-3.5 w-3.5" />
-            Recent Interviews
-          </h2>
-          {interviews.length > 0 && (
-            <Link
-              href="/history"
-              className="text-xs text-red-400 hover:text-red-300 transition-colors"
-            >
-              View all →
-            </Link>
-          )}
-        </div>
+      {/* Analytics — AI coach + data-viz widgets */}
+      <div className="mb-8">
+        <DashboardAnalytics interviews={interviews} avgScore={avgScore} />
+      </div>
 
-        {/* Loading skeletons */}
-        {loading && (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="glass border-white/8">
-                <CardContent className="p-5">
+      {/* Recent Interviews — shown once there's history */}
+      {(loading || interviews.length > 0) && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Recent Interviews
+            </h2>
+            {interviews.length > 0 && (
+              <Link
+                href="/history"
+                className="text-xs text-[#00D6FF] hover:text-white transition-colors"
+              >
+                View all →
+              </Link>
+            )}
+          </div>
+
+          {/* Loading skeletons */}
+          {loading && (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className={cn(CARD_BASE, "p-5")}>
                   <div className="flex items-start gap-4">
                     <div className="flex-1 space-y-2">
                       <Skeleton className="h-4 w-24 bg-white/5" />
@@ -115,47 +127,21 @@ export default function DashboardPage() {
                     </div>
                     <Skeleton className="h-8 w-20 bg-white/5" />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          )}
 
-        {/* Interview cards */}
-        {!loading && interviews.length > 0 && (
-          <div className="space-y-3">
-            {interviews.slice(0, 10).map((interview) => (
-              <InterviewCard key={interview.id} interview={interview} />
-            ))}
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!loading && interviews.length === 0 && (
-          <Card className="glass border-white/8 border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl gradient-violet glow-violet mb-4">
-                <Mic className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">No interviews yet</h3>
-              <p className="text-muted-foreground text-sm max-w-xs mb-6">
-                Upload your first recording to get AI-powered feedback on your communication,
-                vocabulary, and confidence.
-              </p>
-              <Link
-                href="/interview/new"
-                className={cn(
-                  buttonVariants(),
-                  "gradient-violet hover:opacity-90 transition-opacity"
-                )}
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Start your first analysis
-              </Link>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+          {/* Interview cards */}
+          {!loading && interviews.length > 0 && (
+            <div className="space-y-3">
+              {interviews.slice(0, 10).map((interview) => (
+                <InterviewCard key={interview.id} interview={interview} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }

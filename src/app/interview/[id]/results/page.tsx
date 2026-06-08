@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { type Route } from "next";
 import {
@@ -15,6 +16,56 @@ import { DashboardGrid } from "@/components/results/DashboardGrid";
 import { getScoreTier, formatDate, formatDuration } from "@/lib/utils/formatting";
 import type { Analysis } from "@/types/analysis";
 import type { Interview } from "@/types/interview";
+
+// Modern sans-serif stack applied to the whole results dashboard.
+const SANS_FONT =
+  '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, system-ui, sans-serif';
+
+// ── AI Insight keyword highlighting ───────────────────────────────────────────
+// Highlights positive cues (crisp/bright) and critique cues (muted warning) in
+// the freeform AI verdict. Critique patterns are listed first so overlaps such
+// as "lack of confidence" resolve to the warning tone rather than "confidence".
+const CRITIQUE_CUES = [
+  "lack of \\w+(?:\\s\\w+)?", "lacks? \\w+", "informal vocabulary",
+  "informal (?:language|tone)", "informal", "unstructured approach",
+  "unstructured", "filler words?", "hesitant", "hesitation", "vague",
+  "rambling", "nervous", "disorganized", "needs? improvement", "could improve",
+  "unclear", "weak", "limited", "lacked \\w+",
+];
+const POSITIVE_CUES = [
+  "well[- ]structured", "strong (?:grasp|understanding|command|knowledge)",
+  "good understanding", "clear(?:ly)?", "confiden(?:t|ce)", "articulate",
+  "concise", "professional", "relevant", "solid", "thoughtful", "effective",
+  "comprehensive", "initial understanding", "understanding",
+];
+const INSIGHT_RE = new RegExp(
+  `(${CRITIQUE_CUES.join("|")})|(${POSITIVE_CUES.join("|")})`,
+  "gi"
+);
+
+function highlightInsight(text: string): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  let last = 0;
+  let key = 0;
+  INSIGHT_RE.lastIndex = 0;
+
+  for (let m = INSIGHT_RE.exec(text); m !== null; m = INSIGHT_RE.exec(text)) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    const isCritique = m[1] != null;
+    nodes.push(
+      <span
+        key={key++}
+        className={isCritique ? "text-orange-200/80" : "text-gray-200 font-medium"}
+      >
+        {m[0]}
+      </span>
+    );
+    last = m.index + m[0].length;
+  }
+
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
+}
 
 // ── Serialized types ──────────────────────────────────────────────────────────
 // Firestore Timestamps and JS Date objects cannot cross the RSC boundary.
@@ -138,7 +189,7 @@ function MetaPill({
 }) {
   return (
     <span className="flex items-center gap-1.5 text-sm text-foreground/70">
-      <Icon className="h-3.5 w-3.5 text-red-400/80 shrink-0" />
+      <Icon className="h-3.5 w-3.5 text-[#00D6FF]/80 shrink-0" />
       {label}
     </span>
   );
@@ -150,7 +201,7 @@ function ScoreBadge({ score }: { score: number }) {
     tier.label === "Excellent" ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300" :
     tier.label === "Good"      ? "bg-teal-500/15 border-teal-500/30 text-teal-300"         :
     tier.label === "Fair"      ? "bg-amber-500/15 border-amber-500/30 text-amber-300"       :
-                                 "bg-red-500/15 border-red-500/30 text-red-300";
+                                 "bg-orange-500/10 border-orange-500/25 text-orange-300";
 
   return (
     <div className={cn("flex items-center gap-2 rounded-full border px-4 py-1.5", bg)}>
@@ -175,21 +226,21 @@ function GradientHeader({
     : null;
 
   return (
-    <header className="relative w-full overflow-hidden border-b border-white/8">
-      {/* Multi-layer gradient background */}
+    <header className="relative w-full overflow-hidden border-b border-white/8 bg-[#0A0A0A]">
+      {/* Solid matte-black base with the faintest charcoal lift */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(135deg, oklch(0.15 0.04 25 / 0.90) 0%, oklch(0.11 0.03 35 / 0.98) 50%, oklch(0.09 0.025 35) 100%)",
+            "linear-gradient(135deg, #0E0E10 0%, #0A0A0A 55%, #0A0A0A 100%)",
         }}
       />
 
-      {/* Ambient glow orbs */}
+      {/* Ambient glow orbs — subtle electric cyan/blue */}
       <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, oklch(0.55 0.25 25 / 0.14) 0%, transparent 70%)" }} />
+        style={{ background: "radial-gradient(circle, rgba(0,214,255,0.10) 0%, transparent 70%)" }} />
       <div className="absolute -bottom-12 right-8 h-52 w-52 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, oklch(0.58 0.22 264 / 0.10) 0%, transparent 70%)" }} />
+        style={{ background: "radial-gradient(circle, rgba(0,80,255,0.08) 0%, transparent 70%)" }} />
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
@@ -207,8 +258,8 @@ function GradientHeader({
           <ScoreBadge score={analysis.overallScore} />
         </div>
 
-        {/* Interview title */}
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3">
+        {/* Interview title — gentle blue "breathing" glow (text stays still) */}
+        <h1 className="animate-title-breathe text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3">
           {interview.title}
         </h1>
 
@@ -235,10 +286,21 @@ function GradientHeader({
           )}
         </div>
 
-        {/* AI summary */}
-        <p className="max-w-2xl text-sm leading-relaxed text-foreground/75">
-          {analysis.summary}
-        </p>
+        {/* AI Insight highlight block */}
+        <div className="animate-insight-breathe relative max-w-2xl overflow-hidden rounded-r-xl bg-[#00D6FF]/[0.06] backdrop-blur-md py-4 pl-5 pr-4 sm:pl-6">
+          {/* Glowing cyan left edge */}
+          <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#00D6FF] shadow-[0_0_14px_2px_rgba(0,214,255,0.55)]" />
+
+          {/* Badge */}
+          <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold tracking-wide text-cyan-400">
+            <span aria-hidden>✨</span> AI Insight
+          </p>
+
+          {/* Verdict — larger, crisp, with semantic keyword highlighting */}
+          <p className="text-lg leading-relaxed text-white/90">
+            {highlightInsight(analysis.summary)}
+          </p>
+        </div>
       </div>
     </header>
   );
@@ -254,9 +316,9 @@ function AnalysisNotReady({
   message:    string;
 }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-8 text-center ambient-bg">
+    <div style={{ fontFamily: SANS_FONT }} className="min-h-screen flex flex-col items-center justify-center gap-6 p-8 text-center bg-[#0A0A0A]">
       <div className="relative z-10 max-w-md space-y-6">
-        <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-2xl gradient-violet glow-violet">
+        <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-2xl gradient-blue-cyan glow-cyan">
           <svg viewBox="0 0 24 24" className="h-10 w-10 text-white fill-none stroke-current stroke-2">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
@@ -272,7 +334,7 @@ function AnalysisNotReady({
 
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-[#00D6FF] hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Dashboard
@@ -316,9 +378,9 @@ export default async function ResultsPage({ params }: Props) {
     const statusMessages: Partial<Record<string, string>> = {
       uploading:    "Your audio is being uploaded…",
       uploaded:     "Your audio has been received and will begin transcribing shortly.",
-      transcribing: "AssemblyAI is transcribing your interview. This usually takes 1–3 minutes.",
+      transcribing: "Your interview is being transcribed. This usually takes 1–3 minutes.",
       transcribed:  "Transcription complete. The AI analysis will begin momentarily.",
-      analyzing:    "Gemini is analyzing your transcript. This usually takes under a minute.",
+      analyzing:    "Our AI is analyzing your transcript. This usually takes under a minute.",
       failed:       interview.errorMessage ?? "Something went wrong during analysis.",
     };
     const message =
@@ -330,7 +392,7 @@ export default async function ResultsPage({ params }: Props) {
 
   // ── Render the full results dashboard ────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background">
+    <div style={{ fontFamily: SANS_FONT }} className="min-h-screen bg-[#0A0A0A]">
       <GradientHeader interview={interview} analysis={analysis} />
       <DashboardGrid interview={interview} analysis={analysis} />
     </div>

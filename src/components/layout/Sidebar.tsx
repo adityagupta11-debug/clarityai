@@ -14,6 +14,8 @@ import {
   Menu,
   LogOut,
   X,
+  Pin,
+  PinOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants, Button } from "@/components/ui/button";
@@ -36,7 +38,15 @@ const navItems = [
 // ── Shared navigation contents ────────────────────────────────────────────────
 // Rendered inside both the fixed desktop sidebar and the mobile Sheet panel.
 
-function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
+function SidebarContents({
+  onNavClick,
+  isPinned,
+  onTogglePin,
+}: {
+  onNavClick?: () => void;
+  isPinned?: boolean;
+  onTogglePin?: () => void;
+}) {
   const pathname = usePathname();
   const router   = useRouter();
   const { user, signOut } = useAuth();
@@ -56,15 +66,34 @@ function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="flex h-16 items-center gap-2.5 px-6 border-b border-white/8 shrink-0">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-violet glow-violet-sm">
-          <Mic className="h-4 w-4 text-white" />
-        </div>
-        <span className="text-lg font-semibold tracking-tight">
-          <span className="gradient-text">Clarity</span>
-          <span className="text-foreground/80">AI</span>
-        </span>
+      {/* Logo + pin toggle */}
+      <div className="flex h-16 items-center justify-between gap-2 px-5 border-b border-white/10 shrink-0">
+        <Link href="/dashboard" onClick={onNavClick} className="flex items-center gap-2.5 min-w-0">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg gradient-blue-cyan glow-cyan">
+            <Mic className="h-4 w-4 text-white" />
+          </div>
+          <span className="text-lg font-semibold tracking-tight truncate">
+            <span className="text-gradient-cyan">Clarity</span>
+            <span className="text-white/80">AI</span>
+          </span>
+        </Link>
+
+        {onTogglePin && (
+          <button
+            type="button"
+            onClick={onTogglePin}
+            aria-pressed={isPinned}
+            title={isPinned ? "Unpin sidebar" : "Pin sidebar open"}
+            className={cn(
+              "hidden lg:flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-all active:scale-95",
+              isPinned
+                ? "border-[#00D6FF]/40 bg-[#00D6FF]/15 text-[#00D6FF] shadow-[0_0_14px_rgba(0,214,255,0.25)]"
+                : "border-white/10 text-white/50 hover:text-white hover:bg-white/5"
+            )}
+          >
+            {isPinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
+          </button>
+        )}
       </div>
 
       {/* New Interview CTA */}
@@ -74,7 +103,7 @@ function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
           onClick={onNavClick}
           className={cn(
             buttonVariants(),
-            "w-full gradient-violet glow-violet-sm hover:opacity-90 active:scale-[0.97] transition-all"
+            "w-full gradient-blue-cyan text-white shadow-[0_0_20px_rgba(0,214,255,0.3)] hover:brightness-110 active:scale-[0.97] transition-all"
           )}
         >
           <Sparkles className="h-4 w-4 mr-2" />
@@ -99,14 +128,14 @@ function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium",
                 "transition-all duration-150 active:scale-[0.97]",
                 isActive
-                  ? "bg-red-500/15 text-red-300 border border-red-500/20"
-                  : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  ? "bg-[#00D6FF]/10 text-[#00D6FF] border border-[#00D6FF]/20 shadow-[0_0_20px_rgba(0,214,255,0.1)]"
+                  : "text-white/50 hover:text-white hover:bg-white/5"
               )}
             >
               <Icon
                 className={cn(
                   "h-4 w-4 shrink-0",
-                  isActive ? "text-red-400" : "text-muted-foreground"
+                  isActive ? "text-[#00D6FF]" : "text-white/50"
                 )}
               />
               {label}
@@ -117,18 +146,18 @@ function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
 
       {/* Upgrade CTA */}
       <div className="px-4 pb-3 shrink-0">
-        <div className="rounded-xl p-4 glass border border-red-500/20">
+        <div className="rounded-xl p-4 bg-white/5 backdrop-blur-xl border border-[#00D6FF]/20 shadow-[0_0_20px_rgba(0,214,255,0.08)]">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="h-4 w-4 text-red-400" />
-            <span className="text-sm font-medium text-red-300">Free Plan</span>
+            <TrendingUp className="h-4 w-4 text-[#00D6FF]" />
+            <span className="text-sm font-medium text-[#00D6FF]">Free Plan</span>
           </div>
-          <p className="text-xs text-muted-foreground mb-3">
+          <p className="text-xs text-white/50 mb-3">
             Upgrade to Pro for unlimited interviews and advanced analytics.
           </p>
           <Button
             size="sm"
             variant="outline"
-            className="w-full text-xs border-red-500/30 hover:border-red-500/60 hover:bg-red-500/10 active:scale-[0.97] transition-all"
+            className="w-full text-xs border-[#00D6FF]/30 text-white/80 hover:border-[#00D6FF]/60 hover:bg-[#00D6FF]/10 active:scale-[0.97] transition-all"
           >
             Upgrade to Pro
           </Button>
@@ -137,20 +166,20 @@ function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
 
       {/* User info + sign-out */}
       {user && (
-        <div className="flex items-center gap-3 px-4 py-4 border-t border-white/8 shrink-0">
-          <Avatar className="h-8 w-8 shrink-0 ring-2 ring-red-500/20">
+        <div className="flex items-center gap-3 px-4 py-4 border-t border-white/10 shrink-0">
+          <Avatar className="h-8 w-8 shrink-0 ring-2 ring-[#00D6FF]/30">
             <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? "User"} />
-            <AvatarFallback className="bg-red-500/20 text-red-300 text-xs font-medium">
+            <AvatarFallback className="bg-[#00D6FF]/15 text-[#00D6FF] text-xs font-medium">
               {initials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium truncate">{user.displayName ?? "User"}</p>
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            <p className="text-xs font-medium truncate text-white/90">{user.displayName ?? "User"}</p>
+            <p className="text-xs text-white/50 truncate">{user.email}</p>
           </div>
           <button
             onClick={handleSignOut}
-            className="shrink-0 text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-md hover:bg-white/5 active:scale-[0.97]"
+            className="shrink-0 text-white/50 hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/5 active:scale-[0.97]"
             title="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />
@@ -161,12 +190,36 @@ function SidebarContents({ onNavClick }: { onNavClick?: () => void }) {
   );
 }
 
-// ── Desktop sidebar — fixed, visible on lg+ only ──────────────────────────────
+// ── Desktop sidebar — slide-out / pinned, visible on lg+ only ─────────────────
+// `open` is controlled by the parent shell (hover or pinned). When closed it
+// slides fully off-screen via translateX(-100%).
 
-export function Sidebar() {
+export function Sidebar({
+  open,
+  isPinned,
+  onTogglePin,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  open: boolean;
+  isPinned: boolean;
+  onTogglePin: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}) {
   return (
-    <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 flex-col glass-strong border-r border-white/8">
-      <SidebarContents />
+    <aside
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      aria-hidden={!open}
+      className={cn(
+        "hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-64 flex-col overflow-hidden",
+        "rounded-r-2xl border-r border-white/10 bg-[#070708]/95 backdrop-blur-2xl shadow-2xl",
+        "transition-transform duration-300 ease-in-out",
+        open ? "translate-x-0" : "-translate-x-full"
+      )}
+    >
+      <SidebarContents isPinned={isPinned} onTogglePin={onTogglePin} />
     </aside>
   );
 }
@@ -186,7 +239,7 @@ export function MobileTopBar() {
       .slice(0, 2) ?? "?";
 
   return (
-    <header className="lg:hidden sticky top-0 z-50 flex h-14 items-center justify-between px-4 border-b border-white/8 glass-strong shrink-0">
+    <header className="lg:hidden sticky top-0 z-50 flex h-14 items-center justify-between px-4 border-b border-white/10 apple-glass shrink-0">
       {/* Hamburger sheet trigger */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
@@ -199,7 +252,7 @@ export function MobileTopBar() {
         <SheetContent
           side="left"
           showCloseButton={false}
-          className="w-72 max-w-[85vw] p-0 border-r border-white/8 glass-strong"
+          className="w-72 max-w-[85vw] p-0 border-r border-white/10 apple-glass"
         >
           {/* Visually hidden title for screen readers */}
           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
@@ -209,20 +262,20 @@ export function MobileTopBar() {
 
       {/* Centred logo */}
       <Link href="/dashboard" className="flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md gradient-violet glow-violet-sm">
+        <div className="flex h-7 w-7 items-center justify-center rounded-md gradient-blue-cyan glow-cyan">
           <Mic className="h-3.5 w-3.5 text-white" />
         </div>
         <span className="text-base font-bold tracking-tight">
-          <span className="gradient-text">Clarity</span>
-          <span className="text-foreground/70">AI</span>
+          <span className="text-gradient-cyan">Clarity</span>
+          <span className="text-white/70">AI</span>
         </span>
       </Link>
 
       {/* User avatar (right) */}
       {user && (
-        <Avatar className="h-8 w-8 ring-2 ring-red-500/20">
+        <Avatar className="h-8 w-8 ring-2 ring-[#00D6FF]/30">
           <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? "User"} />
-          <AvatarFallback className="bg-red-500/20 text-red-300 text-xs font-medium">
+          <AvatarFallback className="bg-[#00D6FF]/15 text-[#00D6FF] text-xs font-medium">
             {initials}
           </AvatarFallback>
         </Avatar>

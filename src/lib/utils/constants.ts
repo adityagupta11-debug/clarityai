@@ -46,5 +46,5 @@ export const SCORE_TIERS = {
   excellent: { min: 85, label: "Excellent", color: "text-emerald-400" },
   good: { min: 70, label: "Good", color: "text-teal-400" },
   fair: { min: 50, label: "Fair", color: "text-amber-400" },
-  poor: { min: 0, label: "Needs Work", color: "text-red-400" },
+  poor: { min: 0, label: "Needs Work", color: "text-orange-300" },
 } as const;

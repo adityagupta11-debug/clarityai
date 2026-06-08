@@ -99,7 +99,7 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
 
   if (selectedFile) {
     return (
-      <div className="rounded-2xl glass border border-emerald-500/25 p-5 transition-all">
+      <div className="rounded-2xl bg-white/[0.02] backdrop-blur-2xl border border-emerald-500/25 p-5 transition-all">
         <div className="flex items-center gap-4">
           {/* File icon */}
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/20">
@@ -157,14 +157,14 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
           }
         }}
         className={cn(
-          "relative flex flex-col items-center justify-center gap-5 rounded-2xl border-2 border-dashed p-12 text-center",
+          "relative flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-12 text-center",
           "transition-all duration-200 select-none outline-none",
           "focus-visible:ring-2 focus-visible:ring-ring/50",
           isDragOver
-            ? "border-red-500 bg-red-500/10 scale-[1.01] cursor-copy"
+            ? "border-[#00D6FF]/70 bg-[#00D6FF]/10 cursor-copy"
             : error
               ? "border-red-500/40 bg-red-500/5 cursor-pointer hover:border-red-500/60"
-              : "border-white/15 cursor-pointer hover:border-red-500/40 hover:bg-white/3",
+              : "border-white/10 cursor-pointer hover:border-[#00D6FF]/40 hover:bg-white/[0.03]",
           disabled && "opacity-50 cursor-not-allowed pointer-events-none"
         )}
       >
@@ -179,31 +179,22 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
           aria-hidden
         />
 
-        {/* Upload icon */}
-        <div
+        {/* Simple upload icon — no nested box */}
+        <Upload
           className={cn(
-            "flex h-16 w-16 items-center justify-center rounded-2xl border transition-all duration-200",
-            isDragOver
-              ? "gradient-violet glow-violet border-transparent"
-              : "bg-white/5 border-white/10"
+            "h-7 w-7 transition-colors duration-200",
+            isDragOver ? "text-[#00D6FF]" : "text-white/50"
           )}
-        >
-          <Upload
-            className={cn(
-              "h-7 w-7 transition-colors duration-200",
-              isDragOver ? "text-white" : "text-muted-foreground"
-            )}
-          />
-        </div>
+        />
 
         {/* Copy */}
-        <div className="space-y-1.5">
-          <p className="text-sm font-medium">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-white/90">
             {isDragOver ? "Drop to upload" : "Drag & drop your audio file"}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-white/50">
             or{" "}
-            <span className="text-red-400 underline underline-offset-2">
+            <span className="text-[#00D6FF] underline underline-offset-2">
               click to browse
             </span>
             {" "}· MP3, WAV, M4A, WebM, OGG up to 500 MB

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { type Route } from "next";
 import {
@@ -12,22 +11,21 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
-  ArrowLeft,
   Building2,
   Briefcase,
-  Tag,
+  Lock,
+  MessageSquare,
+  Code2,
+  Network,
+  UserCheck,
+  FileText,
+  Upload,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Tabs,
   TabsContent,
@@ -63,15 +61,17 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
   ];
 
   return (
-    <div
-      className="rounded-2xl border border-white/8 overflow-hidden"
-      style={{ background: "oklch(0.13 0.025 35 / 0.9)", backdropFilter: "blur(20px)" }}
-    >
-      {/* Animated red top bar */}
-      <div className="h-0.5 w-full gradient-red" style={{
-        backgroundSize: "200% 100%",
-        animation: "shimmer 1.5s linear infinite",
-      }} />
+    <div className={cn(CARD_BASE, "overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500")}>
+      {/* Animated cyan shimmer top bar */}
+      <div
+        className="h-0.5 w-full"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, #00D6FF 40%, #0050FF 60%, transparent)",
+          backgroundSize: "200% 100%",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
 
       <div className="p-6 sm:p-8 space-y-6">
         {/* Step row */}
@@ -81,9 +81,9 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
               <div
                 className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-bold transition-all duration-300",
-                  active ? "gradient-red glow-red-sm text-white"
+                  active ? "gradient-blue-cyan glow-cyan text-white"
                          : done  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                 : "bg-white/6 text-muted-foreground border border-white/10"
+                                 : "bg-white/[0.06] text-white/40 border border-white/10"
                 )}
               >
                 {active ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -93,7 +93,7 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
 
               <span className={cn(
                 "text-sm font-medium transition-colors",
-                active ? "text-foreground" : done ? "text-emerald-400" : "text-muted-foreground"
+                active ? "text-white" : done ? "text-emerald-400" : "text-white/40"
               )}>
                 {label}
               </span>
@@ -101,7 +101,7 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
               {i < 3 && (
                 <div className={cn(
                   "hidden sm:block h-px flex-1 mx-1 transition-all duration-700",
-                  done ? "bg-gradient-to-r from-emerald-500/40 to-white/10" : "bg-white/8"
+                  done ? "bg-gradient-to-r from-emerald-500/40 to-white/10" : "bg-white/10"
                 )} />
               )}
             </div>
@@ -112,12 +112,12 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
         {isUploading && (
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">Uploading…</span>
-              <span className="text-xs font-bold tabular-nums text-red-400">{progress}%</span>
+              <span className="text-xs text-white/50">Uploading…</span>
+              <span className="text-xs font-bold tabular-nums text-[#00D6FF]">{progress}%</span>
             </div>
-            <div className="h-2 rounded-full bg-white/8 overflow-hidden">
+            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
               <div
-                className="h-full rounded-full gradient-red transition-all duration-300 ease-out"
+                className="h-full rounded-full gradient-blue-cyan transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -125,13 +125,13 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
         )}
 
         {isCreating && (
-          <p className="text-sm text-muted-foreground animate-pulse">Setting up your interview session…</p>
+          <p className="text-sm text-white/50 animate-pulse">Setting up your interview session…</p>
         )}
         {isTranscribing && (
-          <p className="text-sm text-muted-foreground animate-pulse">AssemblyAI is transcribing your audio — usually 20–60 seconds…</p>
+          <p className="text-sm text-white/50 animate-pulse">Transcribing your audio — usually 20–60 seconds…</p>
         )}
         {isAnalyzing && (
-          <p className="text-sm text-muted-foreground animate-pulse">Gemini is analysing your responses — almost there…</p>
+          <p className="text-sm text-white/50 animate-pulse">Analysing your responses — almost there…</p>
         )}
       </div>
     </div>
@@ -144,29 +144,28 @@ function StepHeader({
   n,
   title,
   subtitle,
-  accent = "red",
+  accent = "cyan",
 }: {
   n: string;
   title: string;
   subtitle: string;
-  accent?: "red" | "blue";
+  accent?: "cyan" | "blue";
 }) {
   return (
     <div className="flex items-start gap-4 mb-6">
       <div
         className={cn(
           "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white mt-0.5",
-          accent === "red"
-            ? "gradient-red glow-red-sm"
-            : "bg-gradient-to-br from-blue-500 to-blue-600"
+          accent === "cyan"
+            ? "gradient-blue-cyan glow-cyan"
+            : "bg-gradient-to-br from-blue-500 to-blue-600 shadow-[0_0_16px_rgba(0,80,255,0.35)]"
         )}
-        style={accent === "blue" ? { boxShadow: "0 0 14px oklch(0.58 0.22 264 / 0.30)" } : undefined}
       >
         {n}
       </div>
       <div>
-        <h2 className="text-base font-semibold leading-none mb-1">{title}</h2>
-        <p className="text-xs text-muted-foreground">{subtitle}</p>
+        <h2 className="text-base font-semibold leading-none mb-1 text-white/90">{title}</h2>
+        <p className="text-xs text-white/50">{subtitle}</p>
       </div>
     </div>
   );
@@ -191,10 +190,10 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={htmlFor} className="text-sm font-medium flex items-center gap-1.5">
+      <Label htmlFor={htmlFor} className="text-sm font-medium flex items-center gap-1.5 text-white/80">
         {label}
-        {required && <span className="text-red-400 text-xs">*</span>}
-        {optional && <span className="text-muted-foreground/60 text-xs font-normal">(optional)</span>}
+        {required && <span className="text-[#00D6FF] text-xs">*</span>}
+        {optional && <span className="text-white/35 text-xs font-normal">(optional)</span>}
       </Label>
       {children}
       {error && (
@@ -210,7 +209,50 @@ function Field({
 // ── Styled input — shared class string ───────────────────────────────────────
 
 const inputCls =
-  "bg-white/4 border-white/10 hover:border-white/18 focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-all placeholder:text-white/25 h-10";
+  "bg-white/[0.03] border-white/10 hover:border-white/20 focus:border-[#00D6FF]/50 focus:ring-1 focus:ring-[#00D6FF]/20 transition-all placeholder:text-white/25 h-10";
+
+// Shared premium frosted-glass surface — thin 10% border with an inset
+// top-edge highlight to simulate a light source hitting the top of the card.
+const CARD_BASE =
+  "rounded-3xl bg-white/[0.02] backdrop-blur-2xl border border-white/10 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.08)]";
+
+// Icon per interview type — used by the clickable type selector cards.
+const TYPE_ICONS: Record<InterviewType, React.ComponentType<{ className?: string }>> = {
+  behavioral:    MessageSquare,
+  technical:     Code2,
+  system_design: Network,
+  hr_screening:  UserCheck,
+  case_study:    Briefcase,
+  other:         Sparkles,
+};
+
+// Additional context-gathering options (revealed after a type is chosen).
+const DIFFICULTY_LEVELS = [
+  { value: "beginner",     label: "Beginner" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced",     label: "Advanced" },
+] as const;
+
+const SESSION_LENGTHS = [
+  { value: "quick",    label: "Quick",     hint: "10 min" },
+  { value: "standard", label: "Standard",  hint: "30 min" },
+  { value: "full",     label: "Full Mock", hint: "60 min" },
+] as const;
+
+const AI_TONES = [
+  { value: "friendly", label: "Friendly" },
+  { value: "strict",   label: "Strict / Realistic" },
+] as const;
+
+// Shared selectable-pill styling (matches the interview-type cards).
+const selectablePill = (active: boolean) =>
+  cn(
+    "rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out",
+    "disabled:opacity-50 disabled:pointer-events-none",
+    active
+      ? "border-[#00D6FF]/40 bg-[#00D6FF]/10 text-white shadow-[0_8px_30px_-12px_rgba(0,214,255,0.4)]"
+      : "border-white/10 bg-white/[0.02] text-white/60 hover:-translate-y-0.5 hover:bg-white/[0.04] hover:text-white"
+  );
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
@@ -233,6 +275,21 @@ export default function NewInterviewPage() {
   const [submitError,    setSubmitError]    = useState<string | null>(null);
   const [titleError,     setTitleError]     = useState<string | null>(null);
   const [audioError,     setAudioError]     = useState<string | null>(null);
+
+  // Progressive disclosure — the recording step stays locked until the user
+  // confirms their interview details (only the title is strictly required).
+  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
+
+  // Additional context — revealed once the user picks an interview type.
+  const [typeChosen,     setTypeChosen]     = useState(false);
+  const [jdMode,         setJdMode]         = useState<"paste" | "upload">("paste");
+  const [jobDescription, setJobDescription] = useState("");
+  const [resumeFile,     setResumeFile]     = useState<File | null>(null);
+  const [resumeDragOver, setResumeDragOver] = useState(false);
+  const [difficulty,     setDifficulty]     = useState<"beginner" | "intermediate" | "advanced">("intermediate");
+  const [sessionLength,  setSessionLength]  = useState<"quick" | "standard" | "full">("standard");
+  const [aiTone,         setAiTone]         = useState<"friendly" | "strict">("friendly");
+  const resumeInputRef = useRef<HTMLInputElement>(null);
 
   // Mirror Firestore status → local phase while pipeline is running.
   // Must be a state variable (not a ref) so the useEffect re-fires when the
@@ -280,6 +337,16 @@ export default function NewInterviewPage() {
     setAudioError(null);
   }, []);
 
+  // Validate the details step and unlock the recording step.
+  const handleContinue = useCallback(() => {
+    if (!title.trim()) {
+      setTitleError("Interview title is required.");
+      return;
+    }
+    setTitleError(null);
+    setDetailsConfirmed(true);
+  }, [title]);
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -317,7 +384,7 @@ export default function NewInterviewPage() {
         role:              role.trim() || null,
         interviewType,
         recordingPath:     path,
-        recordingUrl:      url,   // stored so /api/transcribe can pass it to AssemblyAI
+        recordingUrl:      url,   // stored so the transcription service can use it
         recordingDuration: audioDuration,
         recordingSize:     activeAudio!.size,
         mimeType:          activeAudio!.type || "audio/webm",
@@ -358,49 +425,46 @@ export default function NewInterviewPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="w-full">
 
       {/* ── Page header ──────────────────────────────────────────── */}
-      <div className="mb-8">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5 group"
-        >
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          Back to Dashboard
-        </Link>
-
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-red glow-red">
-            <Sparkles className="h-6 w-6 text-white" />
+      <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-700 ease-out">
+        {/* Centered hero */}
+        <div className="flex flex-col items-center text-center">
+          <div className="relative mb-4 flex h-14 w-14 items-center justify-center">
+            <div className="pointer-events-none absolute h-20 w-20 rounded-full bg-[#00D6FF]/25 blur-2xl" />
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl gradient-blue-cyan animate-float shadow-[0_0_30px_rgba(0,214,255,0.45)]">
+              <Sparkles className="h-7 w-7 text-white" />
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight gradient-text-brand">
-              New Interview
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Add your details, upload or record, and get AI coaching in under 3 minutes.
-            </p>
-          </div>
+          <h1
+            style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, system-ui, sans-serif' }}
+            className="animate-title-breathe text-3xl sm:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/40"
+          >
+            New Interview
+          </h1>
+          <p className="animate-subtitle-pulse text-sm font-medium text-white/50 mt-2 max-w-md">
+            Add your details, upload or record, and get AI coaching in under 3 minutes.
+          </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
+
+        {/* Two-column on laptop/desktop, stacked on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
         {/* ══ Section 1: Interview Details ════════════════════════ */}
-        <div
-          className="rounded-2xl border border-white/8 overflow-hidden"
-          style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
-        >
-          {/* Thin red accent top border */}
-          <div className="h-0.5 gradient-red opacity-60" />
+        <div className={cn(CARD_BASE, "overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out")}>
+          {/* Thin cyan accent top border */}
+          <div className="h-px bg-[linear-gradient(to_right,transparent,#0050FF_25%,#00D6FF_75%,transparent)] opacity-80" />
 
           <div className="p-5 sm:p-7">
             <StepHeader
               n="01"
               title="Interview Details"
               subtitle="Give this session a name so you can find it later."
-              accent="red"
+              accent="cyan"
             />
 
             <div className="space-y-4">
@@ -420,7 +484,7 @@ export default function NewInterviewPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Company" htmlFor="company" optional>
                   <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50 pointer-events-none" />
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/45 pointer-events-none" />
                     <Input
                       id="company"
                       placeholder="Google"
@@ -434,7 +498,7 @@ export default function NewInterviewPage() {
 
                 <Field label="Role" htmlFor="role" optional>
                   <div className="relative">
-                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50 pointer-events-none" />
+                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/45 pointer-events-none" />
                     <Input
                       id="role"
                       placeholder="Product Manager"
@@ -447,37 +511,240 @@ export default function NewInterviewPage() {
                 </Field>
               </div>
 
-              {/* Interview type */}
-              <Field label="Interview Type" htmlFor="type">
-                <div className="relative">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50 pointer-events-none z-10" />
-                  <Select
-                    value={interviewType}
-                    onValueChange={(val) => { if (val) setInterviewType(val as InterviewType); }}
-                    disabled={isSubmitting}
-                  >
-                    <SelectTrigger className={cn(inputCls, "pl-8 w-full")}>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {INTERVIEW_TYPES.map(({ value, label }) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {/* Interview type — clickable hovering cards */}
+              <Field label="Interview Type">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {INTERVIEW_TYPES.map(({ value, label }) => {
+                    const Icon = TYPE_ICONS[value];
+                    const selected = typeChosen && interviewType === value;
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => { setInterviewType(value as InterviewType); setTypeChosen(true); }}
+                        disabled={isSubmitting}
+                        aria-pressed={selected}
+                        className={cn(
+                          "group/type flex flex-col items-center justify-center gap-2 rounded-xl border p-3 text-center transition-all duration-300 ease-out",
+                          "disabled:opacity-50 disabled:pointer-events-none",
+                          selected
+                            ? "border-[#00D6FF]/40 bg-[#00D6FF]/10 text-white shadow-[0_8px_30px_-12px_rgba(0,214,255,0.4)]"
+                            : "border-white/10 bg-white/[0.02] text-white/60 hover:-translate-y-0.5 hover:bg-white/[0.04] hover:text-white"
+                        )}
+                      >
+                        <Icon
+                          className={cn(
+                            "h-5 w-5 transition-colors duration-300",
+                            selected ? "text-[#00D6FF]" : "text-white/45 group-hover/type:text-white/80"
+                          )}
+                        />
+                        <span className="text-xs font-medium leading-tight">{label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </Field>
+
+              {/* ── Additional context — slides in once a type is chosen ── */}
+              {typeChosen && (
+                <div className="space-y-5 animate-in fade-in slide-in-from-top-2 duration-500 ease-out">
+                  <div className="h-px bg-white/[0.08]" />
+
+                  {/* Job Description / Resume */}
+                  <Field label="Job Description / Resume" optional>
+                    <div className="space-y-3">
+                      {/* Tab toggle */}
+                      <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.02] p-1">
+                        <button
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={() => setJdMode("paste")}
+                          className={cn(
+                            "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                            jdMode === "paste" ? "bg-[#00D6FF]/15 text-[#00D6FF]" : "text-white/50 hover:text-white"
+                          )}
+                        >
+                          <FileText className="h-3.5 w-3.5" /> Paste JD
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={() => setJdMode("upload")}
+                          className={cn(
+                            "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                            jdMode === "upload" ? "bg-[#00D6FF]/15 text-[#00D6FF]" : "text-white/50 hover:text-white"
+                          )}
+                        >
+                          <Upload className="h-3.5 w-3.5" /> Upload Resume
+                        </button>
+                      </div>
+
+                      {jdMode === "paste" ? (
+                        <textarea
+                          value={jobDescription}
+                          onChange={(e) => setJobDescription(e.target.value)}
+                          disabled={isSubmitting}
+                          rows={5}
+                          placeholder="Paste the Job Description here to get tailored AI coaching..."
+                          className={cn(inputCls, "w-full h-auto min-h-[120px] py-2.5 leading-relaxed resize-y")}
+                        />
+                      ) : (
+                        <div>
+                          <input
+                            ref={resumeInputRef}
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            className="sr-only"
+                            onChange={(e) => { const f = e.target.files?.[0]; if (f) setResumeFile(f); e.target.value = ""; }}
+                            aria-hidden
+                          />
+                          {resumeFile ? (
+                            <div className="flex items-center gap-3 rounded-xl border border-emerald-500/25 bg-white/[0.02] p-3">
+                              <FileText className="h-4 w-4 shrink-0 text-emerald-400" />
+                              <span className="min-w-0 flex-1 truncate text-sm text-white/80">{resumeFile.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => setResumeFile(null)}
+                                className="shrink-0 text-white/40 hover:text-white transition-colors"
+                                aria-label="Remove resume"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div
+                              role="button"
+                              tabIndex={isSubmitting ? -1 : 0}
+                              onDragOver={(e) => { e.preventDefault(); if (!isSubmitting) setResumeDragOver(true); }}
+                              onDragLeave={(e) => { e.preventDefault(); setResumeDragOver(false); }}
+                              onDrop={(e) => { e.preventDefault(); setResumeDragOver(false); if (isSubmitting) return; const f = e.dataTransfer.files?.[0]; if (f) setResumeFile(f); }}
+                              onClick={() => !isSubmitting && resumeInputRef.current?.click()}
+                              onKeyDown={(e) => { if (!isSubmitting && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); resumeInputRef.current?.click(); } }}
+                              className={cn(
+                                "flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center outline-none cursor-pointer select-none transition-all duration-200",
+                                resumeDragOver
+                                  ? "border-[#00D6FF] bg-[#00D6FF]/10"
+                                  : "border-white/15 hover:border-[#00D6FF]/40 hover:bg-white/[0.03]",
+                                isSubmitting && "opacity-50 pointer-events-none"
+                              )}
+                            >
+                              <div className={cn(
+                                "flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-200",
+                                resumeDragOver ? "gradient-blue-cyan glow-cyan border-transparent" : "bg-white/5 border-white/10"
+                              )}>
+                                <Upload className={cn("h-5 w-5", resumeDragOver ? "text-white" : "text-white/50")} />
+                              </div>
+                              <p className="text-xs text-white/50">
+                                Drop your resume or{" "}
+                                <span className="text-[#00D6FF] underline underline-offset-2">browse</span>
+                                {" "}· PDF, DOC
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </Field>
+
+                  {/* Difficulty Level */}
+                  <Field label="Difficulty Level">
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {DIFFICULTY_LEVELS.map(({ value, label }) => (
+                        <button
+                          key={value}
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={() => setDifficulty(value)}
+                          aria-pressed={difficulty === value}
+                          className={cn(selectablePill(difficulty === value), "text-center")}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </Field>
+
+                  {/* Interview Length */}
+                  <Field label="Interview Length">
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {SESSION_LENGTHS.map(({ value, label, hint }) => (
+                        <button
+                          key={value}
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={() => setSessionLength(value)}
+                          aria-pressed={sessionLength === value}
+                          className={cn(selectablePill(sessionLength === value), "flex flex-col items-center gap-0.5")}
+                        >
+                          <span>{label}</span>
+                          <span className={cn("text-[11px]", sessionLength === value ? "text-[#00D6FF]/80" : "text-white/35")}>
+                            {hint}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </Field>
+
+                  {/* AI Tone */}
+                  <Field label="AI Tone">
+                    <div className="flex flex-wrap gap-2.5">
+                      {AI_TONES.map(({ value, label }) => (
+                        <button
+                          key={value}
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={() => setAiTone(value)}
+                          aria-pressed={aiTone === value}
+                          className={cn(selectablePill(aiTone === value), "flex-1 min-w-[130px]")}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </Field>
+                </div>
+              )}
             </div>
+
+            {/* Progressive unlock — confirm details to reveal the recording step */}
+            {!detailsConfirmed ? (
+              <div className="mt-6 flex justify-end">
+                <Button
+                  type="button"
+                  onClick={handleContinue}
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto gradient-blue-cyan text-white rounded-full px-7 h-11 text-sm font-bold shadow-[0_0_25px_rgba(0,214,255,0.35)] hover:shadow-[0_0_40px_rgba(0,214,255,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 ease-out"
+                >
+                  Continue to recording
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-6 flex items-center gap-2 text-xs font-medium text-emerald-400">
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                Details saved — you can still edit them above.
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ══ Section 2: Audio Recording ══════════════════════════ */}
+        {/* ══ Section 2: Audio Recording (locked until details confirmed) ══ */}
         <div
-          className="rounded-2xl border border-white/8 overflow-hidden"
-          style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
+          className={cn(
+            CARD_BASE,
+            "overflow-hidden transition-all duration-500",
+            detailsConfirmed
+              ? "animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out"
+              : "opacity-70"
+          )}
         >
-          {/* Thin blue accent top border */}
-          <div className="h-0.5" style={{ background: "linear-gradient(90deg, oklch(0.58 0.22 264), oklch(0.70 0.18 264))", opacity: 0.6 }} />
+          {/* Thin blue accent top border — fades to transparent at both edges */}
+          <div
+            className={cn(
+              "h-px bg-[linear-gradient(to_right,transparent,#0050FF_25%,#00D6FF_75%,transparent)]",
+              detailsConfirmed ? "opacity-80" : "opacity-25"
+            )}
+          />
 
           <div className="p-5 sm:p-7">
             <StepHeader
@@ -487,32 +754,47 @@ export default function NewInterviewPage() {
               accent="blue"
             />
 
+            {!detailsConfirmed ? (
+              /* Locked placeholder */
+              <div className="flex flex-col items-center justify-center text-center rounded-2xl border border-dashed border-white/10 bg-white/[0.01] py-14 px-6">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+                  <Lock className="h-6 w-6 text-white/40" />
+                </div>
+                <p className="text-sm font-semibold text-white/70">Recording locked</p>
+                <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-white/40">
+                  Fill in your interview details and hit{" "}
+                  <span className="font-medium text-white/70">Continue</span> to upload a file
+                  or record live.
+                </p>
+              </div>
+            ) : (
+            <>
             <Tabs defaultValue="file" onValueChange={handleTabChange} className="space-y-5">
-              {/* Custom tab list */}
-              <TabsList className="w-full h-11 p-1 rounded-xl bg-white/4 border border-white/8">
+              {/* Minimal segmented pill toggle */}
+              <TabsList className="grid w-full grid-cols-2 gap-1 h-auto rounded-full border border-white/10 bg-white/[0.03] p-1">
                 <TabsTrigger
                   value="file"
                   disabled={isSubmitting}
                   className={cn(
-                    "flex-1 h-9 gap-2 rounded-lg text-sm font-medium transition-all",
-                    "data-active:bg-red-500/15 data-active:text-red-300 data-active:border data-active:border-red-500/20",
-                    "text-muted-foreground hover:text-foreground"
+                    "flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
+                    "text-white/50 hover:text-white/80",
+                    "data-active:bg-white/[0.08] data-active:text-white data-active:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
                   )}
                 >
                   <FileAudio className="h-4 w-4" />
-                  <span>Upload File</span>
+                  Upload File
                 </TabsTrigger>
                 <TabsTrigger
                   value="record"
                   disabled={isSubmitting}
                   className={cn(
-                    "flex-1 h-9 gap-2 rounded-lg text-sm font-medium transition-all",
-                    "data-active:bg-blue-500/15 data-active:text-blue-300 data-active:border data-active:border-blue-500/20",
-                    "text-muted-foreground hover:text-foreground"
+                    "flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
+                    "text-white/50 hover:text-white/80",
+                    "data-active:bg-white/[0.08] data-active:text-white data-active:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
                   )}
                 >
                   <Mic className="h-4 w-4" />
-                  <span>Record Audio</span>
+                  Record Audio
                 </TabsTrigger>
               </TabsList>
 
@@ -538,8 +820,12 @@ export default function NewInterviewPage() {
                 {audioError}
               </div>
             )}
+            </>
+            )}
           </div>
         </div>
+
+        </div>{/* end two-column grid */}
 
         {/* ══ Upload progress (replaces submit footer while active) ══ */}
         {isSubmitting && (
@@ -557,31 +843,28 @@ export default function NewInterviewPage() {
           </div>
         )}
 
-        {/* ══ Submit footer ═══════════════════════════════════════ */}
-        {!isSubmitting && (
-          <div
-            className="rounded-2xl border border-white/8 p-5 sm:p-6"
-            style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
-          >
+        {/* ══ Submit footer (revealed once recording is unlocked) ══ */}
+        {detailsConfirmed && !isSubmitting && (
+          <div className={cn(CARD_BASE, "p-5 sm:p-6 animate-in fade-in slide-in-from-bottom-3 duration-500 ease-out")}>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               {/* Readiness indicator */}
               <div className="flex items-center gap-3">
                 <div className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all",
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300",
                   isReady
                     ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                    : "bg-white/6 border-white/10 text-muted-foreground"
+                    : "bg-white/[0.06] border-white/10 text-white/40"
                 )}>
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
                 <div>
                   <p className={cn(
                     "text-sm font-medium transition-colors",
-                    isReady ? "text-emerald-400" : "text-muted-foreground"
+                    isReady ? "text-emerald-400" : "text-white/50"
                   )}>
                     {isReady ? "Ready to analyse" : "Almost there…"}
                   </p>
-                  <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                  <p className="text-[11px] text-white/40 mt-0.5">
                     {!title.trim() && !activeAudio
                       ? "Add a title and recording to continue"
                       : !title.trim()
@@ -598,9 +881,9 @@ export default function NewInterviewPage() {
                 type="submit"
                 disabled={!isReady || !user}
                 className={cn(
-                  "w-full sm:w-auto gradient-red glow-red-sm px-8 h-11 text-sm font-bold",
-                  "hover:opacity-90 active:scale-[0.97] transition-all",
-                  !isReady && "opacity-40 cursor-not-allowed"
+                  "w-full sm:w-auto gradient-blue-cyan text-white px-8 h-11 text-sm font-bold rounded-full",
+                  "shadow-[0_0_25px_rgba(0,214,255,0.35)] hover:shadow-[0_0_40px_rgba(0,214,255,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 ease-out",
+                  !isReady && "opacity-40 cursor-not-allowed hover:scale-100 hover:shadow-[0_0_25px_rgba(0,214,255,0.35)]"
                 )}
               >
                 Analyse Interview

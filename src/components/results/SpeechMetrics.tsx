@@ -50,13 +50,13 @@ function FillerTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass border border-white/10 rounded-lg px-3.5 py-2.5 shadow-xl">
+    <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-lg px-3.5 py-2.5 shadow-xl">
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
         {label}
       </p>
-      <p className="text-sm font-black text-red-300 tabular-nums">
+      <p className="text-base font-black text-[#00D6FF] tabular-nums">
         {payload[0]?.value}{" "}
-        <span className="text-xs font-normal text-muted-foreground">
+        <span className="text-sm font-normal text-muted-foreground">
           {payload[0]?.value === 1 ? "time" : "times"}
         </span>
       </p>
@@ -75,7 +75,7 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 h-36 rounded-xl bg-white/3 border border-emerald-500/20">
         <Volume2 className="h-6 w-6 text-emerald-400" />
-        <p className="text-sm font-semibold text-emerald-400">No filler words detected — excellent!</p>
+        <p className="text-base font-semibold text-emerald-400">No filler words detected — excellent!</p>
       </div>
     );
   }
@@ -90,7 +90,7 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
           <span
             key={word}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium",
+              "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-sm font-medium",
               i === 0
                 ? "border-rose-500/30 bg-rose-500/12 text-rose-300"
                 : i === 1
@@ -117,8 +117,8 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
             >
               <defs>
                 <linearGradient id="filler-bar-grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor="oklch(0.606 0.25 293)" stopOpacity={1} />
-                  <stop offset="100%" stopColor="oklch(0.65 0.22 330)"  stopOpacity={0.75} />
+                  <stop offset="0%"   stopColor="#00D6FF" stopOpacity={1} />
+                  <stop offset="100%" stopColor="#0050FF" stopOpacity={0.8} />
                 </linearGradient>
               </defs>
 
@@ -129,13 +129,13 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
               />
               <XAxis
                 dataKey="word"
-                tick={{ fill: "oklch(0.58 0.05 293)", fontSize: 11 }}
+                tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
                 allowDecimals={false}
-                tick={{ fill: "oklch(0.58 0.05 293)", fontSize: 11 }}
+                tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -181,13 +181,13 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="glass border border-white/8 rounded-xl p-4 flex flex-col gap-2 hover-lift">
+    <div className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-xl p-4 flex flex-col gap-2 hover:bg-white/[0.05]">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Icon className="h-3.5 w-3.5 shrink-0" />
         <span className="text-[10px] font-semibold uppercase tracking-widest">{label}</span>
       </div>
       <p className={cn("text-2xl font-black tabular-nums leading-none", accent)}>{value}</p>
-      {sub && <div className="text-xs text-muted-foreground">{sub}</div>}
+      {sub && <div className="text-sm text-muted-foreground">{sub}</div>}
     </div>
   );
 }
@@ -256,7 +256,7 @@ export function SpeechMetrics({ metrics }: SpeechMetricsProps) {
   return (
     <section aria-label="Speech Metrics">
       <div className="flex items-center gap-3 mb-5">
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
           Speech Metrics
         </h2>
         <div className="h-px flex-1 bg-white/8" />
@@ -269,7 +269,7 @@ export function SpeechMetrics({ metrics }: SpeechMetricsProps) {
             icon={Mic}
             label="Speaking Time"
             value={formatDuration(totalSpeakingTime / 1000)}
-            accent="text-red-300"
+            accent="text-foreground"
           />
           <StatCard
             icon={Gauge}
@@ -311,13 +311,13 @@ export function SpeechMetrics({ metrics }: SpeechMetricsProps) {
         </div>
 
         {/* ── Filler words chart ── */}
-        <div className="glass border border-white/8 rounded-2xl p-5">
+        <div className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Filler Word Frequency
             </p>
             {totalFillerCount > 0 && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {totalFillerCount} total across all responses
               </span>
             )}

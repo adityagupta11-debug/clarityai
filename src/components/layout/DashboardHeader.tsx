@@ -36,26 +36,33 @@ export function DashboardHeader({ title, description }: DashboardHeaderProps) {
   }
 
   return (
-    <div className="flex items-start justify-between mb-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+    <div className="relative mb-10 pt-6 pb-4 sm:pt-10 sm:pb-6">
+      {/* Centered branding hero */}
+      <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-2 duration-700 ease-out">
+        <h1 className="animate-breathe text-5xl sm:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#7DE7FF] to-[#00D6FF]">
+          ClarityAI
+        </h1>
+        <h2 className="animate-breathe mt-3 text-2xl sm:text-3xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#7DE7FF] to-[#00D6FF]">
+          {title}
+        </h2>
         {description && (
-          <p className="text-muted-foreground mt-1 text-sm">{description}</p>
+          <p className="mt-2 text-sm font-medium text-white/50">{description}</p>
         )}
       </div>
 
+      {/* Account menu — floated to the top-right of the hero */}
       {user && (
         <DropdownMenu>
-          <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
-            <Avatar className="h-9 w-9 ring-2 ring-red-500/30 transition-all hover:ring-red-500/60">
+          <DropdownMenuTrigger className="absolute right-0 top-6 sm:top-10 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
+            <Avatar className="h-9 w-9 ring-2 ring-[#00D6FF]/30 transition-all hover:ring-[#00D6FF]/60">
               <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? "User"} />
-              <AvatarFallback className="bg-red-500/20 text-red-300 text-sm font-medium">
+              <AvatarFallback className="bg-[#00D6FF]/15 text-[#00D6FF] text-sm font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-56 glass-strong border-white/10">
+          <DropdownMenuContent align="end" className="w-56 apple-glass border-white/10">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-medium leading-none">

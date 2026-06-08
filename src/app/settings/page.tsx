@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Settings,
@@ -12,9 +12,15 @@ import {
   Briefcase,
   GraduationCap,
   Crown,
-  ShieldCheck,
   Mail,
-  Calendar,
+  Camera,
+  Sun,
+  Moon,
+  Check,
+  Gauge,
+  Scale,
+  Bell,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,9 +35,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme, type Theme } from "@/components/theme/ThemeProvider";
 import { getUserPreferences, updateUserPreferences } from "@/lib/firebase/firestore";
 import { EXPERIENCE_LEVELS } from "@/lib/utils/constants";
-import { formatDate } from "@/lib/utils/formatting";
+
+// ── Shared theme-aware styles ─────────────────────────────────────────────────
+
+const INPUT_CLS =
+  "h-10 bg-white border-border text-foreground placeholder:text-muted-foreground/60 " +
+  "focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all " +
+  "dark:bg-white/[0.03] dark:border-white/10 dark:text-white dark:placeholder:text-white/25 " +
+  "dark:focus:border-[#00D6FF]/50 dark:focus:ring-[#00D6FF]/20";
+
+const VOICE_SPEEDS = [
+  { value: "slow",   label: "Slow (0.75×)" },
+  { value: "normal", label: "Normal (1×)" },
+  { value: "fast",   label: "Fast (1.25×)" },
+];
+
+const STRICTNESS = [
+  { value: "lenient",  label: "Lenient" },
+  { value: "balanced", label: "Balanced" },
+  { value: "strict",   label: "Strict" },
+];
 
 // ── Section panel ─────────────────────────────────────────────────────────────
 
@@ -39,75 +65,138 @@ function Section({
   icon: Icon,
   title,
   subtitle,
-  accentColor = "red",
   children,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   subtitle: string;
-  accentColor?: "red" | "blue" | "amber" | "rose";
   children: React.ReactNode;
 }) {
-  const iconStyles: Record<string, string> = {
-    red:   "gradient-red glow-red-sm",
-    blue:  "bg-gradient-to-br from-blue-500 to-blue-600",
-    amber: "bg-gradient-to-br from-amber-500 to-amber-600",
-    rose:  "bg-gradient-to-br from-rose-600 to-rose-700",
-  };
-
   return (
-    <div
-      className="rounded-2xl border border-white/8 overflow-hidden"
-      style={{ background: "oklch(0.12 0.025 35 / 0.85)", backdropFilter: "blur(20px)" }}
-    >
-      {/* Accent stripe */}
-      <div
-        className={cn("h-0.5 opacity-60", iconStyles[accentColor])}
-        style={accentColor !== "red" ? { background: undefined } : undefined}
-      />
-
+    <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-colors dark:border-white/8 dark:bg-white/[0.02] dark:backdrop-blur-2xl dark:shadow-2xl">
       <div className="p-5 sm:p-7">
-        {/* Header row */}
-        <div className="flex items-start gap-4 mb-6">
-          <div className={cn(
-            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white",
-            iconStyles[accentColor]
-          )}>
+        <div className="mb-6 flex items-start gap-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-[#00D6FF]/15 dark:text-[#00D6FF]">
             <Icon className="h-4 w-4" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold leading-none mb-1">{title}</h2>
-            <p className="text-xs text-muted-foreground">{subtitle}</p>
+            <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
           </div>
         </div>
-
         {children}
       </div>
+    </section>
+  );
+}
+
+// ── iOS-style toggle ──────────────────────────────────────────────────────────
+
+function Toggle({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={cn(
+        "relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200",
+        checked ? "bg-primary dark:bg-[#00D6FF]" : "bg-muted dark:bg-white/10"
+      )}
+    >
+      <span
+        className={cn(
+          "absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200",
+          checked && "translate-x-5"
+        )}
+      />
+    </button>
+  );
+}
+
+function ToggleRow({
+  title,
+  description,
+  checked,
+  onChange,
+}: {
+  title: string;
+  description: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-border py-3.5 last:border-0 dark:border-white/6">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
+      </div>
+      <Toggle checked={checked} onChange={onChange} />
     </div>
   );
 }
 
-// ── Info row — read-only datum ────────────────────────────────────────────────
+// ── Appearance theme card ─────────────────────────────────────────────────────
 
-function InfoRow({
-  icon: Icon,
-  label,
+function ThemeCard({
   value,
+  active,
+  onSelect,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string;
+  value: Theme;
+  active: boolean;
+  onSelect: (t: Theme) => void;
 }) {
+  const isDark = value === "dark";
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-white/6 last:border-0">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/5">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+    <button
+      type="button"
+      onClick={() => onSelect(value)}
+      aria-pressed={active}
+      className={cn(
+        "group relative flex flex-col gap-3 rounded-2xl border p-4 text-left transition-all duration-200",
+        active
+          ? "border-primary ring-2 ring-primary/40 dark:border-[#00D6FF]/50 dark:ring-[#00D6FF]/30"
+          : "border-border hover:border-foreground/20 dark:border-white/10 dark:hover:border-white/20"
+      )}
+    >
+      {/* Mini preview of the theme */}
+      <div
+        className={cn(
+          "h-20 w-full overflow-hidden rounded-lg border",
+          isDark ? "border-white/10 bg-[#0A0A0C]" : "border-black/5 bg-[#F8F5F2]"
+        )}
+      >
+        <div className="flex h-full">
+          <div className={cn("h-full w-1/3", isDark ? "bg-white/[0.04]" : "bg-white")} />
+          <div className="flex-1 space-y-1.5 p-2.5">
+            <div className={cn("h-2 w-3/4 rounded-full", isDark ? "bg-white/20" : "bg-[#3E2723]/20")} />
+            <div className={cn("h-2 w-1/2 rounded-full", isDark ? "bg-[#00D6FF]/70" : "bg-[#6F4E37]/70")} />
+            <div className={cn("h-2 w-2/3 rounded-full", isDark ? "bg-white/10" : "bg-[#3E2723]/10")} />
+          </div>
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">{label}</p>
-        <p className="text-sm text-foreground truncate mt-0.5">{value}</p>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {isDark ? (
+            <Moon className="h-4 w-4 text-foreground/70" />
+          ) : (
+            <Sun className="h-4 w-4 text-foreground/70" />
+          )}
+          <span className="text-sm font-medium text-foreground">
+            {isDark ? "Dark Mode" : "Light Mode"}
+          </span>
+        </div>
+        {active && <Check className="h-4 w-4 text-primary dark:text-[#00D6FF]" />}
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -115,24 +204,39 @@ function InfoRow({
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
 
-  // Preferences state (loaded from Firestore)
-  const [preferredRole,    setPreferredRole]    = useState("");
-  const [experienceLevel,  setExperienceLevel]  = useState("entry");
-  const [plan,             setPlan]             = useState("free");
-  const [memberSince,      setMemberSince]      = useState<Date | null>(null);
-  const [prefsLoading,     setPrefsLoading]     = useState(true);
+  // Profile (local — name editable, email read-only from auth)
+  const [fullName, setFullName] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  // Save state
-  const [saving,   setSaving]   = useState(false);
-  const [saved,    setSaved]    = useState(false);
+  // Persisted preferences
+  const [preferredRole,   setPreferredRole]   = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("entry");
+  const [plan,            setPlan]            = useState("free");
+  const [prefsLoading,    setPrefsLoading]    = useState(true);
+
+  // Local-only interview prefs
+  const [voiceSpeed, setVoiceSpeed] = useState("normal");
+  const [strictness, setStrictness] = useState("balanced");
+
+  // Notifications (local)
+  const [emailSummaries, setEmailSummaries] = useState(true);
+  const [featureUpdates, setFeatureUpdates] = useState(true);
+  const [reminders,      setReminders]      = useState(false);
+
+  // Save / sign-out state
+  const [saving,    setSaving]    = useState(false);
+  const [saved,     setSaved]     = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-
-  // Sign-out state
   const [signingOut, setSigningOut] = useState(false);
 
-  // ── Load preferences from Firestore ──
+  useEffect(() => {
+    setFullName(user?.displayName ?? "");
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
     getUserPreferences(user.uid).then((prefs) => {
@@ -140,22 +244,34 @@ export default function SettingsPage() {
         setPreferredRole(prefs.preferredRole ?? "");
         setExperienceLevel(prefs.experienceLevel ?? "entry");
         setPlan(prefs.plan ?? "free");
-        setMemberSince(prefs.createdAt?.toDate() ?? null);
       }
       setPrefsLoading(false);
     });
   }, [user]);
 
-  // ── Save preferences ──
+  // Revoke object URLs to avoid leaks.
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    };
+  }, [avatarPreview]);
+
+  function handleAvatarPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    setAvatarPreview(URL.createObjectURL(file));
+    e.target.value = "";
+  }
+
   async function handleSave() {
     if (!user) return;
     setSaving(true);
     setSaveError(null);
     setSaved(false);
-
     try {
       await updateUserPreferences(user.uid, {
-        preferredRole:   preferredRole.trim() || null,
+        preferredRole: preferredRole.trim() || null,
         experienceLevel,
       });
       setSaved(true);
@@ -168,7 +284,6 @@ export default function SettingsPage() {
     }
   }
 
-  // ── Sign out ──
   async function handleSignOut() {
     setSigningOut(true);
     await signOut();
@@ -178,163 +293,223 @@ export default function SettingsPage() {
   const initials =
     user?.displayName?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) ?? "?";
 
+  const primaryBtn =
+    "bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.97] transition-all " +
+    "dark:gradient-blue-cyan dark:text-white dark:shadow-[0_0_20px_rgba(0,214,255,0.3)] dark:hover:brightness-110";
+
   return (
-    <div className="max-w-2xl space-y-6 sm:space-y-7">
+    <div className="mx-auto max-w-2xl space-y-6 sm:space-y-7">
 
       {/* ── Page header ── */}
       <div className="flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-red glow-red">
-          <Settings className="h-6 w-6 text-white" />
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground dark:gradient-blue-cyan dark:glow-cyan">
+          <Settings className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight gradient-text-brand">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             Settings
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage your profile, preferences, and account.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage your account preferences and app appearance.
           </p>
         </div>
       </div>
 
-      {/* ══ Profile ════════════════════════════════════════════ */}
-      <Section
-        icon={User}
-        title="Profile"
-        subtitle="Your identity as stored in Firebase Auth — managed by your sign-in provider."
-        accentColor="red"
-      >
-        {/* Avatar + name row */}
-        <div className="flex items-center gap-4 mb-5">
-          <Avatar className="h-14 w-14 ring-2 ring-red-500/20 shrink-0">
-            <AvatarImage src={user?.photoURL ?? undefined} alt={user?.displayName ?? "User"} />
-            <AvatarFallback className="bg-red-500/20 text-red-300 text-lg font-black">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-base font-semibold">{user?.displayName ?? "—"}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {user?.providerData?.[0]?.providerId === "google.com"
-                ? "Signed in with Google"
-                : "Email / Password"}
-            </p>
+      {/* ══ Profile ══ */}
+      <Section icon={User} title="Profile" subtitle="Your name, email, and profile picture.">
+        <div className="mb-5 flex items-center gap-4">
+          <div className="relative">
+            <Avatar className="h-16 w-16 ring-2 ring-primary/20 dark:ring-[#00D6FF]/30">
+              <AvatarImage src={avatarPreview ?? user?.photoURL ?? undefined} alt={fullName || "User"} />
+              <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold dark:bg-[#00D6FF]/15 dark:text-[#00D6FF]">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              aria-label="Upload profile picture"
+              className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-foreground/70 shadow-sm transition-colors hover:text-primary dark:border-white/10 dark:bg-[#0A0A0C] dark:hover:text-[#00D6FF]"
+            >
+              <Camera className="h-3.5 w-3.5" />
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarPick} />
+          </div>
+          <div className="text-xs text-muted-foreground">
+            <p className="font-medium text-foreground">Profile picture</p>
+            <p className="mt-0.5">PNG or JPG, square works best.</p>
           </div>
         </div>
 
-        {/* Read-only fields */}
-        <div className="rounded-xl border border-white/6 bg-white/2 px-4">
-          <InfoRow icon={Mail}     label="Email"       value={user?.email ?? "—"} />
-          {memberSince && (
-            <InfoRow icon={Calendar} label="Member since" value={formatDate(memberSince)} />
-          )}
-          <InfoRow
-            icon={ShieldCheck}
-            label="Account status"
-            value={plan === "pro" ? "Pro plan" : "Free plan"}
-          />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="full-name" className="text-sm font-medium text-foreground">Full Name</Label>
+            <Input
+              id="full-name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Your name"
+              className={INPUT_CLS}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+              Email Address
+            </Label>
+            <Input
+              id="email"
+              value={user?.email ?? ""}
+              readOnly
+              className={cn(INPUT_CLS, "cursor-not-allowed opacity-70")}
+            />
+          </div>
         </div>
       </Section>
 
-      {/* ══ Interview Preferences ═══════════════════════════════ */}
-      <Section
-        icon={Briefcase}
-        title="Interview Preferences"
-        subtitle="Tailor the AI's feedback to your target role and experience level."
-        accentColor="blue"
-      >
+      {/* ══ Appearance ══ */}
+      <Section icon={Sun} title="Appearance" subtitle="Choose how ClarityAI looks on this device.">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <ThemeCard value="dark"  active={theme === "dark"}  onSelect={setTheme} />
+          <ThemeCard value="light" active={theme === "light"} onSelect={setTheme} />
+        </div>
+      </Section>
+
+      {/* ══ Interview Preferences ══ */}
+      <Section icon={Briefcase} title="Interview Preferences" subtitle="Tailor the AI coaching to your target role and style.">
         {prefsLoading ? (
           <div className="space-y-4">
-            <div className="h-10 rounded-lg bg-white/5 animate-pulse" />
-            <div className="h-10 rounded-lg bg-white/5 animate-pulse" />
+            <div className="h-10 animate-pulse rounded-lg bg-foreground/5" />
+            <div className="h-10 animate-pulse rounded-lg bg-foreground/5" />
           </div>
         ) : (
           <div className="space-y-4">
-            {/* Experience level */}
-            <div className="space-y-1.5">
-              <Label className="text-sm font-medium flex items-center gap-1.5">
-                <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
-                Experience Level
-              </Label>
-              <Select
-                value={experienceLevel}
-                onValueChange={(val) => { if (val) setExperienceLevel(val); }}
-              >
-                <SelectTrigger className="bg-white/4 border-white/10 hover:border-white/18 focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/15 h-10 transition-all w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {EXPERIENCE_LEVELS.map(({ value, label }) => (
-                    <SelectItem key={value} value={value}>{label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Experience level */}
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  <GraduationCap className="h-3.5 w-3.5 text-muted-foreground" />
+                  Experience Level
+                </Label>
+                <Select value={experienceLevel} onValueChange={(v) => v && setExperienceLevel(v)}>
+                  <SelectTrigger className={cn(INPUT_CLS, "w-full")}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EXPERIENCE_LEVELS.map(({ value, label }) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* AI voice speed */}
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  <Gauge className="h-3.5 w-3.5 text-muted-foreground" />
+                  AI Voice Speed
+                </Label>
+                <Select value={voiceSpeed} onValueChange={(v) => v && setVoiceSpeed(v)}>
+                  <SelectTrigger className={cn(INPUT_CLS, "w-full")}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {VOICE_SPEEDS.map(({ value, label }) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Target role */}
+              <div className="space-y-1.5">
+                <Label htmlFor="preferred-role" className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+                  Target Role
+                </Label>
+                <Input
+                  id="preferred-role"
+                  placeholder="e.g. Product Manager, SDE…"
+                  value={preferredRole}
+                  onChange={(e) => setPreferredRole(e.target.value)}
+                  className={INPUT_CLS}
+                />
+              </div>
+
+              {/* Feedback strictness */}
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  <Scale className="h-3.5 w-3.5 text-muted-foreground" />
+                  Feedback Strictness
+                </Label>
+                <Select value={strictness} onValueChange={(v) => v && setStrictness(v)}>
+                  <SelectTrigger className={cn(INPUT_CLS, "w-full")}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {STRICTNESS.map(({ value, label }) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            {/* Preferred role */}
-            <div className="space-y-1.5">
-              <Label htmlFor="preferred-role" className="text-sm font-medium flex items-center gap-1.5">
-                <Briefcase className="h-3.5 w-3.5 text-blue-400" />
-                Target Role
-                <span className="text-muted-foreground/60 text-xs font-normal">(optional)</span>
-              </Label>
-              <Input
-                id="preferred-role"
-                placeholder="e.g. Product Manager, Software Engineer…"
-                value={preferredRole}
-                onChange={(e) => setPreferredRole(e.target.value)}
-                className="bg-white/4 border-white/10 hover:border-white/18 focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/15 h-10 placeholder:text-white/25 transition-all"
-              />
-            </div>
-
-            {/* Save button + feedback */}
             <div className="flex items-center gap-3 pt-1">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className={cn(
-                  "bg-gradient-to-br from-blue-500 to-blue-600 hover:opacity-90 active:scale-[0.97] transition-all h-9 px-5 text-sm",
-                  saving && "opacity-70"
-                )}
-                style={{ boxShadow: "0 0 14px oklch(0.58 0.22 264 / 0.25)" }}
-              >
+              <Button onClick={handleSave} disabled={saving} className={cn(primaryBtn, "h-9 px-5 text-sm")}>
                 {saving ? (
-                  <><Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />Saving…</>
+                  <><Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />Saving…</>
                 ) : (
-                  <><Save className="h-3.5 w-3.5 mr-2" />Save Preferences</>
+                  <><Save className="mr-2 h-3.5 w-3.5" />Save Preferences</>
                 )}
               </Button>
-
               {saved && (
-                <span className="flex items-center gap-1.5 text-xs text-emerald-400 animate-in fade-in slide-in-from-left-2 duration-200">
+                <span className="flex items-center gap-1.5 text-xs text-emerald-500 animate-in fade-in slide-in-from-left-2 duration-200 dark:text-emerald-400">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Saved
                 </span>
               )}
-
-              {saveError && (
-                <span className="text-xs text-red-400">{saveError}</span>
-              )}
+              {saveError && <span className="text-xs text-destructive">{saveError}</span>}
             </div>
           </div>
         )}
       </Section>
 
-      {/* ══ Plan & Account ══════════════════════════════════════ */}
-      <Section
-        icon={Crown}
-        title="Plan & Account"
-        subtitle="Your current subscription and account actions."
-        accentColor="amber"
-      >
+      {/* ══ Notifications ══ */}
+      <Section icon={Bell} title="Notifications" subtitle="Decide what we email you about.">
+        <div>
+          <ToggleRow
+            title="Email summaries"
+            description="A digest of your interview performance after each analysis."
+            checked={emailSummaries}
+            onChange={setEmailSummaries}
+          />
+          <ToggleRow
+            title="New feature updates"
+            description="Occasional notes about new tools and improvements."
+            checked={featureUpdates}
+            onChange={setFeatureUpdates}
+          />
+          <ToggleRow
+            title="Interview reminders"
+            description="Nudges to keep your practice streak going."
+            checked={reminders}
+            onChange={setReminders}
+          />
+        </div>
+      </Section>
+
+      {/* ══ Account & Plan ══ */}
+      <Section icon={Crown} title="Account & Plan" subtitle="Your subscription and account actions.">
         {/* Plan card */}
-        <div className="rounded-xl border border-white/8 bg-white/3 p-4 mb-5">
+        <div className="mb-5 rounded-xl border border-border bg-secondary/40 p-4 dark:border-white/8 dark:bg-white/3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-500/20">
-                <Crown className="h-5 w-5 text-amber-400" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <Crown className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold capitalize">{plan} Plan</p>
+                <p className="text-sm font-semibold capitalize text-foreground">{plan} Plan</p>
                 <p className="text-xs text-muted-foreground">
                   {plan === "free"
                     ? "100 hours analysis · 5 categories · Unlimited sessions"
@@ -342,49 +517,59 @@ export default function SettingsPage() {
                 </p>
               </div>
             </div>
-
             {plan === "free" && (
-              <span className="shrink-0 rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-400">
+              <span className="shrink-0 rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
                 Free
               </span>
             )}
           </div>
 
           {plan === "free" && (
-            <div className="mt-3 pt-3 border-t border-white/6">
-              <p className="text-xs text-muted-foreground mb-2">
-                Upgrade to Pro for unlimited analysis hours, priority processing, and advanced reporting.
-              </p>
-              <button className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors">
-                Upgrade to Pro →
-              </button>
+            <div className="mt-4">
+              <Button className={cn(primaryBtn, "h-9 px-5 text-sm")}>
+                <Crown className="mr-2 h-3.5 w-3.5" />
+                Upgrade to Pro
+              </Button>
             </div>
           )}
         </div>
 
-        {/* Sign out */}
-        <div className="flex items-center justify-between rounded-xl border border-rose-500/15 bg-rose-500/5 px-4 py-3">
-          <div>
-            <p className="text-sm font-medium">Sign out</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              You&apos;ll be redirected to the home page.
-            </p>
+        {/* Destructive actions */}
+        <div className="space-y-2.5">
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-4 py-3 dark:border-white/8 dark:bg-transparent">
+            <div>
+              <p className="text-sm font-medium text-foreground">Sign out</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">You&apos;ll be returned to the home page.</p>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="shrink-0 active:scale-[0.97] transition-all"
+            >
+              {signingOut
+                ? <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />Signing out…</>
+                : <><LogOut className="mr-1.5 h-3.5 w-3.5" />Sign Out</>}
+            </Button>
           </div>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleSignOut}
-            disabled={signingOut}
-            className="shrink-0 active:scale-[0.97] transition-all"
-          >
-            {signingOut
-              ? <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />Signing out…</>
-              : <><LogOut className="h-3.5 w-3.5 mr-1.5" />Sign Out</>
-            }
-          </Button>
+
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3">
+            <div>
+              <p className="text-sm font-medium text-destructive">Delete account</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Permanently remove your account and all data.</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="shrink-0 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive active:scale-[0.97] transition-all"
+            >
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+              Delete
+            </Button>
+          </div>
         </div>
       </Section>
-
     </div>
   );
 }

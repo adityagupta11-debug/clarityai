@@ -64,10 +64,10 @@ function InsightCard({ insight, variant, index }: InsightCardProps) {
       {/* Number + title row */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2.5">
-          <span className={cn("text-xs font-black tabular-nums", numberColor)}>
+          <span className={cn("text-sm font-black tabular-nums", numberColor)}>
             {String(index + 1).padStart(2, "0")}
           </span>
-          <h4 className="text-sm font-semibold text-foreground leading-snug">
+          <h4 className="text-base font-semibold text-foreground leading-snug">
             {insight.title}
           </h4>
         </div>
@@ -80,18 +80,18 @@ function InsightCard({ insight, variant, index }: InsightCardProps) {
       </div>
 
       {/* Description */}
-      <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
         {insight.description}
       </p>
 
       {/* Evidence blockquote — direct transcript quote */}
       <blockquote
         className={cn(
-          "rounded-r-lg border-l-2 px-4 py-3 mb-4",
+          "tactile rounded-r-lg border-l-2 px-4 py-3 mb-4",
           quoteBg, quoteBar
         )}
       >
-        <p className="text-xs italic text-foreground/65 leading-relaxed">
+        <p className="text-sm italic text-foreground/65 leading-relaxed">
           &ldquo;{insight.evidence}&rdquo;
         </p>
       </blockquote>
@@ -142,7 +142,7 @@ function SectionHeader({ variant, count }: SectionHeaderProps) {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold">{title}</h3>
+          <h3 className="text-base font-semibold">{title}</h3>
           <p className="text-[11px] text-muted-foreground">{subtitle}</p>
         </div>
       </div>
@@ -150,7 +150,7 @@ function SectionHeader({ variant, count }: SectionHeaderProps) {
       {/* Count pill */}
       <span
         className={cn(
-          "rounded-full border px-2.5 py-0.5 text-xs font-bold tabular-nums",
+          "rounded-full border px-2.5 py-0.5 text-sm font-bold tabular-nums",
           countColor, countBg
         )}
       >
@@ -173,7 +173,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses }: StrengthsWeakness
 
       {/* Strengths column */}
       <section
-        className="glass border border-white/8 rounded-2xl p-6"
+        className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-6"
         aria-label="Key Strengths"
       >
         <SectionHeader variant="strength" count={strengths.length} />
@@ -187,7 +187,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses }: StrengthsWeakness
             />
           ))}
           {strengths.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-6">
+            <p className="text-sm text-muted-foreground text-center py-6">
               No strengths identified.
             </p>
           )}
@@ -196,7 +196,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses }: StrengthsWeakness
 
       {/* Weaknesses column */}
       <section
-        className="glass border border-white/8 rounded-2xl p-6"
+        className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-6"
         aria-label="Areas to Improve"
       >
         <SectionHeader variant="weakness" count={weaknesses.length} />
@@ -210,7 +210,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses }: StrengthsWeakness
             />
           ))}
           {weaknesses.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-6">
+            <p className="text-sm text-muted-foreground text-center py-6">
               No areas for improvement identified.
             </p>
           )}

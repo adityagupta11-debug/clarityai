@@ -105,7 +105,7 @@ export function SignupForm() {
   const isLoading = loadingEmail || loadingGoogle;
 
   return (
-    <Card className="glass border-white/10">
+    <Card className="bg-transparent ring-0 border-0 shadow-none py-0">
       <CardHeader className="text-center pb-4">
         <CardTitle className="text-xl">Create your account</CardTitle>
         <CardDescription>Start analyzing interviews for free — no credit card needed</CardDescription>
@@ -149,7 +149,7 @@ export function SignupForm() {
               onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-[#00D6FF]/50 transition-colors"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function SignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-[#00D6FF]/50 transition-colors"
             />
           </div>
 
@@ -179,7 +179,7 @@ export function SignupForm() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-[#00D6FF]/50 transition-colors"
             />
             <PasswordStrength password={password} />
           </div>
@@ -194,7 +194,7 @@ export function SignupForm() {
 
           <Button
             type="submit"
-            className="w-full gradient-violet hover:opacity-90 transition-opacity"
+            className="w-full gradient-blue-cyan text-white hover:opacity-90 transition-opacity"
             disabled={isLoading || !name.trim() || !email || !password}
           >
             {loadingEmail && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
@@ -206,7 +206,7 @@ export function SignupForm() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-red-400 hover:text-red-300 transition-colors font-medium"
+            className="text-[#00D6FF] hover:text-white transition-colors font-medium"
           >
             Sign in
           </Link>

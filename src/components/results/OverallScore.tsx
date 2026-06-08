@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useId } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import { cn } from "@/lib/utils";
 import { getScoreTier } from "@/lib/utils/formatting";
 
@@ -8,7 +8,7 @@ import { getScoreTier } from "@/lib/utils/formatting";
 // Defined in viewBox units — the SVG scales via CSS, so these are logical units,
 // not pixel dimensions. Using a 180-unit viewBox keeps the maths simple.
 const R            = 72;
-const SW           = 11;
+const SW           = 7;
 const PAD          = 6;
 const CENTER       = R + SW / 2 + PAD;
 const VB_SIZE      = CENTER * 2;          // viewBox logical size (≈ 179)
@@ -26,6 +26,24 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
   const uid        = useId();
   const gradientId = `gauge-grad-${uid.replace(/:/g, "")}`;
   const glowId     = `gauge-glow-${uid.replace(/:/g, "")}`;
+
+  // ── Collapsible feedback ──
+  // Collapsed height fits ~4 lines of text-sm/leading-relaxed (≈ 5.5rem).
+  const COLLAPSED_REM = 5.5;
+  const summaryRef = useRef<HTMLParagraphElement>(null);
+  const [isFeedbackExpanded, setIsFeedbackExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  // Only show the toggle when the feedback actually exceeds the collapsed height.
+  useEffect(() => {
+    const el = summaryRef.current;
+    if (!el) return;
+    const measure = () =>
+      setIsOverflowing(el.scrollHeight > COLLAPSED_REM * 16 + 2);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [summary]);
 
   const targetOffset = CIRCUMFERENCE * (1 - score / 100);
 
@@ -52,14 +70,14 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
   }, [targetOffset]);
 
   return (
-    <div className="relative flex flex-col items-center gap-4 sm:gap-6 glass border border-white/8 rounded-2xl p-6 sm:p-8 overflow-hidden">
+    <div className="dash-card h-full relative flex flex-col items-center gap-3 bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-xl p-4 overflow-hidden">
 
-      {/* Ambient glow — brand red */}
+      {/* Ambient glow — soft electric cyan */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 60% at 50% 40%, oklch(0.55 0.25 25 / 0.10) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0,214,255,0.07) 0%, transparent 70%)",
         }}
       />
 
@@ -70,22 +88,21 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
 
       {/* SVG gauge — scales to fill container up to 180px */}
       <div className="relative z-10 flex items-center justify-center w-full">
-        <div className="relative w-full max-w-[180px]">
+        <div className="relative w-full max-w-[120px]">
           <svg
             viewBox={`0 0 ${VB_SIZE} ${VB_SIZE}`}
             className="-rotate-90 w-full h-auto"
             aria-hidden
           >
             <defs>
-              {/* Red → blue arc gradient matching the brand palette */}
+              {/* Cyan → blue arc gradient matching the brand palette */}
               <linearGradient
                 id={gradientId}
                 x1="0" y1="0" x2={VB_SIZE} y2={VB_SIZE}
                 gradientUnits="userSpaceOnUse"
               >
-                <stop offset="0%"   stopColor="oklch(0.68 0.22 25)" />   {/* brand-red-400 */}
-                <stop offset="55%"  stopColor="oklch(0.55 0.25 25)" />   {/* brand-red-500 */}
-                <stop offset="100%" stopColor="oklch(0.58 0.22 264)" />  {/* brand-blue-500 */}
+                <stop offset="0%"   stopColor="#00D6FF" />   {/* brand-cyan */}
+                <stop offset="100%" stopColor="#0050FF" />   {/* brand-blue */}
               </linearGradient>
 
               {/* Layered glow filter */}
@@ -118,47 +135,72 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
               strokeLinecap="round"
               strokeDasharray={CIRCUMFERENCE}
               strokeDashoffset={CIRCUMFERENCE}
-              filter={`url(#${glowId})`}
             />
           </svg>
 
-          {/* Centered score content — rotated back 90° to cancel parent -rotate-90 */}
-          <div className="absolute inset-0 rotate-90 flex flex-col items-center justify-center gap-0.5">
+          {/* Centered score content — sits upright over the rotated gauge */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
             <span
-              className="text-5xl sm:text-6xl lg:text-7xl font-black tabular-nums leading-none text-foreground"
+              className="text-3xl sm:text-4xl font-black tabular-nums leading-none text-foreground"
               style={{
-                textShadow: [
-                  "0 0 15px oklch(0.55 0.25 25 / 0.7)",
-                  "0 0 35px oklch(0.55 0.25 25 / 0.4)",
-                  "0 0 65px oklch(0.55 0.25 25 / 0.2)",
-                ].join(", "),
+                textShadow: "0 0 18px rgba(0,214,255,0.25)",
               }}
             >
               {score}
             </span>
-            <span className="text-xs sm:text-sm text-muted-foreground leading-none">/100</span>
+            <span className="text-[10px] text-muted-foreground leading-none">/100</span>
           </div>
         </div>
       </div>
 
       {/* Tier label */}
       <div className="relative z-10 flex flex-col items-center gap-1.5">
-        <span className={cn("text-base font-bold tracking-tight", tier.color)}>
+        <span className={cn("text-sm font-bold tracking-tight", tier.color)}>
           {tier.label}
         </span>
         <div className="h-px w-16 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       </div>
 
-      {/* AI summary */}
-      <p className="relative z-10 text-xs text-muted-foreground text-center leading-relaxed max-w-[28ch] sm:max-w-[22ch]">
-        {summary}
-      </p>
+      {/* AI summary — truncated with a smooth expand toggle */}
+      <div className="relative z-10 w-full max-w-[28ch] sm:max-w-[22ch]">
+        <div
+          className="relative overflow-hidden transition-[max-height] duration-500 ease-in-out"
+          style={{
+            maxHeight: isFeedbackExpanded ? "40rem" : `${COLLAPSED_REM}rem`,
+            // Clean fade-out at the truncation point while collapsed
+            ...(!isFeedbackExpanded && isOverflowing
+              ? {
+                  maskImage: "linear-gradient(to bottom, black 68%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 68%, transparent 100%)",
+                }
+              : {}),
+          }}
+        >
+          <p
+            ref={summaryRef}
+            className="text-sm text-muted-foreground text-center leading-relaxed"
+          >
+            {summary}
+          </p>
+        </div>
 
-      {/* Model badge */}
+        {isOverflowing && (
+          <button
+            type="button"
+            onClick={() => setIsFeedbackExpanded((v) => !v)}
+            aria-expanded={isFeedbackExpanded}
+            className="mx-auto mt-2 block text-[11px] font-medium text-muted-foreground/80 underline decoration-white/20 underline-offset-4 transition-colors hover:text-foreground hover:decoration-white/50"
+          >
+            {isFeedbackExpanded ? "View Less" : "Read Full Feedback"}
+          </button>
+        )}
+      </div>
+
+      {/* AI badge — generic, no vendor/model leak */}
       {modelUsed && (
         <div className="relative z-10 flex items-center gap-1.5 rounded-full border border-white/8 bg-white/4 px-3 py-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
-          <span className="text-[10px] text-muted-foreground font-medium">{modelUsed}</span>
+          <span className="h-1.5 w-1.5 rounded-full bg-[#00D6FF] animate-pulse" />
+          <span className="text-[10px] text-muted-foreground font-medium">AI-powered analysis</span>
         </div>
       )}
     </div>

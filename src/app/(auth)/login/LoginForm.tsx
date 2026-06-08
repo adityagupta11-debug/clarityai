@@ -66,7 +66,7 @@ export function LoginForm() {
   const isLoading = loadingEmail || loadingGoogle;
 
   return (
-    <Card className="glass border-white/10">
+    <Card className="bg-transparent ring-0 border-0 shadow-none py-0">
       <CardHeader className="text-center pb-4">
         <CardTitle className="text-xl">Welcome back</CardTitle>
         <CardDescription>Sign in to your ClarityAI account</CardDescription>
@@ -110,7 +110,7 @@ export function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-[#00D6FF]/50 transition-colors"
             />
           </div>
 
@@ -127,7 +127,7 @@ export function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               required
-              className="bg-white/5 border-white/10 focus:border-red-500/50 transition-colors"
+              className="bg-white/5 border-white/10 focus:border-[#00D6FF]/50 transition-colors"
             />
           </div>
 
@@ -141,7 +141,7 @@ export function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full gradient-violet hover:opacity-90 transition-opacity"
+            className="w-full gradient-blue-cyan text-white hover:opacity-90 transition-opacity"
             disabled={isLoading || !email || !password}
           >
             {loadingEmail && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
@@ -153,7 +153,7 @@ export function LoginForm() {
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="text-red-400 hover:text-red-300 transition-colors font-medium"
+            className="text-[#00D6FF] hover:text-white transition-colors font-medium"
           >
             Sign up free
           </Link>

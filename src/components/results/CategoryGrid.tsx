@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { getScoreTier } from "@/lib/utils/formatting";
 import { Progress } from "@/components/ui/progress";
+import { ExpandableText } from "./ExpandableText";
 import type {
   CommunicationScore,
   VocabularyScore,
@@ -32,12 +33,12 @@ const CONFIG = {
     icon:        MessageSquare,
     label:       "Communication",
     description: "Clarity, conciseness & articulation",
-    iconBg:      "bg-red-500/15 border-red-500/25",
-    iconColor:   "text-red-400",
-    barClass:    "[&_[data-slot=progress-indicator]]:bg-red-500 [&_[data-slot=progress-indicator]]:duration-700",
-    hoverBorder: "hover:border-red-500/30",
-    hoverShadow: "hover:shadow-[0_16px_48px_oklch(0.606_0.25_293/0.15)]",
-    barColor:    "oklch(0.606 0.25 293)",
+    iconBg:      "bg-[#00D6FF]/15 border-[#00D6FF]/25",
+    iconColor:   "text-[#00D6FF]",
+    barClass:    "[&_[data-slot=progress-indicator]]:bg-[#00D6FF] [&_[data-slot=progress-indicator]]:duration-700",
+    hoverBorder: "hover:border-[#00D6FF]/30",
+    hoverShadow: "hover:shadow-[0_16px_48px_rgba(0,214,255,0.15)]",
+    barColor:    "#00D6FF",
   },
   vocabulary: {
     icon:        Brain,
@@ -176,7 +177,7 @@ function LevelDots({
           style={i <= idx ? { backgroundColor: colors[i] } : { backgroundColor: "oklch(1 0 0 / 0.15)" }}
         />
       ))}
-      <span className="ml-1.5 text-xs font-semibold capitalize">{level}</span>
+      <span className="ml-1.5 text-sm font-semibold capitalize">{level}</span>
     </div>
   );
 }
@@ -222,9 +223,9 @@ function VocabularySubMetrics({ data }: { data: VocabularyScore }) {
   const SOPHISTICATION_OPTIONS = ["basic", "intermediate", "advanced", "expert"] as const;
   const SOPHISTICATION_COLORS  = [
     "oklch(0.6 0.05 240)",   // grey-blue
-    "oklch(0.55 0.22 264)",  // blue
-    "oklch(0.606 0.25 293)", // violet
-    "oklch(0.78 0.18 60)",   // gold
+    "oklch(0.6 0.18 245)",   // blue
+    "#00D6FF",               // cyan
+    "oklch(0.78 0.16 70)",   // gold
   ];
 
   return (
@@ -313,12 +314,12 @@ function RelevanceSubMetrics({
           {data.tangentCount === 0 ? (
             <>
               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400">None detected</span>
+              <span className="text-sm font-semibold text-emerald-400">None detected</span>
             </>
           ) : (
             <>
               <AlertTriangle className="h-3.5 w-3.5 text-amber-400" />
-              <span className="text-xs font-semibold text-amber-400">
+              <span className="text-sm font-semibold text-amber-400">
                 {data.tangentCount} {data.tangentCount === 1 ? "tangent" : "tangents"}
               </span>
             </>
@@ -332,9 +333,9 @@ function RelevanceSubMetrics({
 function ConfidenceSubMetrics({ data }: { data: ConfidenceScore }) {
   const ASSERTIVENESS_OPTIONS = ["low", "moderate", "high"] as const;
   const ASSERTIVENESS_COLORS  = [
-    "oklch(0.65 0.22 25)",  // red
-    "oklch(0.78 0.18 60)",  // amber
-    "oklch(0.72 0.17 160)", // emerald
+    "oklch(0.66 0.12 35)",  // muted soft red/orange
+    "oklch(0.78 0.14 70)",  // amber
+    "oklch(0.72 0.13 165)", // emerald
   ];
 
   return (
@@ -359,7 +360,7 @@ function ConfidenceSubMetrics({ data }: { data: ConfidenceScore }) {
         {data.hedgingPhrases.length === 0 ? (
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-            <span className="text-xs text-emerald-400 font-medium">None — great confidence!</span>
+            <span className="text-sm text-emerald-400 font-medium">None — great confidence!</span>
           </div>
         ) : (
           <div className="flex flex-wrap gap-1.5">
@@ -395,12 +396,12 @@ function StructureSubMetrics({ data }: { data: StructureScore }) {
         {data.usedSTAR ? (
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-            <span className="text-xs font-semibold text-emerald-400">Used</span>
+            <span className="text-sm font-semibold text-emerald-400">Used</span>
           </div>
         ) : (
           <div className="flex items-center gap-1.5">
             <XCircle className="h-3.5 w-3.5 text-rose-400" />
-            <span className="text-xs font-semibold text-rose-400">Not used</span>
+            <span className="text-sm font-semibold text-rose-400">Not used</span>
           </div>
         )}
       </div>
@@ -424,7 +425,7 @@ function StructureSubMetrics({ data }: { data: StructureScore }) {
             <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Structured responses
             </p>
-            <span className="text-xs font-bold text-emerald-400 tabular-nums">{pct}%</span>
+            <span className="text-sm font-bold text-emerald-400 tabular-nums">{pct}%</span>
           </div>
           <div className="flex gap-1 h-2">
             {Array.from({ length: total }).map((_, i) => (
@@ -473,7 +474,7 @@ function ScoreHeader({
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold leading-none mb-0.5">{config.label}</h3>
+          <h3 className="text-base font-semibold leading-none mb-0.5">{config.label}</h3>
           <p className="text-[11px] text-muted-foreground">{config.description}</p>
         </div>
       </div>
@@ -512,11 +513,9 @@ function CategoryCard({
   return (
     <div
       className={cn(
-        "glass border border-white/8 rounded-2xl p-5 flex flex-col gap-5",
-        "transition-all duration-200 ease-out",
-        "hover:-translate-y-1 hover:scale-[1.008] hover:border-white/14",
-        config.hoverBorder,
-        config.hoverShadow
+        "dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-5 flex flex-col gap-5",
+        "hover:border-white/14",
+        config.hoverBorder
       )}
     >
       {/* Header: icon + name + score */}
@@ -529,10 +528,11 @@ function CategoryCard({
         delay={delay}
       />
 
-      {/* AI feedback */}
-      <p className="text-xs text-muted-foreground leading-relaxed">
-        {data.feedback}
-      </p>
+      {/* AI feedback — expandable when long */}
+      <ExpandableText
+        text={data.feedback}
+        className="text-sm text-muted-foreground leading-relaxed"
+      />
 
       {/* Divider */}
       <div className="h-px bg-white/6" />
@@ -583,7 +583,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
   return (
     <section aria-label="Category Breakdown">
       <div className="flex items-center gap-3 mb-5">
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
           Category Breakdown
         </h2>
         <div className="h-px flex-1 bg-white/8" />

@@ -37,13 +37,13 @@ const STATUS_STEPS: {
     status:      ["transcribing", "transcribed"],
     label:       "Transcribing",
     icon:        Mic,
-    description: "AssemblyAI is converting your audio to text with speaker labels.",
+    description: "Your audio is being converted to text with speaker labels.",
   },
   {
     status:      ["analyzing"],
     label:       "Analysing with AI",
     icon:        Brain,
-    description: "Gemini 2.5 Flash is scoring your responses and building your report.",
+    description: "Our AI is scoring your responses and building your report.",
   },
   {
     status:      ["completed"],
