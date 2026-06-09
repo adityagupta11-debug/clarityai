@@ -35,8 +35,8 @@ const CONFIG = {
     description: "Clarity, conciseness & articulation",
     iconBg:      "bg-primary/15 dark:bg-[#00D6FF]/15 border-primary/25 dark:border-[#00D6FF]/25",
     iconColor:   "text-primary dark:text-[#00D6FF]",
-    barClass:    "[&_[data-slot=progress-indicator]]:bg-[#00D6FF] [&_[data-slot=progress-indicator]]:duration-700",
-    hoverBorder: "hover:border-[#00D6FF]/30",
+    barClass:    "[&_[data-slot=progress-indicator]]:bg-primary dark:[&_[data-slot=progress-indicator]]:bg-[#00D6FF] [&_[data-slot=progress-indicator]]:duration-700",
+    hoverBorder: "hover:border-primary/30 dark:hover:border-[#00D6FF]/30",
     hoverShadow: "hover:shadow-[0_16px_48px_rgba(111,78,55,0.15)] dark:hover:shadow-[0_16px_48px_rgba(0,214,255,0.15)]",
     barColor:    "#00D6FF",
   },
@@ -111,7 +111,7 @@ function AnimatedBar({
     <Progress
       value={val}
       className={cn(
-        "[&_[data-slot=progress-track]]:h-2 [&_[data-slot=progress-track]]:bg-white/8 [&_[data-slot=progress-track]]:rounded-full",
+        "[&_[data-slot=progress-track]]:h-2 [&_[data-slot=progress-track]]:bg-foreground/10 dark:[&_[data-slot=progress-track]]:bg-white/8 [&_[data-slot=progress-track]]:rounded-full",
         barClass
       )}
     />
@@ -172,9 +172,9 @@ function LevelDots({
           title={opt}
           className={cn(
             "h-2 w-2 rounded-full transition-all",
-            i <= idx ? "scale-100" : "scale-75 opacity-20"
+            i <= idx ? "scale-100" : "scale-75 opacity-20 bg-foreground"
           )}
-          style={i <= idx ? { backgroundColor: colors[i] } : { backgroundColor: "oklch(1 0 0 / 0.15)" }}
+          style={i <= idx ? { backgroundColor: colors[i] } : undefined}
         />
       ))}
       <span className="ml-1.5 text-sm font-semibold capitalize">{level}</span>
@@ -514,7 +514,7 @@ function CategoryCard({
     <div
       className={cn(
         "dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-5 flex flex-col gap-5",
-        "hover:border-white/14",
+        "hover:border-foreground/15 dark:hover:border-white/14",
         config.hoverBorder
       )}
     >

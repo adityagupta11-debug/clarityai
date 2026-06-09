@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useId } from "react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { getScoreTier } from "@/lib/utils/formatting";
 
 // ── Gauge geometry ────────────────────────────────────────────────────────────
@@ -26,6 +27,9 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
   const uid        = useId();
   const gradientId = `gauge-grad-${uid.replace(/:/g, "")}`;
   const glowId     = `gauge-glow-${uid.replace(/:/g, "")}`;
+
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   // ── Collapsible feedback ──
   // Collapsed height fits ~4 lines of text-sm/leading-relaxed (≈ 5.5rem).
@@ -101,8 +105,8 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
                 x1="0" y1="0" x2={VB_SIZE} y2={VB_SIZE}
                 gradientUnits="userSpaceOnUse"
               >
-                <stop offset="0%"   stopColor="#00D6FF" />   {/* brand-cyan */}
-                <stop offset="100%" stopColor="#0050FF" />   {/* brand-blue */}
+                <stop offset="0%"   stopColor={isDark ? "#00D6FF" : "#6F4E37"} />   {/* brand / mocha */}
+                <stop offset="100%" stopColor={isDark ? "#0050FF" : "#9A7A5E"} />   {/* brand / mocha */}
               </linearGradient>
 
               {/* Layered glow filter */}
@@ -121,7 +125,7 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
             <circle
               cx={CENTER} cy={CENTER} r={R}
               fill="none"
-              stroke="oklch(1 0 0 / 0.06)"
+              stroke={isDark ? "oklch(1 0 0 / 0.06)" : "rgba(62,39,35,0.12)"}
               strokeWidth={SW}
             />
 
@@ -199,7 +203,7 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
       {/* AI badge — generic, no vendor/model leak */}
       {modelUsed && (
         <div className="relative z-10 flex items-center gap-1.5 rounded-full border border-border dark:border-white/8 bg-muted dark:bg-white/4 px-3 py-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#00D6FF] animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-primary dark:bg-[#00D6FF] animate-pulse" />
           <span className="text-[10px] text-muted-foreground font-medium">AI-powered analysis</span>
         </div>
       )}

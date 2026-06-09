@@ -60,7 +60,7 @@ function CategoryMiniCard({
           <circle
             cx={cx} cy={cx} r={r}
             fill="none" stroke="currentColor" strokeWidth={sw}
-            className="text-white/8"
+            className="text-foreground/10 dark:text-white/8"
           />
           <circle
             cx={cx} cy={cx} r={r}

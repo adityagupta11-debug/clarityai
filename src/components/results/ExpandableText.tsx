@@ -50,8 +50,8 @@ export function ExpandableText({
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         className={cn(
-          "mt-1.5 text-[11px] font-medium text-[#00D6FF]/80 underline-offset-4 transition-colors",
-          "hover:text-[#00D6FF] hover:underline"
+          "mt-1.5 text-[11px] font-medium text-primary/80 dark:text-[#00D6FF]/80 underline-offset-4 transition-colors",
+          "hover:text-primary dark:hover:text-[#00D6FF] hover:underline"
         )}
       >
         {expanded ? "Show less" : "Read more"}

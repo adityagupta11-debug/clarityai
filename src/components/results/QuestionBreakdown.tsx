@@ -68,8 +68,8 @@ function ImprovedPanel({ text }: { text: string }) {
       >
         {/* Subtle AI badge */}
         <div className="flex items-center gap-1.5 mb-3">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#00D6FF] animate-pulse" />
-          <span className="text-[9px] font-bold uppercase tracking-widest text-[#00D6FF]/80">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary dark:bg-[#00D6FF] animate-pulse" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-primary/80 dark:text-[#00D6FF]/80">
             AI-enhanced response
           </span>
         </div>

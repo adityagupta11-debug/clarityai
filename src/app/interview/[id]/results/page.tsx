@@ -189,7 +189,7 @@ function MetaPill({
 }) {
   return (
     <span className="flex items-center gap-1.5 text-sm text-foreground/70">
-      <Icon className="h-3.5 w-3.5 text-[#00D6FF]/80 shrink-0" />
+      <Icon className="h-3.5 w-3.5 text-primary/80 dark:text-[#00D6FF]/80 shrink-0" />
       {label}
     </span>
   );
@@ -226,20 +226,20 @@ function GradientHeader({
     : null;
 
   return (
-    <header className="relative w-full overflow-hidden border-b border-border dark:border-white/8 bg-[#0A0A0A]">
-      {/* Solid matte-black base with the faintest charcoal lift */}
+    <header className="relative w-full overflow-hidden border-b border-border dark:border-white/8 bg-background dark:bg-[#0A0A0A]">
+      {/* Solid matte-black base with the faintest charcoal lift (dark only) */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 hidden dark:block"
         style={{
           background:
             "linear-gradient(135deg, #0E0E10 0%, #0A0A0A 55%, #0A0A0A 100%)",
         }}
       />
 
-      {/* Ambient glow orbs — subtle electric cyan/blue */}
-      <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full pointer-events-none"
+      {/* Ambient glow orbs — subtle electric cyan/blue (dark only) */}
+      <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full pointer-events-none hidden dark:block"
         style={{ background: "radial-gradient(circle, rgba(0,214,255,0.10) 0%, transparent 70%)" }} />
-      <div className="absolute -bottom-12 right-8 h-52 w-52 rounded-full pointer-events-none"
+      <div className="absolute -bottom-12 right-8 h-52 w-52 rounded-full pointer-events-none hidden dark:block"
         style={{ background: "radial-gradient(circle, rgba(0,80,255,0.08) 0%, transparent 70%)" }} />
 
       {/* Content */}
@@ -287,12 +287,12 @@ function GradientHeader({
         </div>
 
         {/* AI Insight highlight block */}
-        <div className="animate-insight-breathe relative max-w-2xl overflow-hidden rounded-r-xl bg-[#00D6FF]/[0.06] backdrop-blur-md py-4 pl-5 pr-4 sm:pl-6">
-          {/* Glowing cyan left edge */}
-          <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#00D6FF] shadow-[0_0_14px_2px_rgba(111,78,55,0.55)] dark:shadow-[0_0_14px_2px_rgba(0,214,255,0.55)]" />
+        <div className="animate-insight-breathe relative max-w-2xl overflow-hidden rounded-r-xl bg-primary/[0.06] dark:bg-[#00D6FF]/[0.06] backdrop-blur-md py-4 pl-5 pr-4 sm:pl-6">
+          {/* Glowing accent left edge */}
+          <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-primary dark:bg-[#00D6FF] shadow-[0_0_14px_2px_rgba(111,78,55,0.55)] dark:shadow-[0_0_14px_2px_rgba(0,214,255,0.55)]" />
 
           {/* Badge */}
-          <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold tracking-wide text-cyan-400">
+          <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold tracking-wide text-primary dark:text-cyan-400">
             <span aria-hidden>✨</span> AI Insight
           </p>
 
@@ -316,7 +316,7 @@ function AnalysisNotReady({
   message:    string;
 }) {
   return (
-    <div style={{ fontFamily: SANS_FONT }} className="min-h-screen flex flex-col items-center justify-center gap-6 p-8 text-center bg-[#0A0A0A]">
+    <div style={{ fontFamily: SANS_FONT }} className="min-h-screen flex flex-col items-center justify-center gap-6 p-8 text-center bg-background dark:bg-[#0A0A0A]">
       <div className="relative z-10 max-w-md space-y-6">
         <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-2xl gradient-blue-cyan glow-cyan">
           <svg viewBox="0 0 24 24" className="h-10 w-10 text-white fill-none stroke-current stroke-2">
@@ -392,7 +392,7 @@ export default async function ResultsPage({ params }: Props) {
 
   // ── Render the full results dashboard ────────────────────────────────────
   return (
-    <div style={{ fontFamily: SANS_FONT }} className="min-h-screen bg-[#0A0A0A]">
+    <div style={{ fontFamily: SANS_FONT }} className="min-h-screen bg-background dark:bg-[#0A0A0A]">
       <GradientHeader interview={interview} analysis={analysis} />
       <DashboardGrid interview={interview} analysis={analysis} />
     </div>

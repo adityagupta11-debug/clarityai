@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { Mic, Gauge, PauseCircle, Volume2, Repeat2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { formatDuration, formatWPM, formatPercent } from "@/lib/utils/formatting";
 import type { SpeechMetrics as SpeechMetricsType } from "@/types/analysis";
 
@@ -71,6 +72,13 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const barTop    = isDark ? "#00D6FF" : "#6F4E37";
+  const barBottom = isDark ? "#0050FF" : "#9A7A5E";
+  const gridStroke = isDark ? "oklch(1 0 0 / 0.06)" : "rgba(62,39,35,0.12)";
+  const axisTick   = isDark ? "rgba(255,255,255,0.45)" : "rgba(62,39,35,0.55)";
+
   if (words.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 h-36 rounded-xl bg-muted dark:bg-white/3 border border-emerald-500/20">
@@ -117,25 +125,25 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
             >
               <defs>
                 <linearGradient id="filler-bar-grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor="#00D6FF" stopOpacity={1} />
-                  <stop offset="100%" stopColor="#0050FF" stopOpacity={0.8} />
+                  <stop offset="0%"   stopColor={barTop}    stopOpacity={1} />
+                  <stop offset="100%" stopColor={barBottom} stopOpacity={0.8} />
                 </linearGradient>
               </defs>
 
               <CartesianGrid
                 vertical={false}
-                stroke="oklch(1 0 0 / 0.06)"
+                stroke={gridStroke}
                 strokeDasharray="4 4"
               />
               <XAxis
                 dataKey="word"
-                tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11 }}
+                tick={{ fill: axisTick, fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
                 allowDecimals={false}
-                tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 11 }}
+                tick={{ fill: axisTick, fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -147,7 +155,7 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
                     label={String(props.label ?? "")}
                   />
                 )}
-                cursor={{ fill: "oklch(1 0 0 / 0.04)", radius: 4 } as object}
+                cursor={{ fill: isDark ? "oklch(1 0 0 / 0.04)" : "rgba(62,39,35,0.05)", radius: 4 } as object}
               />
               <Bar
                 dataKey="count"
