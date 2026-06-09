@@ -49,25 +49,25 @@
   --color-brand-charcoal-950: #050505;
 }
 
-/* ── Light mode — warm Mocha & Cream ── */
+/* ── Light mode — bright white canvas, light-brown surfaces, mocha accents ── */
 :root {
-  --background: #F8F5F2;          /* soft off-white canvas */
-  --foreground: #3E2723;          /* deep mocha brown */
-  --card: #FFFFFF;                /* crisp white cards */
+  --background: #FBECEF;          /* bright white with a soft pink hue */
+  --foreground: #3E2723;          /* deep mocha brown text */
+  --card: #ECE0D2;               /* light brown cards — pop against the white screen */
   --card-foreground: #3E2723;
-  --popover: #FFFFFF;
+  --popover: #ECE0D2;
   --popover-foreground: #3E2723;
-  --primary: #6F4E37;            /* rich mocha */
+  --primary: #6F4E37;            /* rich mocha — replaces cyan as the accent */
   --primary-foreground: #FBF7F4;
-  --secondary: #EFE7DF;
+  --secondary: #E7D9C8;          /* light brown */
   --secondary-foreground: #4A3B32;
-  --muted: #EFE7DF;
-  --muted-foreground: #8C7B6B;    /* warm brown-gray */
-  --accent: #EAE0D6;             /* caramel tint */
+  --muted: #E9DDCD;              /* light brown faint surfaces */
+  --muted-foreground: #7C6B5B;    /* warm brown-gray — readable on light brown */
+  --accent: #E0D0BC;             /* deeper light brown for hover surfaces */
   --accent-foreground: #4A3B32;
   --destructive: #C0392B;
-  --border: rgba(62, 39, 35, 0.12);
-  --input: rgba(62, 39, 35, 0.14);
+  --border: rgba(62, 39, 35, 0.16);
+  --input: rgba(62, 39, 35, 0.18);
   --ring: #6F4E37;
   --radius: 0.75rem;
 }
@@ -535,5 +535,126 @@
   .animate-breathe {
     animation: none;
     opacity: 1;
+  }
+}
+
+/* ============================================================
+   Light mode (authenticated app only) — recolor the cyan/blue
+   brand system to mocha. Scoped under .app-scope (DashboardShell)
+   so the deliberately-dark landing & auth pages are untouched.
+   Same traits & effects as dark mode, just brown instead of cyan.
+   ============================================================ */
+html:not(.dark) .app-scope {
+  /* Mocha selection highlight instead of cyan */
+  --tw-mocha: #6F4E37;
+}
+
+html:not(.dark) .app-scope ::selection {
+  background: rgba(111, 78, 55, 0.18);
+  color: #3E2723;
+}
+
+/* Solid brand fills (CTAs, logo chips, step pills) → mocha gradient */
+html:not(.dark) .app-scope .gradient-blue-cyan {
+  background: linear-gradient(135deg, #6F4E37 0%, #9A7A5E 100%);
+}
+
+html:not(.dark) .app-scope .btn-premium {
+  background: linear-gradient(135deg, #6F4E37 0%, #8A6A4F 100%);
+  color: #FBF7F4;
+  box-shadow:
+    0 6px 24px -6px rgba(111, 78, 55, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Brand glow → soft mocha halo */
+html:not(.dark) .app-scope .glow-cyan {
+  box-shadow: 0 0 30px rgba(111, 78, 55, 0.22);
+}
+
+/* Gradient brand text → mocha gradient */
+html:not(.dark) .app-scope .text-gradient-cyan,
+html:not(.dark) .app-scope .text-gradient-blue {
+  background: linear-gradient(135deg, #3E2723 30%, #6F4E37 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Cyan accent text → mocha */
+html:not(.dark) .app-scope .text-cyan-accent {
+  color: #6F4E37;
+  text-shadow: none;
+}
+
+/* Hover/ambient brand shadows → mocha */
+html:not(.dark) .app-scope .dash-card:hover {
+  box-shadow: 0 10px 34px -10px rgba(111, 78, 55, 0.28);
+}
+html:not(.dark) .app-scope .tactile:hover {
+  background-color: rgba(62, 39, 35, 0.04);
+  border-color: rgba(111, 78, 55, 0.28);
+}
+
+/* Animated breathe/glow effects → mocha (keeps the motion, swaps the colour) */
+html:not(.dark) .app-scope .breathe-btn:hover {
+  animation: breathe-glow-btn-mocha 2.6s ease-in-out infinite;
+}
+html:not(.dark) .app-scope .breathe-link:hover {
+  color: #6F4E37;
+  animation: breathe-glow-link-mocha 2.6s ease-in-out infinite;
+}
+html:not(.dark) .app-scope .float-breathe {
+  animation: float-breathe-mocha 7s ease-in-out infinite;
+}
+html:not(.dark) .app-scope .animate-insight-breathe {
+  animation: insight-breathe-mocha 4s ease-in-out infinite;
+}
+html:not(.dark) .app-scope .animate-breathe {
+  animation: breathe-mocha 3.6s ease-in-out infinite;
+}
+html:not(.dark) .app-scope .animate-title-breathe {
+  animation: title-breathe-mocha 3.6s ease-in-out infinite;
+}
+
+@keyframes title-breathe-mocha {
+  0%, 100% { text-shadow: 0 0 10px rgba(111, 78, 55, 0.12); }
+  50%      { text-shadow: 0 0 20px rgba(111, 78, 55, 0.28), 0 0 38px rgba(111, 78, 55, 0.14); }
+}
+
+@keyframes breathe-glow-btn-mocha {
+  0%, 100% {
+    transform: scale(1.03);
+    box-shadow: 0 6px 28px -6px rgba(111, 78, 55, 0.5), 0 0 24px rgba(111, 78, 55, 0.3);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 8px 40px -6px rgba(111, 78, 55, 0.6), 0 0 48px rgba(111, 78, 55, 0.4);
+  }
+}
+@keyframes breathe-glow-link-mocha {
+  0%, 100% { transform: scale(1.04); text-shadow: 0 0 10px rgba(111, 78, 55, 0.25); }
+  50%      { transform: scale(1.07); text-shadow: 0 0 20px rgba(111, 78, 55, 0.5); }
+}
+@keyframes float-breathe-mocha {
+  0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(111, 78, 55, 0)); }
+  50%      { transform: translateY(-7px) scale(1.015); filter: drop-shadow(0 0 14px rgba(111, 78, 55, 0.18)); }
+}
+@keyframes insight-breathe-mocha {
+  0%, 100% { box-shadow: 0 0 22px -12px rgba(111, 78, 55, 0.28); }
+  50%      { box-shadow: 0 0 36px -6px rgba(111, 78, 55, 0.5); }
+}
+@keyframes breathe-mocha {
+  0%, 100% { transform: scale(1); opacity: 0.85; text-shadow: 0 0 12px rgba(111, 78, 55, 0.15); }
+  50%      { transform: scale(1.03); opacity: 1; text-shadow: 0 0 26px rgba(111, 78, 55, 0.4), 0 0 52px rgba(111, 78, 55, 0.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.dark) .app-scope .breathe-btn:hover,
+  html:not(.dark) .app-scope .breathe-link:hover,
+  html:not(.dark) .app-scope .float-breathe,
+  html:not(.dark) .app-scope .animate-insight-breathe,
+  html:not(.dark) .app-scope .animate-breathe {
+    animation: none;
   }
 }

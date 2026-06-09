@@ -226,7 +226,7 @@ function GradientHeader({
     : null;
 
   return (
-    <header className="relative w-full overflow-hidden border-b border-white/8 bg-[#0A0A0A]">
+    <header className="relative w-full overflow-hidden border-b border-border dark:border-white/8 bg-[#0A0A0A]">
       {/* Solid matte-black base with the faintest charcoal lift */}
       <div
         className="absolute inset-0"
@@ -289,7 +289,7 @@ function GradientHeader({
         {/* AI Insight highlight block */}
         <div className="animate-insight-breathe relative max-w-2xl overflow-hidden rounded-r-xl bg-[#00D6FF]/[0.06] backdrop-blur-md py-4 pl-5 pr-4 sm:pl-6">
           {/* Glowing cyan left edge */}
-          <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#00D6FF] shadow-[0_0_14px_2px_rgba(0,214,255,0.55)]" />
+          <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#00D6FF] shadow-[0_0_14px_2px_rgba(111,78,55,0.55)] dark:shadow-[0_0_14px_2px_rgba(0,214,255,0.55)]" />
 
           {/* Badge */}
           <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold tracking-wide text-cyan-400">
@@ -297,7 +297,7 @@ function GradientHeader({
           </p>
 
           {/* Verdict — larger, crisp, with semantic keyword highlighting */}
-          <p className="text-lg leading-relaxed text-white/90">
+          <p className="text-lg leading-relaxed text-foreground dark:text-white/90">
             {highlightInsight(analysis.summary)}
           </p>
         </div>
@@ -334,7 +334,7 @@ function AnalysisNotReady({
 
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-sm text-[#00D6FF] hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-primary dark:text-[#00D6FF] hover:text-foreground dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Dashboard

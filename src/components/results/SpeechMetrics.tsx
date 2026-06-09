@@ -50,11 +50,11 @@ function FillerTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-lg px-3.5 py-2.5 shadow-xl">
+    <div className="bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/10 rounded-lg px-3.5 py-2.5 shadow-xl">
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
         {label}
       </p>
-      <p className="text-base font-black text-[#00D6FF] tabular-nums">
+      <p className="text-base font-black text-primary dark:text-[#00D6FF] tabular-nums">
         {payload[0]?.value}{" "}
         <span className="text-sm font-normal text-muted-foreground">
           {payload[0]?.value === 1 ? "time" : "times"}
@@ -73,7 +73,7 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
 
   if (words.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 h-36 rounded-xl bg-white/3 border border-emerald-500/20">
+      <div className="flex flex-col items-center justify-center gap-3 h-36 rounded-xl bg-muted dark:bg-white/3 border border-emerald-500/20">
         <Volume2 className="h-6 w-6 text-emerald-400" />
         <p className="text-base font-semibold text-emerald-400">No filler words detected — excellent!</p>
       </div>
@@ -95,7 +95,7 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
                 ? "border-rose-500/30 bg-rose-500/12 text-rose-300"
                 : i === 1
                   ? "border-amber-500/30 bg-amber-500/12 text-amber-300"
-                  : "border-white/15 bg-white/4 text-muted-foreground"
+                  : "border-border dark:border-white/15 bg-muted dark:bg-white/4 text-muted-foreground"
             )}
           >
             &ldquo;{word}&rdquo;
@@ -106,7 +106,7 @@ function FillerChart({ words }: { words: { word: string; count: number }[] }) {
 
       {/* Bar chart */}
       {!mounted ? (
-        <div className="h-36 rounded-xl bg-white/4 animate-pulse" />
+        <div className="h-36 rounded-xl bg-muted dark:bg-white/4 animate-pulse" />
       ) : (
         <div className="h-40">
           <ResponsiveContainer width="100%" height="100%">
@@ -181,7 +181,7 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-xl p-4 flex flex-col gap-2 hover:bg-white/[0.05]">
+    <div className="dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-xl p-4 flex flex-col gap-2 hover:bg-accent dark:hover:bg-white/[0.05]">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Icon className="h-3.5 w-3.5 shrink-0" />
         <span className="text-[10px] font-semibold uppercase tracking-widest">{label}</span>
@@ -211,7 +211,7 @@ function PaceBar({ wpm }: { wpm: number }) {
 
   return (
     <div className="mt-2 space-y-1.5">
-      <div className="relative h-2 w-full rounded-full overflow-hidden bg-white/8">
+      <div className="relative h-2 w-full rounded-full overflow-hidden bg-muted dark:bg-white/8">
         {/* Ideal zone highlight */}
         <div
           className="absolute h-full bg-emerald-500/20 rounded-full"
@@ -259,7 +259,7 @@ export function SpeechMetrics({ metrics }: SpeechMetricsProps) {
         <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
           Speech Metrics
         </h2>
-        <div className="h-px flex-1 bg-white/8" />
+        <div className="h-px flex-1 bg-muted dark:bg-white/8" />
       </div>
 
       <div className="space-y-5">
@@ -311,7 +311,7 @@ export function SpeechMetrics({ metrics }: SpeechMetricsProps) {
         </div>
 
         {/* ── Filler words chart ── */}
-        <div className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-5">
+        <div className="dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Filler Word Frequency

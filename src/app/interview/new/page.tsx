@@ -83,7 +83,7 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-bold transition-all duration-300",
                   active ? "gradient-blue-cyan glow-cyan text-white"
                          : done  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                 : "bg-white/[0.06] text-white/40 border border-white/10"
+                                 : "bg-muted dark:bg-white/[0.06] text-muted-foreground dark:text-white/40 border border-border dark:border-white/10"
                 )}
               >
                 {active ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -93,7 +93,7 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
 
               <span className={cn(
                 "text-sm font-medium transition-colors",
-                active ? "text-white" : done ? "text-emerald-400" : "text-white/40"
+                active ? "text-foreground dark:text-white" : done ? "text-emerald-400" : "text-muted-foreground dark:text-white/40"
               )}>
                 {label}
               </span>
@@ -101,7 +101,7 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
               {i < 3 && (
                 <div className={cn(
                   "hidden sm:block h-px flex-1 mx-1 transition-all duration-700",
-                  done ? "bg-gradient-to-r from-emerald-500/40 to-white/10" : "bg-white/10"
+                  done ? "bg-gradient-to-r from-emerald-500/40 to-white/10" : "bg-muted dark:bg-white/10"
                 )} />
               )}
             </div>
@@ -112,10 +112,10 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
         {isUploading && (
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-white/50">Uploading…</span>
-              <span className="text-xs font-bold tabular-nums text-[#00D6FF]">{progress}%</span>
+              <span className="text-xs text-muted-foreground dark:text-white/50">Uploading…</span>
+              <span className="text-xs font-bold tabular-nums text-primary dark:text-[#00D6FF]">{progress}%</span>
             </div>
-            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-2 rounded-full bg-muted dark:bg-white/10 overflow-hidden">
               <div
                 className="h-full rounded-full gradient-blue-cyan transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}
@@ -125,13 +125,13 @@ function UploadProgress({ phase, progress }: { phase: UploadPhase; progress: num
         )}
 
         {isCreating && (
-          <p className="text-sm text-white/50 animate-pulse">Setting up your interview session…</p>
+          <p className="text-sm text-muted-foreground dark:text-white/50 animate-pulse">Setting up your interview session…</p>
         )}
         {isTranscribing && (
-          <p className="text-sm text-white/50 animate-pulse">Transcribing your audio — usually 20–60 seconds…</p>
+          <p className="text-sm text-muted-foreground dark:text-white/50 animate-pulse">Transcribing your audio — usually 20–60 seconds…</p>
         )}
         {isAnalyzing && (
-          <p className="text-sm text-white/50 animate-pulse">Analysing your responses — almost there…</p>
+          <p className="text-sm text-muted-foreground dark:text-white/50 animate-pulse">Analysing your responses — almost there…</p>
         )}
       </div>
     </div>
@@ -164,8 +164,8 @@ function StepHeader({
         {n}
       </div>
       <div>
-        <h2 className="text-base font-semibold leading-none mb-1 text-white/90">{title}</h2>
-        <p className="text-xs text-white/50">{subtitle}</p>
+        <h2 className="text-base font-semibold leading-none mb-1 text-foreground dark:text-white/90">{title}</h2>
+        <p className="text-xs text-muted-foreground dark:text-white/50">{subtitle}</p>
       </div>
     </div>
   );
@@ -190,10 +190,10 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={htmlFor} className="text-sm font-medium flex items-center gap-1.5 text-white/80">
+      <Label htmlFor={htmlFor} className="text-sm font-medium flex items-center gap-1.5 text-foreground dark:text-white/80">
         {label}
-        {required && <span className="text-[#00D6FF] text-xs">*</span>}
-        {optional && <span className="text-white/35 text-xs font-normal">(optional)</span>}
+        {required && <span className="text-primary dark:text-[#00D6FF] text-xs">*</span>}
+        {optional && <span className="text-muted-foreground dark:text-white/35 text-xs font-normal">(optional)</span>}
       </Label>
       {children}
       {error && (
@@ -209,12 +209,12 @@ function Field({
 // ── Styled input — shared class string ───────────────────────────────────────
 
 const inputCls =
-  "bg-white/[0.03] border-white/10 hover:border-white/20 focus:border-[#00D6FF]/50 focus:ring-1 focus:ring-[#00D6FF]/20 transition-all placeholder:text-white/25 h-10";
+  "bg-muted dark:bg-white/[0.03] border-border dark:border-white/10 hover:border-white/20 focus:border-[#00D6FF]/50 focus:ring-1 focus:ring-[#00D6FF]/20 transition-all placeholder:text-white/25 h-10";
 
 // Shared premium frosted-glass surface — thin 10% border with an inset
 // top-edge highlight to simulate a light source hitting the top of the card.
 const CARD_BASE =
-  "rounded-3xl bg-white/[0.02] backdrop-blur-2xl border border-white/10 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.08)]";
+  "rounded-3xl bg-muted dark:bg-white/[0.02] backdrop-blur-2xl border border-border dark:border-white/10 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.08)]";
 
 // Icon per interview type — used by the clickable type selector cards.
 const TYPE_ICONS: Record<InterviewType, React.ComponentType<{ className?: string }>> = {
@@ -250,8 +250,8 @@ const selectablePill = (active: boolean) =>
     "rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out",
     "disabled:opacity-50 disabled:pointer-events-none",
     active
-      ? "border-[#00D6FF]/40 bg-[#00D6FF]/10 text-white shadow-[0_8px_30px_-12px_rgba(0,214,255,0.4)]"
-      : "border-white/10 bg-white/[0.02] text-white/60 hover:-translate-y-0.5 hover:bg-white/[0.04] hover:text-white"
+      ? "border-primary/40 dark:border-[#00D6FF]/40 bg-primary/10 dark:bg-[#00D6FF]/10 text-foreground dark:text-white shadow-[0_8px_30px_-12px_rgba(111,78,55,0.4)] dark:shadow-[0_8px_30px_-12px_rgba(0,214,255,0.4)]"
+      : "border-border dark:border-white/10 bg-muted dark:bg-white/[0.02] text-muted-foreground dark:text-white/60 hover:-translate-y-0.5 hover:bg-accent dark:hover:bg-white/[0.04] hover:text-foreground dark:hover:text-white"
   );
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -432,18 +432,18 @@ export default function NewInterviewPage() {
         {/* Centered hero */}
         <div className="flex flex-col items-center text-center">
           <div className="relative mb-4 flex h-14 w-14 items-center justify-center">
-            <div className="pointer-events-none absolute h-20 w-20 rounded-full bg-[#00D6FF]/25 blur-2xl" />
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl gradient-blue-cyan animate-float shadow-[0_0_30px_rgba(0,214,255,0.45)]">
+            <div className="pointer-events-none absolute h-20 w-20 rounded-full bg-primary/25 dark:bg-[#00D6FF]/25 blur-2xl" />
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl gradient-blue-cyan animate-float shadow-[0_0_30px_rgba(111,78,55,0.45)] dark:shadow-[0_0_30px_rgba(0,214,255,0.45)]">
               <Sparkles className="h-7 w-7 text-white" />
             </div>
           </div>
           <h1
             style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, system-ui, sans-serif' }}
-            className="animate-title-breathe text-3xl sm:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/40"
+            className="animate-title-breathe text-3xl sm:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#3E2723] via-[#5A4034] to-[#8C7B6B] dark:from-white dark:via-white/90 dark:to-white/40"
           >
             New Interview
           </h1>
-          <p className="animate-subtitle-pulse text-sm font-medium text-white/50 mt-2 max-w-md">
+          <p className="animate-subtitle-pulse text-sm font-medium text-muted-foreground dark:text-white/50 mt-2 max-w-md">
             Add your details, upload or record, and get AI coaching in under 3 minutes.
           </p>
         </div>
@@ -484,7 +484,7 @@ export default function NewInterviewPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Company" htmlFor="company" optional>
                   <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/45 pointer-events-none" />
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground dark:text-white/45 pointer-events-none" />
                     <Input
                       id="company"
                       placeholder="Google"
@@ -498,7 +498,7 @@ export default function NewInterviewPage() {
 
                 <Field label="Role" htmlFor="role" optional>
                   <div className="relative">
-                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/45 pointer-events-none" />
+                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground dark:text-white/45 pointer-events-none" />
                     <Input
                       id="role"
                       placeholder="Product Manager"
@@ -528,14 +528,14 @@ export default function NewInterviewPage() {
                           "group/type flex flex-col items-center justify-center gap-2 rounded-xl border p-3 text-center transition-all duration-300 ease-out",
                           "disabled:opacity-50 disabled:pointer-events-none",
                           selected
-                            ? "border-[#00D6FF]/40 bg-[#00D6FF]/10 text-white shadow-[0_8px_30px_-12px_rgba(0,214,255,0.4)]"
-                            : "border-white/10 bg-white/[0.02] text-white/60 hover:-translate-y-0.5 hover:bg-white/[0.04] hover:text-white"
+                            ? "border-primary/40 dark:border-[#00D6FF]/40 bg-primary/10 dark:bg-[#00D6FF]/10 text-foreground dark:text-white shadow-[0_8px_30px_-12px_rgba(111,78,55,0.4)] dark:shadow-[0_8px_30px_-12px_rgba(0,214,255,0.4)]"
+                            : "border-border dark:border-white/10 bg-muted dark:bg-white/[0.02] text-muted-foreground dark:text-white/60 hover:-translate-y-0.5 hover:bg-accent dark:hover:bg-white/[0.04] hover:text-foreground dark:hover:text-white"
                         )}
                       >
                         <Icon
                           className={cn(
                             "h-5 w-5 transition-colors duration-300",
-                            selected ? "text-[#00D6FF]" : "text-white/45 group-hover/type:text-white/80"
+                            selected ? "text-primary dark:text-[#00D6FF]" : "text-muted-foreground dark:text-white/45 group-hover/type:text-white/80"
                           )}
                         />
                         <span className="text-xs font-medium leading-tight">{label}</span>
@@ -548,20 +548,20 @@ export default function NewInterviewPage() {
               {/* ── Additional context — slides in once a type is chosen ── */}
               {typeChosen && (
                 <div className="space-y-5 animate-in fade-in slide-in-from-top-2 duration-500 ease-out">
-                  <div className="h-px bg-white/[0.08]" />
+                  <div className="h-px bg-muted dark:bg-white/[0.08]" />
 
                   {/* Job Description / Resume */}
                   <Field label="Job Description / Resume" optional>
                     <div className="space-y-3">
                       {/* Tab toggle */}
-                      <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.02] p-1">
+                      <div className="inline-flex rounded-xl border border-border dark:border-white/10 bg-muted dark:bg-white/[0.02] p-1">
                         <button
                           type="button"
                           disabled={isSubmitting}
                           onClick={() => setJdMode("paste")}
                           className={cn(
                             "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
-                            jdMode === "paste" ? "bg-[#00D6FF]/15 text-[#00D6FF]" : "text-white/50 hover:text-white"
+                            jdMode === "paste" ? "bg-primary/15 dark:bg-[#00D6FF]/15 text-primary dark:text-[#00D6FF]" : "text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white"
                           )}
                         >
                           <FileText className="h-3.5 w-3.5" /> Paste JD
@@ -572,7 +572,7 @@ export default function NewInterviewPage() {
                           onClick={() => setJdMode("upload")}
                           className={cn(
                             "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
-                            jdMode === "upload" ? "bg-[#00D6FF]/15 text-[#00D6FF]" : "text-white/50 hover:text-white"
+                            jdMode === "upload" ? "bg-primary/15 dark:bg-[#00D6FF]/15 text-primary dark:text-[#00D6FF]" : "text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white"
                           )}
                         >
                           <Upload className="h-3.5 w-3.5" /> Upload Resume
@@ -599,13 +599,13 @@ export default function NewInterviewPage() {
                             aria-hidden
                           />
                           {resumeFile ? (
-                            <div className="flex items-center gap-3 rounded-xl border border-emerald-500/25 bg-white/[0.02] p-3">
+                            <div className="flex items-center gap-3 rounded-xl border border-emerald-500/25 bg-muted dark:bg-white/[0.02] p-3">
                               <FileText className="h-4 w-4 shrink-0 text-emerald-400" />
-                              <span className="min-w-0 flex-1 truncate text-sm text-white/80">{resumeFile.name}</span>
+                              <span className="min-w-0 flex-1 truncate text-sm text-foreground dark:text-white/80">{resumeFile.name}</span>
                               <button
                                 type="button"
                                 onClick={() => setResumeFile(null)}
-                                className="shrink-0 text-white/40 hover:text-white transition-colors"
+                                className="shrink-0 text-muted-foreground dark:text-white/40 hover:text-foreground dark:hover:text-white transition-colors"
                                 aria-label="Remove resume"
                               >
                                 <X className="h-4 w-4" />
@@ -623,20 +623,20 @@ export default function NewInterviewPage() {
                               className={cn(
                                 "flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center outline-none cursor-pointer select-none transition-all duration-200",
                                 resumeDragOver
-                                  ? "border-[#00D6FF] bg-[#00D6FF]/10"
-                                  : "border-white/15 hover:border-[#00D6FF]/40 hover:bg-white/[0.03]",
+                                  ? "border-[#00D6FF] bg-primary/10 dark:bg-[#00D6FF]/10"
+                                  : "border-border dark:border-white/15 hover:border-[#00D6FF]/40 hover:bg-accent dark:hover:bg-white/[0.03]",
                                 isSubmitting && "opacity-50 pointer-events-none"
                               )}
                             >
                               <div className={cn(
                                 "flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-200",
-                                resumeDragOver ? "gradient-blue-cyan glow-cyan border-transparent" : "bg-white/5 border-white/10"
+                                resumeDragOver ? "gradient-blue-cyan glow-cyan border-transparent" : "bg-muted dark:bg-white/5 border-border dark:border-white/10"
                               )}>
-                                <Upload className={cn("h-5 w-5", resumeDragOver ? "text-white" : "text-white/50")} />
+                                <Upload className={cn("h-5 w-5", resumeDragOver ? "text-foreground dark:text-white" : "text-muted-foreground dark:text-white/50")} />
                               </div>
-                              <p className="text-xs text-white/50">
+                              <p className="text-xs text-muted-foreground dark:text-white/50">
                                 Drop your resume or{" "}
-                                <span className="text-[#00D6FF] underline underline-offset-2">browse</span>
+                                <span className="text-primary dark:text-[#00D6FF] underline underline-offset-2">browse</span>
                                 {" "}· PDF, DOC
                               </p>
                             </div>
@@ -677,7 +677,7 @@ export default function NewInterviewPage() {
                           className={cn(selectablePill(sessionLength === value), "flex flex-col items-center gap-0.5")}
                         >
                           <span>{label}</span>
-                          <span className={cn("text-[11px]", sessionLength === value ? "text-[#00D6FF]/80" : "text-white/35")}>
+                          <span className={cn("text-[11px]", sessionLength === value ? "text-[#00D6FF]/80" : "text-muted-foreground dark:text-white/35")}>
                             {hint}
                           </span>
                         </button>
@@ -713,7 +713,7 @@ export default function NewInterviewPage() {
                   type="button"
                   onClick={handleContinue}
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto gradient-blue-cyan text-white rounded-full px-7 h-11 text-sm font-bold shadow-[0_0_25px_rgba(0,214,255,0.35)] hover:shadow-[0_0_40px_rgba(0,214,255,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 ease-out"
+                  className="w-full sm:w-auto gradient-blue-cyan text-white rounded-full px-7 h-11 text-sm font-bold shadow-[0_0_25px_rgba(111,78,55,0.35)] dark:shadow-[0_0_25px_rgba(0,214,255,0.35)] hover:shadow-[0_0_40px_rgba(111,78,55,0.55)] dark:hover:shadow-[0_0_40px_rgba(0,214,255,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 ease-out"
                 >
                   Continue to recording
                   <ArrowRight className="h-4 w-4 ml-2" />
@@ -756,14 +756,14 @@ export default function NewInterviewPage() {
 
             {!detailsConfirmed ? (
               /* Locked placeholder */
-              <div className="flex flex-col items-center justify-center text-center rounded-2xl border border-dashed border-white/10 bg-white/[0.01] py-14 px-6">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
-                  <Lock className="h-6 w-6 text-white/40" />
+              <div className="flex flex-col items-center justify-center text-center rounded-2xl border border-dashed border-border dark:border-white/10 bg-muted dark:bg-white/[0.01] py-14 px-6">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-border dark:border-white/10 bg-muted dark:bg-white/[0.04]">
+                  <Lock className="h-6 w-6 text-muted-foreground dark:text-white/40" />
                 </div>
-                <p className="text-sm font-semibold text-white/70">Recording locked</p>
-                <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-white/40">
+                <p className="text-sm font-semibold text-foreground dark:text-white/70">Recording locked</p>
+                <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground dark:text-white/40">
                   Fill in your interview details and hit{" "}
-                  <span className="font-medium text-white/70">Continue</span> to upload a file
+                  <span className="font-medium text-foreground dark:text-white/70">Continue</span> to upload a file
                   or record live.
                 </p>
               </div>
@@ -771,13 +771,13 @@ export default function NewInterviewPage() {
             <>
             <Tabs defaultValue="file" onValueChange={handleTabChange} className="space-y-5">
               {/* Minimal segmented pill toggle */}
-              <TabsList className="grid w-full grid-cols-2 gap-1 h-auto group-data-horizontal/tabs:h-auto items-stretch rounded-full border border-white/10 bg-white/[0.03] p-1">
+              <TabsList className="grid w-full grid-cols-2 gap-1 h-auto group-data-horizontal/tabs:h-auto items-stretch rounded-full border border-border dark:border-white/10 bg-muted dark:bg-white/[0.03] p-1">
                 <TabsTrigger
                   value="file"
                   disabled={isSubmitting}
                   className={cn(
                     "flex h-auto w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300",
-                    "text-white/50 hover:text-white/80",
+                    "text-muted-foreground dark:text-white/50 hover:text-white/80",
                     "data-active:bg-white/[0.08] data-active:text-white data-active:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
                   )}
                 >
@@ -789,7 +789,7 @@ export default function NewInterviewPage() {
                   disabled={isSubmitting}
                   className={cn(
                     "flex h-auto w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300",
-                    "text-white/50 hover:text-white/80",
+                    "text-muted-foreground dark:text-white/50 hover:text-white/80",
                     "data-active:bg-white/[0.08] data-active:text-white data-active:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
                   )}
                 >
@@ -870,18 +870,18 @@ export default function NewInterviewPage() {
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300",
                   isReady
                     ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                    : "bg-white/[0.06] border-white/10 text-white/40"
+                    : "bg-muted dark:bg-white/[0.06] border-border dark:border-white/10 text-muted-foreground dark:text-white/40"
                 )}>
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
                 <div>
                   <p className={cn(
                     "text-sm font-medium transition-colors",
-                    isReady ? "text-emerald-400" : "text-white/50"
+                    isReady ? "text-emerald-400" : "text-muted-foreground dark:text-white/50"
                   )}>
                     {isReady ? "Ready to analyse" : "Almost there…"}
                   </p>
-                  <p className="text-[11px] text-white/40 mt-0.5">
+                  <p className="text-[11px] text-muted-foreground dark:text-white/40 mt-0.5">
                     {!title.trim() && !activeAudio
                       ? "Add a title and recording to continue"
                       : !title.trim()
@@ -899,8 +899,8 @@ export default function NewInterviewPage() {
                 disabled={!isReady || !user}
                 className={cn(
                   "w-full sm:w-auto gradient-blue-cyan text-white px-8 h-11 text-sm font-bold rounded-full",
-                  "shadow-[0_0_25px_rgba(0,214,255,0.35)] hover:shadow-[0_0_40px_rgba(0,214,255,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 ease-out",
-                  !isReady && "opacity-40 cursor-not-allowed hover:scale-100 hover:shadow-[0_0_25px_rgba(0,214,255,0.35)]"
+                  "shadow-[0_0_25px_rgba(111,78,55,0.35)] dark:shadow-[0_0_25px_rgba(0,214,255,0.35)] hover:shadow-[0_0_40px_rgba(111,78,55,0.55)] dark:hover:shadow-[0_0_40px_rgba(0,214,255,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 ease-out",
+                  !isReady && "opacity-40 cursor-not-allowed hover:scale-100 hover:shadow-[0_0_25px_rgba(111,78,55,0.35)] dark:hover:shadow-[0_0_25px_rgba(0,214,255,0.35)]"
                 )}
               >
                 Analyse Interview

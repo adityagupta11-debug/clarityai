@@ -56,8 +56,8 @@ function InsightCard({ insight, variant, index }: InsightCardProps) {
   return (
     <div
       className={cn(
-        "group rounded-xl border border-white/8 bg-white/2 p-5 transition-all duration-200",
-        "hover:border-white/14 hover:bg-white/4",
+        "group rounded-xl border border-border dark:border-white/8 bg-muted dark:bg-white/2 p-5 transition-all duration-200",
+        "hover:border-white/14 hover:bg-accent dark:hover:bg-white/4",
         "border-l-2", borderAccent
       )}
     >
@@ -173,7 +173,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses }: StrengthsWeakness
 
       {/* Strengths column */}
       <section
-        className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-6"
+        className="dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-6"
         aria-label="Key Strengths"
       >
         <SectionHeader variant="strength" count={strengths.length} />
@@ -196,7 +196,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses }: StrengthsWeakness
 
       {/* Weaknesses column */}
       <section
-        className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-6"
+        className="dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-6"
         aria-label="Areas to Improve"
       >
         <SectionHeader variant="weakness" count={weaknesses.length} />

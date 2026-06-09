@@ -70,7 +70,7 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
   }, [targetOffset]);
 
   return (
-    <div className="dash-card h-full relative flex flex-col items-center gap-3 bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-xl p-4 overflow-hidden">
+    <div className="dash-card h-full relative flex flex-col items-center gap-3 bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-xl p-4 overflow-hidden">
 
       {/* Ambient glow — soft electric cyan */}
       <div
@@ -198,7 +198,7 @@ export function OverallScore({ score, summary, modelUsed }: OverallScoreProps) {
 
       {/* AI badge — generic, no vendor/model leak */}
       {modelUsed && (
-        <div className="relative z-10 flex items-center gap-1.5 rounded-full border border-white/8 bg-white/4 px-3 py-1">
+        <div className="relative z-10 flex items-center gap-1.5 rounded-full border border-border dark:border-white/8 bg-muted dark:bg-white/4 px-3 py-1">
           <span className="h-1.5 w-1.5 rounded-full bg-[#00D6FF] animate-pulse" />
           <span className="text-[10px] text-muted-foreground font-medium">AI-powered analysis</span>
         </div>

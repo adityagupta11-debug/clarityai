@@ -51,7 +51,7 @@ function CategoryMiniCard({
                                  "oklch(0.66 0.12 35)";
 
   return (
-    <div className="dash-card h-full bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-xl p-4 flex flex-col items-center gap-2.5 hover:bg-white/[0.05]">
+    <div className="dash-card h-full bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-xl p-4 flex flex-col items-center gap-2.5 hover:bg-accent dark:hover:bg-white/[0.05]">
       <Icon className="h-3.5 w-3.5 text-muted-foreground" />
 
       {/* Mini score ring */}
@@ -81,7 +81,7 @@ function CategoryMiniCard({
       </span>
 
       {/* Contextual description — subtle, wraps to 1–2 lines */}
-      <p className="text-[11px] leading-snug text-white/40 text-center text-balance">
+      <p className="text-[11px] leading-snug text-muted-foreground dark:text-white/40 text-center text-balance">
         {description}
       </p>
     </div>

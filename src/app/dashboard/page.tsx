@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 // Shared premium frosted-glass surface
 const CARD_BASE =
-  "rounded-3xl bg-white/[0.02] backdrop-blur-2xl border border-white/5 shadow-2xl";
+  "rounded-3xl bg-muted dark:bg-white/[0.02] backdrop-blur-2xl border border-border dark:border-white/5 shadow-2xl";
 
 function StatCard({
   label,
@@ -32,17 +32,17 @@ function StatCard({
       className={cn(
         CARD_BASE,
         "p-6 transition-all duration-300 ease-out",
-        "hover:scale-[1.02] hover:-translate-y-1 hover:bg-white/[0.04] hover:shadow-[0_10px_40px_-10px_rgba(0,214,255,0.15)]"
+        "hover:scale-[1.02] hover:-translate-y-1 hover:bg-accent dark:hover:bg-white/[0.04] hover:shadow-[0_10px_40px_-10px_rgba(111,78,55,0.15)] dark:hover:shadow-[0_10px_40px_-10px_rgba(0,214,255,0.15)]"
       )}
     >
       <div className="flex items-start justify-between">
-        <span className="text-sm font-medium text-white/40">{label}</span>
+        <span className="text-sm font-medium text-muted-foreground dark:text-white/40">{label}</span>
         <Icon className={cn("h-4 w-4 shrink-0", color)} />
       </div>
       {loading ? (
-        <Skeleton className="mt-4 h-9 w-16 bg-white/5" />
+        <Skeleton className="mt-4 h-9 w-16 bg-muted dark:bg-white/5" />
       ) : (
-        <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums text-white">
+        <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums text-foreground dark:text-white">
           {value}
         </p>
       )}
@@ -61,7 +61,7 @@ export default function DashboardPage() {
       label: "Total Interviews",
       value: String(interviews.length),
       icon: Mic,
-      color: "text-[#00D6FF]",
+      color: "text-primary dark:text-[#00D6FF]",
     },
     {
       label: "Avg. Score",
@@ -107,7 +107,7 @@ export default function DashboardPage() {
             {interviews.length > 0 && (
               <Link
                 href="/history"
-                className="text-xs text-[#00D6FF] hover:text-white transition-colors"
+                className="text-xs text-primary dark:text-[#00D6FF] hover:text-foreground dark:hover:text-white transition-colors"
               >
                 View all →
               </Link>
@@ -121,11 +121,11 @@ export default function DashboardPage() {
                 <div key={i} className={cn(CARD_BASE, "p-5")}>
                   <div className="flex items-start gap-4">
                     <div className="flex-1 space-y-2">
-                      <Skeleton className="h-4 w-24 bg-white/5" />
-                      <Skeleton className="h-5 w-48 bg-white/5" />
-                      <Skeleton className="h-3 w-36 bg-white/5" />
+                      <Skeleton className="h-4 w-24 bg-muted dark:bg-white/5" />
+                      <Skeleton className="h-5 w-48 bg-muted dark:bg-white/5" />
+                      <Skeleton className="h-3 w-36 bg-muted dark:bg-white/5" />
                     </div>
-                    <Skeleton className="h-8 w-20 bg-white/5" />
+                    <Skeleton className="h-8 w-20 bg-muted dark:bg-white/5" />
                   </div>
                 </div>
               ))}

@@ -41,7 +41,7 @@ function ResponsePanel({ text }: { text: string }) {
           What You Said
         </span>
       </div>
-      <div className="tactile flex-1 rounded-xl bg-white/4 border border-white/8 p-4">
+      <div className="tactile flex-1 rounded-xl bg-muted dark:bg-white/4 border border-border dark:border-white/8 p-4">
         <p className="text-base text-foreground/70 leading-relaxed">{text}</p>
       </div>
     </div>
@@ -52,8 +52,8 @@ function ImprovedPanel({ text }: { text: string }) {
   return (
     <div className="flex flex-col gap-2 h-full">
       <div className="flex items-center gap-2">
-        <Sparkles className="h-3.5 w-3.5 text-[#00D6FF] shrink-0" />
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-[#00D6FF]">
+        <Sparkles className="h-3.5 w-3.5 text-primary dark:text-[#00D6FF] shrink-0" />
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-primary dark:text-[#00D6FF]">
           How to Improve
         </span>
       </div>
@@ -92,17 +92,17 @@ function QuestionItem({ qa, index }: QuestionItemProps) {
   return (
     <AccordionItem
       value={value}
-      className="border-white/8 rounded-xl mb-3 last:mb-0 overflow-hidden"
+      className="border-border dark:border-white/8 rounded-xl mb-3 last:mb-0 overflow-hidden"
     >
       {/* Trigger ──────────────────────────────────────────────────────────── */}
       <AccordionTrigger
         className={cn(
           "flex items-start gap-3 px-5 py-4 text-left hover:no-underline group",
-          "hover:bg-white/3 transition-colors rounded-xl"
+          "hover:bg-accent dark:hover:bg-white/3 transition-colors rounded-xl"
         )}
       >
         {/* Question index badge */}
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#00D6FF]/15 text-[10px] font-black text-[#00D6FF] mt-0.5">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 dark:bg-[#00D6FF]/15 text-[10px] font-black text-primary dark:text-[#00D6FF] mt-0.5">
           {index + 1}
         </span>
 
@@ -137,7 +137,7 @@ function QuestionItem({ qa, index }: QuestionItemProps) {
           </div>
 
           {/* AI feedback */}
-          <div className="tactile rounded-lg bg-white/4 border border-white/8 px-4 py-3">
+          <div className="tactile rounded-lg bg-muted dark:bg-white/4 border border-border dark:border-white/8 px-4 py-3">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
               Feedback
             </p>
@@ -170,7 +170,7 @@ export function QuestionBreakdown({ questions }: QuestionBreakdownProps) {
     return (
       <section aria-label="Question Breakdown">
         <SectionHeader count={0} />
-        <div className="dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-10 text-center text-muted-foreground text-base">
+        <div className="dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-10 text-center text-muted-foreground text-base">
           No individual questions were identified in the transcript.
         </div>
       </section>
@@ -184,7 +184,7 @@ export function QuestionBreakdown({ questions }: QuestionBreakdownProps) {
       <Accordion
         multiple
         defaultValue={["q-0"]}
-        className="bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-3"
+        className="bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-3"
       >
         {questions.map((qa, i) => (
           <QuestionItem key={i} qa={qa} index={i} />
@@ -201,11 +201,11 @@ function SectionHeader({ count }: { count: number }) {
         Question Deep Dive
       </h2>
       {count > 0 && (
-        <span className="rounded-full border border-[#00D6FF]/25 bg-[#00D6FF]/10 px-2 py-0.5 text-sm font-bold text-[#00D6FF]">
+        <span className="rounded-full border border-primary/25 dark:border-[#00D6FF]/25 bg-primary/10 dark:bg-[#00D6FF]/10 px-2 py-0.5 text-sm font-bold text-primary dark:text-[#00D6FF]">
           {count} questions
         </span>
       )}
-      <div className="h-px flex-1 bg-white/8" />
+      <div className="h-px flex-1 bg-muted dark:bg-white/8" />
     </div>
   );
 }

@@ -41,7 +41,7 @@ export function DashboardShell({
   const open = isPinned || hovered;
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground selection:bg-[#00D6FF]/20 overflow-hidden">
+    <div className="app-scope relative min-h-screen bg-background text-foreground selection:bg-[#00D6FF]/20 overflow-hidden">
       {/* ── Deepest layer: slow-drifting dark mesh (dark mode only) ── */}
       <div className="pointer-events-none fixed inset-0 -z-10 hidden dark:block bg-mesh-drift" />
 

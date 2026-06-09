@@ -58,7 +58,7 @@ function StatPill({
   accent: string;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/3 px-4 py-2.5">
+    <div className="flex items-center gap-2.5 rounded-xl border border-border dark:border-white/8 bg-muted dark:bg-white/3 px-4 py-2.5">
       <Icon className={cn("h-4 w-4 shrink-0", accent)} />
       <div>
         <p className={cn("text-lg font-black tabular-nums leading-none", accent)}>{value}</p>
@@ -72,17 +72,17 @@ function StatPill({
 
 function CardSkeleton() {
   return (
-    <div className="rounded-2xl bg-white/[0.02] backdrop-blur-2xl border border-white/8 p-5">
+    <div className="rounded-2xl bg-muted dark:bg-white/[0.02] backdrop-blur-2xl border border-border dark:border-white/8 p-5">
       <div className="flex items-start gap-4">
         <div className="flex-1 space-y-2">
           <div className="flex gap-2">
-            <Skeleton className="h-5 w-20 bg-white/5 rounded-full" />
-            <Skeleton className="h-5 w-16 bg-white/5 rounded-full" />
+            <Skeleton className="h-5 w-20 bg-muted dark:bg-white/5 rounded-full" />
+            <Skeleton className="h-5 w-16 bg-muted dark:bg-white/5 rounded-full" />
           </div>
-          <Skeleton className="h-5 w-56 bg-white/5" />
-          <Skeleton className="h-3 w-36 bg-white/5" />
+          <Skeleton className="h-5 w-56 bg-muted dark:bg-white/5" />
+          <Skeleton className="h-3 w-36 bg-muted dark:bg-white/5" />
         </div>
-        <Skeleton className="h-8 w-24 bg-white/5 rounded-lg" />
+        <Skeleton className="h-8 w-24 bg-muted dark:bg-white/5 rounded-lg" />
       </div>
     </div>
   );
@@ -107,28 +107,28 @@ function HistoryRow({ interview }: { interview: Interview }) {
 
   const score = interview.overallScore;
   const scoreColor =
-    !completed              ? "text-white/30" :
+    !completed              ? "text-muted-foreground dark:text-white/30" :
     (score as number) >= 85 ? "text-emerald-400" :
-    (score as number) >= 70 ? "text-[#00D6FF]" :
+    (score as number) >= 70 ? "text-primary dark:text-[#00D6FF]" :
     (score as number) >= 50 ? "text-amber-400" :
                               "text-orange-300";
 
   return (
     <Link
       href={href}
-      className="group flex items-center gap-4 border-b border-white/[0.05] px-5 py-4 transition-all duration-200 ease-in-out last:border-0 hover:bg-white/[0.02]"
+      className="group flex items-center gap-4 border-b border-border dark:border-white/[0.05] px-5 py-4 transition-all duration-200 ease-in-out last:border-0 hover:bg-accent dark:hover:bg-white/[0.02]"
     >
       {/* Title + timestamp */}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-white/90">{interview.title}</p>
-        <p className="mt-0.5 truncate text-xs text-white/40">
+        <p className="truncate text-sm font-medium text-foreground dark:text-white/90">{interview.title}</p>
+        <p className="mt-0.5 truncate text-xs text-muted-foreground dark:text-white/40">
           {formatTimestamp(interview.createdAt)}
-          {interview.role && <span className="text-white/30"> · {interview.role}</span>}
+          {interview.role && <span className="text-muted-foreground dark:text-white/30"> · {interview.role}</span>}
         </p>
       </div>
 
       {/* Duration */}
-      <span className="hidden w-16 shrink-0 text-right text-xs text-white/40 sm:block">
+      <span className="hidden w-16 shrink-0 text-right text-xs text-muted-foreground dark:text-white/40 sm:block">
         {duration}
       </span>
 
@@ -138,9 +138,9 @@ function HistoryRow({ interview }: { interview: Interview }) {
       </span>
 
       {/* Action — glows cyan on row hover */}
-      <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-white/40 transition-colors group-hover:text-[#00D6FF]">
+      <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground dark:text-white/40 transition-colors group-hover:text-[#00D6FF]">
         <span className="hidden md:inline">View Report</span>
-        <ChevronRight className="h-4 w-4 transition-all group-hover:translate-x-0.5 group-hover:drop-shadow-[0_0_6px_rgba(0,214,255,0.7)]" />
+        <ChevronRight className="h-4 w-4 transition-all group-hover:translate-x-0.5 group-hover:drop-shadow-[0_0_6px_rgba(111,78,55,0.7)] dark:group-hover:drop-shadow-[0_0_6px_rgba(0,214,255,0.7)]" />
       </span>
     </Link>
   );
@@ -201,9 +201,9 @@ export default function HistoryPage() {
       <div>
         <div className="flex items-center gap-3 mb-1">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-blue-cyan glow-cyan">
-            <History className="h-4.5 w-4.5 text-white" />
+            <History className="h-4.5 w-4.5 text-foreground dark:text-white" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
+          <h1 className="text-2xl font-black tracking-tight text-foreground dark:text-white">
             Interview History
           </h1>
         </div>
@@ -219,7 +219,7 @@ export default function HistoryPage() {
             icon={Mic}
             value={String(interviews.length)}
             label="Total sessions"
-            accent="text-[#00D6FF]"
+            accent="text-primary dark:text-[#00D6FF]"
           />
           {avgScore !== null && (
             <StatPill
@@ -248,7 +248,7 @@ export default function HistoryPage() {
 
       {/* ── Filter / search bar ── */}
       {!loading && hasInterviews && (
-        <div className="rounded-2xl border border-white/8 bg-white/[0.02] backdrop-blur-2xl p-4">
+        <div className="rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl p-4">
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -257,7 +257,7 @@ export default function HistoryPage() {
                 placeholder="Search by title, company, or role…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="pl-9 bg-white/4 border-white/10 hover:border-white/18 focus:border-[#00D6FF]/40 focus:ring-1 focus:ring-[#00D6FF]/15 h-9 text-sm placeholder:text-white/25 transition-all"
+                className="pl-9 bg-muted dark:bg-white/4 border-border dark:border-white/10 hover:border-foreground/20 dark:hover:border-white/18 focus:border-primary/50 dark:focus:border-[#00D6FF]/40 focus:ring-1 focus:ring-primary/20 dark:focus:ring-[#00D6FF]/15 h-9 text-sm placeholder:text-muted-foreground/70 dark:placeholder:text-white/25 transition-all"
               />
               {query && (
                 <button
@@ -273,13 +273,13 @@ export default function HistoryPage() {
             <div className="relative shrink-0">
               <button
                 onClick={() => setSortOpen((v) => !v)}
-                className="flex items-center gap-2 h-9 px-3.5 rounded-lg border border-white/10 bg-white/4 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-white/20 transition-all active:scale-[0.97]"
+                className="flex items-center gap-2 h-9 px-3.5 rounded-lg border border-border dark:border-white/10 bg-muted dark:bg-white/4 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-white/20 transition-all active:scale-[0.97]"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 {currentLabel}
               </button>
               {sortOpen && (
-                <div className="absolute right-0 top-11 z-20 w-44 rounded-xl border border-white/10 bg-[#0A0A0C]/95 backdrop-blur-2xl py-1 shadow-2xl">
+                <div className="absolute right-0 top-11 z-20 w-44 rounded-xl border border-border dark:border-white/10 bg-card/95 backdrop-blur-2xl py-1 shadow-2xl">
                   {SORT_OPTIONS.map(({ value, label }) => (
                     <button
                       key={value}
@@ -287,8 +287,8 @@ export default function HistoryPage() {
                       className={cn(
                         "w-full text-left px-3.5 py-2 text-xs transition-colors",
                         value === sortKey
-                          ? "text-[#00D6FF] bg-[#00D6FF]/10"
-                          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                          ? "text-primary dark:text-[#00D6FF] bg-primary/10 dark:bg-[#00D6FF]/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent dark:hover:bg-white/5"
                       )}
                     >
                       {label}
@@ -309,7 +309,7 @@ export default function HistoryPage() {
                   "rounded-full px-3.5 py-1 text-xs font-medium border transition-all active:scale-[0.97]",
                   statusFilter === value
                     ? "gradient-blue-cyan text-white border-transparent glow-cyan"
-                    : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground bg-white/3"
+                    : "border-border dark:border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground bg-muted dark:bg-white/3"
                 )}
               >
                 {label}
@@ -344,7 +344,7 @@ export default function HistoryPage() {
 
       {/* ── Interview list — vertically stacked rows in one glass container ── */}
       {!loading && hasResults && (
-        <div className="overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02] backdrop-blur-2xl shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl shadow-2xl">
           {filtered.map((interview) => (
             <HistoryRow key={interview.id} interview={interview} />
           ))}
@@ -353,7 +353,7 @@ export default function HistoryPage() {
 
       {/* ── No results from filter ── */}
       {!loading && hasInterviews && !hasResults && (
-        <div className="rounded-2xl border border-white/8 bg-white/[0.02] backdrop-blur-2xl py-16 text-center">
+        <div className="rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl py-16 text-center">
           <Search className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground mb-1">No interviews match your filter</p>
           <p className="text-xs text-muted-foreground mb-4">
@@ -361,7 +361,7 @@ export default function HistoryPage() {
           </p>
           <button
             onClick={() => { setQuery(""); setStatusFilter("all"); }}
-            className="text-xs text-[#00D6FF] hover:text-white transition-colors underline underline-offset-2"
+            className="text-xs text-primary dark:text-[#00D6FF] hover:text-foreground dark:hover:text-white transition-colors underline underline-offset-2"
           >
             Clear all filters
           </button>
@@ -370,7 +370,7 @@ export default function HistoryPage() {
 
       {/* ── Truly empty state ── */}
       {!loading && !hasInterviews && (
-        <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] backdrop-blur-2xl py-20 text-center">
+        <div className="rounded-2xl border border-dashed border-border dark:border-white/10 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl py-20 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-blue-cyan glow-cyan mx-auto mb-5">
             <Mic className="h-8 w-8 text-white" />
           </div>

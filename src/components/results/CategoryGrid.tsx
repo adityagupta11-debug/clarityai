@@ -33,11 +33,11 @@ const CONFIG = {
     icon:        MessageSquare,
     label:       "Communication",
     description: "Clarity, conciseness & articulation",
-    iconBg:      "bg-[#00D6FF]/15 border-[#00D6FF]/25",
-    iconColor:   "text-[#00D6FF]",
+    iconBg:      "bg-primary/15 dark:bg-[#00D6FF]/15 border-primary/25 dark:border-[#00D6FF]/25",
+    iconColor:   "text-primary dark:text-[#00D6FF]",
     barClass:    "[&_[data-slot=progress-indicator]]:bg-[#00D6FF] [&_[data-slot=progress-indicator]]:duration-700",
     hoverBorder: "hover:border-[#00D6FF]/30",
-    hoverShadow: "hover:shadow-[0_16px_48px_rgba(0,214,255,0.15)]",
+    hoverShadow: "hover:shadow-[0_16px_48px_rgba(111,78,55,0.15)] dark:hover:shadow-[0_16px_48px_rgba(0,214,255,0.15)]",
     barColor:    "#00D6FF",
   },
   vocabulary: {
@@ -140,7 +140,7 @@ function MiniBar({
   return (
     <div className="flex items-center gap-3">
       <span className="text-[11px] text-muted-foreground w-24 shrink-0">{label}</span>
-      <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
+      <div className="flex-1 h-1 rounded-full bg-muted dark:bg-white/8 overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{ width: `${width}%`, backgroundColor: color }}
@@ -255,7 +255,7 @@ function VocabularySubMetrics({ data }: { data: VocabularyScore }) {
               </Chip>
             ))}
             {data.industryTermsUsed.length > 5 && (
-              <Chip className="border-white/15 text-muted-foreground">
+              <Chip className="border-border dark:border-white/15 text-muted-foreground">
                 +{data.industryTermsUsed.length - 5}
               </Chip>
             )}
@@ -370,7 +370,7 @@ function ConfidenceSubMetrics({ data }: { data: ConfidenceScore }) {
               </Chip>
             ))}
             {data.hedgingPhrases.length > 4 && (
-              <Chip className="border-white/15 text-muted-foreground">
+              <Chip className="border-border dark:border-white/15 text-muted-foreground">
                 <ChevronRight className="h-2.5 w-2.5 mr-0.5" />
                 {data.hedgingPhrases.length - 4} more
               </Chip>
@@ -513,7 +513,7 @@ function CategoryCard({
   return (
     <div
       className={cn(
-        "dash-card bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-2xl p-5 flex flex-col gap-5",
+        "dash-card bg-muted dark:bg-white/[0.03] backdrop-blur-xl border border-border dark:border-white/8 rounded-2xl p-5 flex flex-col gap-5",
         "hover:border-white/14",
         config.hoverBorder
       )}
@@ -535,7 +535,7 @@ function CategoryCard({
       />
 
       {/* Divider */}
-      <div className="h-px bg-white/6" />
+      <div className="h-px bg-muted dark:bg-white/6" />
 
       {/* Category-specific sub-metrics */}
       {categoryKey === "communication" && (
@@ -586,7 +586,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
         <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
           Category Breakdown
         </h2>
-        <div className="h-px flex-1 bg-white/8" />
+        <div className="h-px flex-1 bg-muted dark:bg-white/8" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

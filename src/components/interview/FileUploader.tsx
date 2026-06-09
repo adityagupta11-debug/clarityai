@@ -99,7 +99,7 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
 
   if (selectedFile) {
     return (
-      <div className="rounded-2xl bg-white/[0.02] backdrop-blur-2xl border border-emerald-500/25 p-5 transition-all">
+      <div className="rounded-2xl bg-muted dark:bg-white/[0.02] backdrop-blur-2xl border border-emerald-500/25 p-5 transition-all">
         <div className="flex items-center gap-4">
           {/* File icon */}
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/20">
@@ -126,7 +126,7 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
               size="icon-sm"
               variant="ghost"
               onClick={handleRemove}
-              className="shrink-0 text-muted-foreground hover:text-foreground hover:bg-white/8"
+              className="shrink-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:hover:bg-white/8"
             >
               <X className="h-4 w-4" />
               <span className="sr-only">Remove file</span>
@@ -161,10 +161,10 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
           "transition-all duration-200 select-none outline-none",
           "focus-visible:ring-2 focus-visible:ring-ring/50",
           isDragOver
-            ? "border-[#00D6FF]/70 bg-[#00D6FF]/10 cursor-copy"
+            ? "border-primary/70 dark:border-[#00D6FF]/70 bg-primary/10 dark:bg-[#00D6FF]/10 cursor-copy"
             : error
               ? "border-red-500/40 bg-red-500/5 cursor-pointer hover:border-red-500/60"
-              : "border-white/10 cursor-pointer hover:border-[#00D6FF]/40 hover:bg-white/[0.03]",
+              : "border-border dark:border-white/10 cursor-pointer hover:border-[#00D6FF]/40 hover:bg-accent dark:hover:bg-white/[0.03]",
           disabled && "opacity-50 cursor-not-allowed pointer-events-none"
         )}
       >
@@ -183,18 +183,18 @@ export function FileUploader({ onFileSelected, onFileRemoved, disabled }: FileUp
         <Upload
           className={cn(
             "h-7 w-7 transition-colors duration-200",
-            isDragOver ? "text-[#00D6FF]" : "text-white/50"
+            isDragOver ? "text-primary dark:text-[#00D6FF]" : "text-muted-foreground dark:text-white/50"
           )}
         />
 
         {/* Copy */}
         <div className="space-y-1">
-          <p className="text-sm font-medium text-white/90">
+          <p className="text-sm font-medium text-foreground dark:text-white/90">
             {isDragOver ? "Drop to upload" : "Drag & drop your audio file"}
           </p>
-          <p className="text-xs text-white/50">
+          <p className="text-xs text-muted-foreground dark:text-white/50">
             or{" "}
-            <span className="text-[#00D6FF] underline underline-offset-2">
+            <span className="text-primary dark:text-[#00D6FF] underline underline-offset-2">
               click to browse
             </span>
             {" "}· MP3, WAV, M4A, WebM, OGG up to 500 MB

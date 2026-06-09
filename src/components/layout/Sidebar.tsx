@@ -67,14 +67,14 @@ function SidebarContents({
   return (
     <div className="flex flex-col h-full">
       {/* Logo + pin toggle */}
-      <div className="flex h-16 items-center justify-between gap-2 px-5 border-b border-white/10 shrink-0">
+      <div className="flex h-16 items-center justify-between gap-2 px-5 border-b border-border dark:border-white/10 shrink-0">
         <Link href="/dashboard" onClick={onNavClick} className="flex items-center gap-2.5 min-w-0">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg gradient-blue-cyan glow-cyan">
             <Mic className="h-4 w-4 text-white" />
           </div>
           <span className="text-lg font-semibold tracking-tight truncate">
             <span className="text-gradient-cyan">Clarity</span>
-            <span className="text-white/80">AI</span>
+            <span className="text-foreground dark:text-white/80">AI</span>
           </span>
         </Link>
 
@@ -87,8 +87,8 @@ function SidebarContents({
             className={cn(
               "hidden lg:flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-all active:scale-95",
               isPinned
-                ? "border-[#00D6FF]/40 bg-[#00D6FF]/15 text-[#00D6FF] shadow-[0_0_14px_rgba(0,214,255,0.25)]"
-                : "border-white/10 text-white/50 hover:text-white hover:bg-white/5"
+                ? "border-primary/40 dark:border-[#00D6FF]/40 bg-primary/15 dark:bg-[#00D6FF]/15 text-primary dark:text-[#00D6FF] shadow-[0_0_14px_rgba(111,78,55,0.25)] dark:shadow-[0_0_14px_rgba(0,214,255,0.25)]"
+                : "border-border dark:border-white/10 text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white hover:bg-accent dark:hover:bg-white/5"
             )}
           >
             {isPinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
@@ -103,7 +103,7 @@ function SidebarContents({
           onClick={onNavClick}
           className={cn(
             buttonVariants(),
-            "w-full gradient-blue-cyan text-white shadow-[0_0_20px_rgba(0,214,255,0.3)] hover:brightness-110 active:scale-[0.97] transition-all"
+            "w-full gradient-blue-cyan text-white shadow-[0_0_20px_rgba(111,78,55,0.3)] dark:shadow-[0_0_20px_rgba(0,214,255,0.3)] hover:brightness-110 active:scale-[0.97] transition-all"
           )}
         >
           <Sparkles className="h-4 w-4 mr-2" />
@@ -128,14 +128,14 @@ function SidebarContents({
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium",
                 "transition-all duration-150 active:scale-[0.97]",
                 isActive
-                  ? "bg-[#00D6FF]/10 text-[#00D6FF] border border-[#00D6FF]/20 shadow-[0_0_20px_rgba(0,214,255,0.1)]"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
+                  ? "bg-primary/10 dark:bg-[#00D6FF]/10 text-primary dark:text-[#00D6FF] border border-primary/20 dark:border-[#00D6FF]/20 shadow-[0_0_20px_rgba(111,78,55,0.1)] dark:shadow-[0_0_20px_rgba(0,214,255,0.1)]"
+                  : "text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white hover:bg-accent dark:hover:bg-white/5"
               )}
             >
               <Icon
                 className={cn(
                   "h-4 w-4 shrink-0",
-                  isActive ? "text-[#00D6FF]" : "text-white/50"
+                  isActive ? "text-primary dark:text-[#00D6FF]" : "text-muted-foreground dark:text-white/50"
                 )}
               />
               {label}
@@ -146,18 +146,18 @@ function SidebarContents({
 
       {/* Upgrade CTA */}
       <div className="px-4 pb-3 shrink-0">
-        <div className="rounded-xl p-4 bg-white/5 backdrop-blur-xl border border-[#00D6FF]/20 shadow-[0_0_20px_rgba(0,214,255,0.08)]">
+        <div className="rounded-xl p-4 bg-muted dark:bg-white/5 backdrop-blur-xl border border-primary/20 dark:border-[#00D6FF]/20 shadow-[0_0_20px_rgba(111,78,55,0.08)] dark:shadow-[0_0_20px_rgba(0,214,255,0.08)]">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="h-4 w-4 text-[#00D6FF]" />
-            <span className="text-sm font-medium text-[#00D6FF]">Free Plan</span>
+            <TrendingUp className="h-4 w-4 text-primary dark:text-[#00D6FF]" />
+            <span className="text-sm font-medium text-primary dark:text-[#00D6FF]">Free Plan</span>
           </div>
-          <p className="text-xs text-white/50 mb-3">
+          <p className="text-xs text-muted-foreground dark:text-white/50 mb-3">
             Upgrade to Pro for unlimited interviews and advanced analytics.
           </p>
           <Button
             size="sm"
             variant="outline"
-            className="w-full text-xs border-[#00D6FF]/30 text-white/80 hover:border-[#00D6FF]/60 hover:bg-[#00D6FF]/10 active:scale-[0.97] transition-all"
+            className="w-full text-xs border-primary/30 dark:border-[#00D6FF]/30 text-foreground dark:text-white/80 hover:border-[#00D6FF]/60 hover:bg-[#00D6FF]/10 active:scale-[0.97] transition-all"
           >
             Upgrade to Pro
           </Button>
@@ -166,20 +166,20 @@ function SidebarContents({
 
       {/* User info + sign-out */}
       {user && (
-        <div className="flex items-center gap-3 px-4 py-4 border-t border-white/10 shrink-0">
+        <div className="flex items-center gap-3 px-4 py-4 border-t border-border dark:border-white/10 shrink-0">
           <Avatar className="h-8 w-8 shrink-0 ring-2 ring-[#00D6FF]/30">
             <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? "User"} />
-            <AvatarFallback className="bg-[#00D6FF]/15 text-[#00D6FF] text-xs font-medium">
+            <AvatarFallback className="bg-primary/15 dark:bg-[#00D6FF]/15 text-primary dark:text-[#00D6FF] text-xs font-medium">
               {initials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium truncate text-white/90">{user.displayName ?? "User"}</p>
-            <p className="text-xs text-white/50 truncate">{user.email}</p>
+            <p className="text-xs font-medium truncate text-foreground dark:text-white/90">{user.displayName ?? "User"}</p>
+            <p className="text-xs text-muted-foreground dark:text-white/50 truncate">{user.email}</p>
           </div>
           <button
             onClick={handleSignOut}
-            className="shrink-0 text-white/50 hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/5 active:scale-[0.97]"
+            className="shrink-0 text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white transition-colors p-1.5 rounded-md hover:bg-accent dark:hover:bg-white/5 active:scale-[0.97]"
             title="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />
@@ -214,7 +214,7 @@ export function Sidebar({
       aria-hidden={!open}
       className={cn(
         "hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-64 flex-col overflow-hidden",
-        "rounded-r-2xl border-r border-white/10 bg-[#070708]/95 backdrop-blur-2xl shadow-2xl",
+        "rounded-r-2xl border-r border-border dark:border-white/10 bg-[#070708]/95 backdrop-blur-2xl shadow-2xl",
         "transition-transform duration-300 ease-in-out",
         open ? "translate-x-0" : "-translate-x-full"
       )}
@@ -239,11 +239,11 @@ export function MobileTopBar() {
       .slice(0, 2) ?? "?";
 
   return (
-    <header className="lg:hidden sticky top-0 z-50 flex h-14 items-center justify-between px-4 border-b border-white/10 apple-glass shrink-0">
+    <header className="lg:hidden sticky top-0 z-50 flex h-14 items-center justify-between px-4 border-b border-border dark:border-white/10 apple-glass shrink-0">
       {/* Hamburger sheet trigger */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 hover:border-white/20 hover:bg-white/5 active:scale-[0.95] transition-all"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-border dark:border-white/10 hover:border-white/20 hover:bg-accent dark:hover:bg-white/5 active:scale-[0.95] transition-all"
           aria-label="Open navigation menu"
         >
           {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -252,7 +252,7 @@ export function MobileTopBar() {
         <SheetContent
           side="left"
           showCloseButton={false}
-          className="w-72 max-w-[85vw] p-0 border-r border-white/10 apple-glass"
+          className="w-72 max-w-[85vw] p-0 border-r border-border dark:border-white/10 apple-glass"
         >
           {/* Visually hidden title for screen readers */}
           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
@@ -263,11 +263,11 @@ export function MobileTopBar() {
       {/* Centred logo */}
       <Link href="/dashboard" className="flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
         <div className="flex h-7 w-7 items-center justify-center rounded-md gradient-blue-cyan glow-cyan">
-          <Mic className="h-3.5 w-3.5 text-white" />
+          <Mic className="h-3.5 w-3.5 text-foreground dark:text-white" />
         </div>
         <span className="text-base font-bold tracking-tight">
           <span className="text-gradient-cyan">Clarity</span>
-          <span className="text-white/70">AI</span>
+          <span className="text-foreground dark:text-white/70">AI</span>
         </span>
       </Link>
 
@@ -275,7 +275,7 @@ export function MobileTopBar() {
       {user && (
         <Avatar className="h-8 w-8 ring-2 ring-[#00D6FF]/30">
           <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? "User"} />
-          <AvatarFallback className="bg-[#00D6FF]/15 text-[#00D6FF] text-xs font-medium">
+          <AvatarFallback className="bg-primary/15 dark:bg-[#00D6FF]/15 text-primary dark:text-[#00D6FF] text-xs font-medium">
             {initials}
           </AvatarFallback>
         </Avatar>

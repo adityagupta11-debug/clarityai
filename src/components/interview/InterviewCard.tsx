@@ -58,7 +58,7 @@ export function InterviewCard({ interview }: InterviewCardProps) {
       : null;
 
   return (
-    <Card className="group rounded-3xl ring-0 border border-white/5 bg-white/[0.02] backdrop-blur-2xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:-translate-y-1 hover:bg-white/[0.04] hover:shadow-[0_10px_40px_-10px_rgba(0,214,255,0.15)]">
+    <Card className="group rounded-3xl ring-0 border border-border dark:border-white/5 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl shadow-2xl transition-all duration-300 ease-out hover:scale-[1.01] hover:-translate-y-1 hover:bg-accent dark:hover:bg-white/[0.04] hover:shadow-[0_10px_40px_-10px_rgba(111,78,55,0.15)] dark:hover:shadow-[0_10px_40px_-10px_rgba(0,214,255,0.15)]">
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-4">
           {/* Left: meta */}
@@ -78,7 +78,7 @@ export function InterviewCard({ interview }: InterviewCardProps) {
               </span>
 
               {/* Interview type */}
-              <Badge variant="outline" className="border-white/10 text-muted-foreground text-xs">
+              <Badge variant="outline" className="border-border dark:border-white/10 text-muted-foreground text-xs">
                 {INTERVIEW_TYPE_LABELS[interview.interviewType]}
               </Badge>
             </div>
@@ -150,7 +150,7 @@ export function InterviewCard({ interview }: InterviewCardProps) {
                 href={`/interview/${interview.id}` as Route}
                 className={cn(
                   buttonVariants({ variant: "outline", size: "sm" }),
-                  "border-white/10 hover:border-white/20 text-xs"
+                  "border-border dark:border-white/10 hover:border-white/20 text-xs"
                 )}
               >
                 View Status

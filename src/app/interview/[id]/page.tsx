@@ -120,7 +120,7 @@ export default function InterviewDetailPage({
 
         {/* Main card */}
         <div
-          className="rounded-3xl border border-white/8 overflow-hidden"
+          className="rounded-3xl border border-border dark:border-white/8 overflow-hidden"
           style={{ background: "oklch(0.12 0.025 35 / 0.90)", backdropFilter: "blur(24px)" }}
         >
           {/* Animated header bar */}
@@ -175,7 +175,7 @@ export default function InterviewDetailPage({
                         "flex items-start gap-4 rounded-xl p-4 transition-all duration-300",
                         isActive  ? "bg-red-500/8 border border-red-500/20"
                         : isDone  ? "bg-emerald-500/6 border border-emerald-500/15"
-                                  : "bg-white/2 border border-white/6 opacity-40"
+                                  : "bg-muted dark:bg-white/2 border border-border dark:border-white/6 opacity-40"
                       )}
                     >
                       {/* Step icon */}
@@ -183,7 +183,7 @@ export default function InterviewDetailPage({
                         "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all",
                         isActive  ? "gradient-red glow-red-sm text-white"
                         : isDone  ? "bg-emerald-500/20 text-emerald-400"
-                                  : "bg-white/6 text-muted-foreground"
+                                  : "bg-muted dark:bg-white/6 text-muted-foreground"
                       )}>
                         {isDone
                           ? <CheckCircle2 className="h-4 w-4" />
@@ -225,7 +225,7 @@ export default function InterviewDetailPage({
                   href="/dashboard"
                   className={cn(
                     buttonVariants({ variant: "outline" }),
-                    "flex-1 border-white/10 hover:border-white/20 text-center"
+                    "flex-1 border-border dark:border-white/10 hover:border-white/20 text-center"
                   )}
                 >
                   Back to Dashboard
