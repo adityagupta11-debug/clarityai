@@ -54,21 +54,22 @@ export function LandingNav() {
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
-        {/* Logo */}
+        {/* Logo — brand name stays pure white */}
         <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <span className="text-xl font-bold tracking-tight text-white/90 transition-opacity hover:opacity-80">
+          <span className="breathe-link text-xl font-bold tracking-tight text-white">
             ClarityAI
           </span>
         </Link>
 
         {/* Desktop Links */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
-          {NAV_SECTIONS.map((section) => (
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-body-cyan">
+          {NAV_SECTIONS.map((section, i) => (
             <a
               key={section.id}
               href={`#${section.id}`}
               onClick={(e) => scrollToSection(e, section.progress)}
-              className="hover:text-white transition-colors duration-300"
+              className="breathe-link float-nav"
+              style={{ animationDelay: `${i * 0.45}s` }}
             >
               {section.label}
             </a>
@@ -76,16 +77,18 @@ export function LandingNav() {
         </nav>
 
         {/* CTA */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <Link
             href="/login"
-            className="hidden md:block text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
+            className="breathe-link float-nav hidden md:block text-sm font-medium text-body-cyan"
+            style={{ animationDelay: "1.8s" }}
           >
             Sign In
           </Link>
           <Link
             href="/signup"
-            className="btn-gradient-border px-5 py-2 text-sm font-semibold text-white/90 transition-all hover:brightness-125"
+            className="btn-premium breathe-btn float-nav px-6 py-2.5 text-sm font-semibold"
+            style={{ animationDelay: "2.25s" }}
           >
             Get Started
           </Link>

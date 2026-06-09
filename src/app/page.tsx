@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { ArrowRight, PlayCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { LandingNav } from "@/components/layout/LandingNav";
@@ -71,16 +71,24 @@ export default function LandingPage() {
     return 0;
   };
 
-  // Section 1: Hero (0% - 15%)
-  const section1Opacity = getOpacity(progress, 0, 0, 0.1, 0.15);
-  // Section 2: Explosion Left Text (15% - 40%)
-  const section2Opacity = getOpacity(progress, 0.15, 0.2, 0.35, 0.4);
-  // Section 3: Core Focus Right Text (40% - 65%)
-  const section3Opacity = getOpacity(progress, 0.4, 0.45, 0.6, 0.65);
-  // Section 4: Personalization Rings (65% - 85%)
-  const section4Opacity = getOpacity(progress, 0.65, 0.7, 0.8, 0.85);
-  // Section 5: Reassembled Final (85% - 100%)
-  const section5Opacity = getOpacity(progress, 0.85, 0.9, 1.0, 1.0);
+  // Brand intro: the ClarityAI wordmark shown the instant you land (progress 0),
+  // sitting over the background logo. It holds, then fades as you start scrolling,
+  // cross-dissolving into the hero below.
+  const introOpacity =
+    progress <= 0.03 ? 1 : progress >= 0.1 ? 0 : 1 - (progress - 0.03) / 0.07;
+
+  // Crossfade windows are gently overlapped so one section is always easing in
+  // as the previous eases out — no dead frames, no hard cuts.
+  // Section 1: Hero (fades in as the intro fades out)
+  const section1Opacity = getOpacity(progress, 0.05, 0.11, 0.13, 0.18);
+  // Section 2: Technology (plateau ~0.27)
+  const section2Opacity = getOpacity(progress, 0.13, 0.21, 0.34, 0.4);
+  // Section 3: How It Works (plateau ~0.52)
+  const section3Opacity = getOpacity(progress, 0.4, 0.47, 0.59, 0.65);
+  // Section 4: Features (plateau ~0.75)
+  const section4Opacity = getOpacity(progress, 0.64, 0.71, 0.8, 0.86);
+  // Section 5: Final CTA
+  const section5Opacity = getOpacity(progress, 0.85, 0.91, 1.0, 1.0);
 
   return (
     <div className="bg-[#050505] text-white selection:bg-[#00D6FF]/20">
@@ -104,137 +112,182 @@ export default function LandingPage() {
           {/* Content Overlays */}
           <div className="absolute inset-0 z-10 mx-auto max-w-7xl px-6 lg:px-8">
             
-            {/* 1. Hero Assembled (0-15%) */}
-            <div 
+            {/* 0. Brand Intro — first thing on landing, dissolves into the hero on scroll */}
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none transition-[opacity,transform] duration-300 ease-out"
+              style={{
+                opacity: introOpacity,
+                transform: `scale(${1 + (1 - introOpacity) * 0.06})`,
+              }}
+            >
+              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white drop-shadow-2xl animate-title-breathe">
+                ClarityAI
+              </h1>
+              <div className="mt-12 flex flex-col items-center gap-3 text-body-cyan-dim">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-semibold">
+                  Scroll to explore
+                </span>
+                <ChevronDown className="h-5 w-5 text-cyan-accent animate-bounce" />
+              </div>
+            </div>
+
+            {/* 1. Hero Assembled */}
+            <div
               id="overview"
-              className="absolute inset-0 flex flex-col items-center justify-center text-center transition-all duration-75"
-              style={{ 
+              className="absolute inset-0 flex flex-col items-center justify-center text-center px-2 transition-[opacity,transform] duration-300 ease-out"
+              style={{
                 opacity: section1Opacity,
                 transform: `translateY(${(1 - section1Opacity) * -20}px)`,
                 pointerEvents: section1Opacity > 0.5 ? 'auto' : 'none'
               }}
             >
-              <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#00D6FF] mb-6 glow-cyan">
-                Meet ClarityAI
+              <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-cyan-accent mb-6">
+                Meet <span className="text-white">ClarityAI</span>
               </h2>
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white/90 mb-6 drop-shadow-2xl">
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-6 drop-shadow-2xl">
                 Interview with clarity.<br />
-                Land with <span className="text-gradient-cyan">confidence.</span>
+                Land with <span className="text-cyan-accent">confidence.</span>
               </h1>
-              <p className="text-lg md:text-xl text-white/60 max-w-2xl font-medium tracking-wide">
-                Upload your audio or record live. ClarityAI uses advanced AI to
+              <p className="text-lg md:text-xl text-body-cyan max-w-2xl font-medium tracking-wide">
+                Upload your audio or record live. <span className="text-white">ClarityAI</span> uses advanced AI to
                 score your communication, count filler words, and rewrite your answers instantly.
               </p>
             </div>
 
-            {/* 2. Explosion Left (15-40%) */}
-            <div 
+            {/* 2. Technology */}
+            <div
               id="technology"
-              className="absolute inset-y-0 left-6 lg:left-8 flex flex-col justify-center max-w-lg transition-all duration-75"
-              style={{ 
+              className="absolute inset-y-0 left-0 right-0 sm:right-auto flex flex-col justify-center w-full sm:max-w-xl px-2 sm:px-0 transition-[opacity,transform] duration-300 ease-out"
+              style={{
                 opacity: section2Opacity,
                 transform: `translateY(${(1 - section2Opacity) * 20}px)`,
                 pointerEvents: section2Opacity > 0.5 ? 'auto' : 'none'
               }}
             >
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white/90 mb-6 drop-shadow-xl">
-                Built on real<br/>
-                <span className="text-gradient-blue">intelligence.</span>
+              <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-cyan-accent mb-4">
+                The Technology
               </h2>
-              <div className="space-y-6 border-l border-white/10 pl-6">
-                <p className="text-lg text-white/60 leading-relaxed font-medium">
-                  Every session is analyzed in real time — your answers, your tone, your pacing.
-                </p>
-                <p className="text-lg text-white/60 leading-relaxed font-medium">
-                  ClarityAI doesn&apos;t just listen.<br />
-                  <span className="text-white/90">It understands.</span>
-                </p>
+              <h3 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6 drop-shadow-xl">
+                Built on real<br />
+                <span className="text-cyan-accent">intelligence.</span>
+              </h3>
+              <p className="text-lg text-body-cyan leading-relaxed font-medium mb-8">
+                The moment you speak, <span className="text-white">ClarityAI</span> analyzes your
+                delivery in real time — turning raw audio into a precise, structured read of how you
+                actually communicate under pressure.
+              </p>
+              <div className="space-y-4 border-l rule-cyan pl-6">
+                <div>
+                  <p className="text-base font-semibold text-cyan-accent">Voice &amp; Tone</p>
+                  <p className="text-base text-body-cyan-dim leading-relaxed">
+                    Detects confidence, warmth, and conviction in your delivery — flagging where you
+                    sound uncertain or rushed.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-base font-semibold text-cyan-accent">Pacing &amp; Rhythm</p>
+                  <p className="text-base text-body-cyan-dim leading-relaxed">
+                    Tracks words-per-minute and pause patterns to keep you clear and composed, never
+                    racing or trailing off.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-base font-semibold text-cyan-accent">Filler-Word Detection</p>
+                  <p className="text-base text-body-cyan-dim leading-relaxed">
+                    Counts every &ldquo;um,&rdquo; &ldquo;like,&rdquo; and &ldquo;you know&rdquo; in
+                    real time, so you can hear exactly what&apos;s diluting your message.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* 3. Core Engine Right (40-65%) */}
-            <div 
+            {/* 3. How It Works */}
+            <div
               id="how-it-works"
-              className="absolute inset-y-0 right-6 lg:right-8 flex flex-col justify-center max-w-lg text-right transition-all duration-75"
-              style={{ 
+              className="absolute inset-y-0 left-0 right-0 sm:left-auto flex flex-col justify-center w-full sm:max-w-xl ml-auto px-2 sm:px-0 text-right transition-[opacity,transform] duration-300 ease-out"
+              style={{
                 opacity: section3Opacity,
                 transform: `translateY(${(1 - section3Opacity) * 20}px)`,
                 pointerEvents: section3Opacity > 0.5 ? 'auto' : 'none'
               }}
             >
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white/90 mb-6 drop-shadow-xl">
-                Feedback that<br/>
-                actually <span className="text-gradient-cyan">means</span> something.
+              <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-cyan-accent mb-4">
+                How It Works
               </h2>
-              <div className="space-y-6 border-r border-white/10 pr-6">
-                <p className="text-lg text-white/60 leading-relaxed font-medium">
-                  Record your interview or upload audio. ClarityAI leverages advanced AI to analyze your pacing, filler words, and narrative structure.
+              <h3 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6 drop-shadow-xl">
+                Feedback that<br />
+                actually <span className="text-cyan-accent">means</span> something.
+              </h3>
+              <div className="space-y-6 border-r rule-cyan pr-6">
+                <p className="text-lg text-body-cyan leading-relaxed font-medium">
+                  Record your interview or upload audio. <span className="text-white">ClarityAI</span> leverages
+                  advanced AI to analyze your pacing, filler words, and narrative structure.
                 </p>
-                <p className="text-lg text-white/60 leading-relaxed font-medium">
-                  Identifies patterns in your responses that hold you back.
+                <p className="text-lg text-body-cyan leading-relaxed font-medium">
+                  It surfaces the patterns in your responses that quietly hold you back.
                 </p>
-                <p className="text-lg text-[#00D6FF] font-semibold tracking-wide">
-                  Providing instant feedback and rewritten model answers.
+                <p className="text-lg text-cyan-accent font-semibold tracking-wide">
+                  Then delivers instant feedback and rewritten model answers.
                 </p>
               </div>
             </div>
 
-            {/* 4. Personalization Center-ish (65-85%) */}
-            <div 
+            {/* 4. Features */}
+            <div
               id="features"
-              className="absolute inset-0 flex flex-col items-center justify-center text-center transition-all duration-75"
-              style={{ 
+              className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 transition-[opacity,transform] duration-300 ease-out"
+              style={{
                 opacity: section4Opacity,
-                transform: `scale(${0.95 + section4Opacity * 0.05})`,
+                transform: `scale(${0.96 + section4Opacity * 0.04})`,
                 pointerEvents: section4Opacity > 0.5 ? 'auto' : 'none'
               }}
             >
-              <div className="apple-glass rounded-3xl p-10 md:p-16 max-w-3xl mx-auto border border-white/10 shadow-2xl">
-                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white/90 mb-8">
-                  Your coach.<br/>
-                  Your pace.<br/>
-                  <span className="text-gradient-blue">Your goals.</span>
-                </h2>
-                <p className="text-lg text-white/60 max-w-xl mx-auto leading-relaxed">
-                  Adaptive question sets and role-specific interview tracks. 
-                  The AI adjusts to your experience level and target industry, 
-                  pushing you exactly where you need to grow.
-                </p>
-              </div>
+              <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-cyan-accent mb-6">
+                Features
+              </h2>
+              <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white mb-8 leading-[1.1] drop-shadow-2xl">
+                Your coach.<br />
+                Your pace.<br />
+                <span className="text-cyan-accent">Your goals.</span>
+              </h3>
+              <p className="text-lg md:text-xl text-body-cyan max-w-2xl mx-auto leading-relaxed font-medium tracking-wide">
+                Adaptive question sets and role-specific interview tracks. The AI adjusts to your
+                experience level and target industry, pushing you exactly where you need to grow.
+              </p>
             </div>
 
-            {/* 5. Final CTA Reassembled (85-100%) */}
-            <div 
-              className="absolute inset-0 flex flex-col items-center justify-center text-center transition-all duration-75"
-              style={{ 
+            {/* 5. Final CTA */}
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 transition-[opacity,transform] duration-300 ease-out"
+              style={{
                 opacity: section5Opacity,
                 transform: `translateY(${(1 - section5Opacity) * 20}px)`,
                 pointerEvents: section5Opacity > 0.5 ? 'auto' : 'none'
               }}
             >
-              <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white/90 mb-6 drop-shadow-2xl">
+              <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-6 drop-shadow-2xl">
                 Stop practicing blind.<br />
-                Start interviewing with <span className="text-gradient-cyan">clarity.</span>
+                Start interviewing with <span className="text-white">clarity.</span>
               </h2>
-              <p className="text-xl text-white/60 max-w-2xl font-medium tracking-wide mb-12">
-                ClarityAI. Built for candidates who refuse to leave it to chance.
+              <p className="text-xl text-body-cyan max-w-2xl font-medium tracking-wide mb-12">
+                <span className="text-white">ClarityAI</span> — built for candidates who refuse to leave it to chance.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 <Link
                   href="/signup"
                   className={cn(
                     buttonVariants({ size: "lg" }),
-                    "btn-gradient-border glow-cyan px-8 h-14 text-base font-semibold transition-all hover:scale-105"
+                    "btn-premium breathe-btn px-8 h-14 text-base font-semibold"
                   )}
                 >
                   Get Started
-                  <ArrowRight className="h-4 w-4 ml-2 opacity-80" />
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
-                
+
                 <button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="flex items-center gap-2 text-sm font-medium text-white/50 hover:text-white transition-colors"
+                  className="breathe-link flex items-center gap-2 text-sm font-medium text-body-cyan"
                 >
                   <PlayCircle className="h-5 w-5" />
                   See how it works
@@ -250,12 +303,12 @@ export default function LandingPage() {
       <footer className="bg-[#050505] border-t border-white/5 py-12 relative z-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <span className="text-sm font-bold tracking-tight text-white/80">
+            <span className="text-sm font-bold tracking-tight text-white">
               ClarityAI
             </span>
-            <div className="flex items-center gap-8 text-xs font-medium text-white/40">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <div className="flex items-center gap-8 text-xs font-medium text-body-cyan-dim">
+              <a href="#" className="breathe-link">Privacy Policy</a>
+              <a href="#" className="breathe-link">Terms of Service</a>
               <span>&copy; {new Date().getFullYear()} ClarityAI Inc. All rights reserved.</span>
             </div>
           </div>

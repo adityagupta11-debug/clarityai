@@ -268,6 +268,200 @@
   }
 }
 
+/* ============================================================
+   Landing Page — Premium Cyan System
+   ============================================================ */
+@layer utilities {
+  /* ── Cyan-tinted body text (replaces blend-in white/grey) ── */
+  .text-body-cyan {
+    color: rgba(176, 224, 240, 0.78);
+  }
+  .text-body-cyan-dim {
+    color: rgba(160, 210, 228, 0.58);
+  }
+  .text-body-cyan-bright {
+    color: rgba(206, 240, 250, 0.92);
+  }
+
+  /* ── Solid cyan accent for keywords (with faint glow) ── */
+  .text-cyan-accent {
+    color: #2fe0ff;
+    text-shadow: 0 0 22px rgba(0, 214, 255, 0.35);
+  }
+
+  /* ── Premium borderless CTA button — clean filled cyan ── */
+  .btn-premium {
+    position: relative;
+    background: linear-gradient(135deg, #00d6ff 0%, #00a3ff 100%);
+    color: #04121b;
+    border: none;
+    border-radius: 9999px;
+    box-shadow:
+      0 6px 24px -6px rgba(0, 214, 255, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 450ms ease,
+      filter 300ms ease;
+  }
+  .btn-premium:hover {
+    filter: brightness(1.06) saturate(1.05);
+  }
+
+  /* ── Hover & breathe: subtle scale + glow loop ── */
+  .breathe-btn {
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 450ms ease;
+    will-change: transform;
+  }
+  .breathe-btn:hover {
+    animation: breathe-glow-btn 2.6s ease-in-out infinite;
+  }
+
+  .breathe-link {
+    display: inline-block;
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 300ms ease,
+      text-shadow 450ms ease;
+    will-change: transform;
+  }
+  .breathe-link:hover {
+    color: #2fe0ff;
+    animation: breathe-glow-link 2.6s ease-in-out infinite;
+  }
+
+  /* Thin cyan divider used inside copy sections */
+  .rule-cyan {
+    border-color: rgba(0, 214, 255, 0.18);
+  }
+
+  /* Gentle floating bob for nav items (staggered via inline animation-delay) */
+  .float-nav {
+    animation: float-nav 5s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* ── Signup flowchart — minimalist frosted-glass step ── */
+  /* Float lives on an outer wrapper, hover-lift on this inner card, so the two
+     transforms compose instead of fighting. */
+  .flow-card {
+    background: rgba(10, 18, 24, 0.4);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(0, 214, 255, 0.12);
+    box-shadow:
+      0 20px 50px -25px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 450ms ease,
+      border-color 450ms ease;
+    will-change: transform;
+  }
+  .flow-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(0, 214, 255, 0.35);
+    box-shadow:
+      0 30px 70px -25px rgba(0, 0, 0, 0.75),
+      0 0 44px -8px rgba(0, 214, 255, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .flow-float {
+    animation: flow-float 7s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* Combined idle "breathe + float": gentle vertical drift plus a subtle
+     scale/glow pulse. Stagger instances via inline animation-delay. */
+  .float-breathe {
+    animation: float-breathe 7s ease-in-out infinite;
+    will-change: transform, filter;
+  }
+}
+
+@keyframes flow-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes float-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 0 rgba(0, 214, 255, 0));
+  }
+  50% {
+    transform: translateY(-7px) scale(1.015);
+    filter: drop-shadow(0 0 14px rgba(0, 214, 255, 0.18));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-float,
+  .float-breathe {
+    animation: none;
+  }
+}
+
+@keyframes float-nav {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-nav {
+    animation: none;
+  }
+}
+
+@keyframes breathe-glow-btn {
+  0%,
+  100% {
+    transform: scale(1.03);
+    box-shadow:
+      0 6px 28px -6px rgba(0, 214, 255, 0.5),
+      0 0 24px rgba(0, 214, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow:
+      0 8px 40px -6px rgba(0, 214, 255, 0.65),
+      0 0 48px rgba(0, 214, 255, 0.45);
+  }
+}
+
+@keyframes breathe-glow-link {
+  0%,
+  100% {
+    transform: scale(1.04);
+    text-shadow: 0 0 10px rgba(0, 214, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.07);
+    text-shadow: 0 0 20px rgba(0, 214, 255, 0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breathe-btn:hover,
+  .breathe-link:hover {
+    animation: none;
+  }
+}
+
 /* ── Analytics dashboard interactions ── */
 @layer utilities {
   /* Premium card hover: subtle lift + soft diffused blue ambient shadow */

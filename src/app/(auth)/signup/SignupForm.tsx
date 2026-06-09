@@ -115,7 +115,7 @@ export function SignupForm() {
         {/* Google */}
         <Button
           variant="outline"
-          className="w-full border-white/10 hover:border-white/25 hover:bg-white/5 transition-all"
+          className="w-full breathe-btn border-white/10 hover:border-[#00D6FF]/40 hover:bg-[#00D6FF]/5"
           onClick={handleGoogleSignIn}
           disabled={isLoading}
         >
@@ -194,7 +194,7 @@ export function SignupForm() {
 
           <Button
             type="submit"
-            className="w-full gradient-blue-cyan text-white hover:opacity-90 transition-opacity"
+            className="w-full btn-premium breathe-btn"
             disabled={isLoading || !name.trim() || !email || !password}
           >
             {loadingEmail && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
@@ -206,7 +206,7 @@ export function SignupForm() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-[#00D6FF] hover:text-white transition-colors font-medium"
+            className="breathe-link text-cyan-accent font-medium"
           >
             Sign in
           </Link>

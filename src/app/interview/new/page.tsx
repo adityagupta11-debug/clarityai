@@ -771,12 +771,12 @@ export default function NewInterviewPage() {
             <>
             <Tabs defaultValue="file" onValueChange={handleTabChange} className="space-y-5">
               {/* Minimal segmented pill toggle */}
-              <TabsList className="grid w-full grid-cols-2 gap-1 h-auto rounded-full border border-white/10 bg-white/[0.03] p-1">
+              <TabsList className="grid w-full grid-cols-2 gap-1 h-auto group-data-horizontal/tabs:h-auto items-stretch rounded-full border border-white/10 bg-white/[0.03] p-1">
                 <TabsTrigger
                   value="file"
                   disabled={isSubmitting}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
+                    "flex h-auto w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300",
                     "text-white/50 hover:text-white/80",
                     "data-active:bg-white/[0.08] data-active:text-white data-active:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
                   )}
@@ -788,7 +788,7 @@ export default function NewInterviewPage() {
                   value="record"
                   disabled={isSubmitting}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
+                    "flex h-auto w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300",
                     "text-white/50 hover:text-white/80",
                     "data-active:bg-white/[0.08] data-active:text-white data-active:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
                   )}
@@ -818,6 +818,23 @@ export default function NewInterviewPage() {
               <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-500/8 border border-red-500/20 px-3 py-2.5 text-xs text-red-400 animate-in slide-in-from-top-1 duration-150">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                 {audioError}
+              </div>
+            )}
+
+            {/* Analyse action — lives right inside the recording step */}
+            {!isSubmitting && (
+              <div className="float-breathe mt-6 flex justify-center">
+                <Button
+                  type="submit"
+                  disabled={!isReady || !user}
+                  className={cn(
+                    "btn-premium breathe-btn w-full sm:w-auto px-10 h-12 text-sm font-bold rounded-full",
+                    !isReady && "opacity-40 cursor-not-allowed"
+                  )}
+                >
+                  Analyse Interview
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
               </div>
             )}
             </>

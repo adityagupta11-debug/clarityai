@@ -7,7 +7,7 @@ interface ScrollyTellingCanvasProps {
   frameCount?: number;
 }
 
-export function ScrollyTellingCanvas({ progress, frameCount = 240 }: ScrollyTellingCanvasProps) {
+export function ScrollyTellingCanvas({ progress, frameCount = 168 }: ScrollyTellingCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const drawFrameRef = useRef<(() => void) | null>(null);
@@ -22,7 +22,7 @@ export function ScrollyTellingCanvas({ progress, frameCount = 240 }: ScrollyTell
     imagesRef.current = [];
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
-      img.src = `/sequence/frame_${String(i).padStart(3, "0")}_delay-0.2s.webp`;
+      img.src = `/sequence/frame_${String(i).padStart(3, "0")}_delay-0.041s.webp`;
       imagesRef.current.push(img);
     }
 
