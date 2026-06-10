@@ -9,6 +9,7 @@ import {
   RadialBarChart, RadialBar, PolarAngleAxis,
 } from "recharts";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import type { Interview } from "@/types/interview";
 
@@ -204,7 +205,7 @@ export function DashboardAnalytics({
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full animate-pulse rounded-xl bg-muted dark:bg-white/[0.03]" />
+              <Skeleton className="h-full rounded-xl bg-muted dark:bg-white/[0.03]" />
             )}
           </div>
         </ChartCard>
@@ -213,7 +214,7 @@ export function DashboardAnalytics({
         <ChartCard title="Score Trend" icon={LineIcon}>
           <div className="h-[150px]">
             {!mounted ? (
-              <div className="h-full animate-pulse rounded-xl bg-muted dark:bg-white/[0.03]" />
+              <Skeleton className="h-full rounded-xl bg-muted dark:bg-white/[0.03]" />
             ) : hasTrend ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={scoreTrend} margin={{ top: 6, right: 6, left: -22, bottom: 0 }}>
@@ -255,7 +256,7 @@ export function DashboardAnalytics({
         >
           <div className="h-[150px]">
             {!mounted ? (
-              <div className="h-full animate-pulse rounded-xl bg-muted dark:bg-white/[0.03]" />
+              <Skeleton className="h-full rounded-xl bg-muted dark:bg-white/[0.03]" />
             ) : hasScore ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -277,7 +278,7 @@ export function DashboardAnalytics({
         <ChartCard title="Overall Confidence Rate" icon={Gauge}>
           <div className="relative h-[150px]">
             {!mounted ? (
-              <div className="h-full animate-pulse rounded-xl bg-muted dark:bg-white/[0.03]" />
+              <Skeleton className="h-full rounded-xl bg-muted dark:bg-white/[0.03]" />
             ) : (
               <>
                 <ResponsiveContainer width="100%" height="100%">

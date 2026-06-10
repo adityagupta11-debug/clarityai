@@ -243,7 +243,7 @@ function GradientHeader({
         style={{ background: "radial-gradient(circle, rgba(0,80,255,0.08) 0%, transparent 70%)" }} />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
+      <div className="animate-content-in relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
 
         {/* Top row: breadcrumb + score badge */}
         <div className="flex items-center justify-between mb-6 sm:mb-8">
@@ -317,7 +317,7 @@ function AnalysisNotReady({
 }) {
   return (
     <div style={{ fontFamily: SANS_FONT }} className="min-h-screen flex flex-col items-center justify-center gap-6 p-8 text-center bg-background dark:bg-[#0A0A0A]">
-      <div className="relative z-10 max-w-md space-y-6">
+      <div className="animate-content-in relative z-10 max-w-md space-y-6">
         <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-2xl gradient-blue-cyan glow-cyan">
           <svg viewBox="0 0 24 24" className="h-10 w-10 text-white fill-none stroke-current stroke-2">
             <path strokeLinecap="round" strokeLinejoin="round"
@@ -394,7 +394,9 @@ export default async function ResultsPage({ params }: Props) {
   return (
     <div style={{ fontFamily: SANS_FONT }} className="min-h-screen bg-background dark:bg-[#0A0A0A]">
       <GradientHeader interview={interview} analysis={analysis} />
-      <DashboardGrid interview={interview} analysis={analysis} />
+      <div className="animate-content-in" style={{ animationDelay: "160ms" }}>
+        <DashboardGrid interview={interview} analysis={analysis} />
+      </div>
     </div>
   );
 }

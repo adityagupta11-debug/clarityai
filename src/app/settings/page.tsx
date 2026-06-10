@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -379,8 +380,8 @@ export default function SettingsPage() {
       <Section icon={Briefcase} title="Interview Preferences" subtitle="Tailor the AI coaching to your target role and style.">
         {prefsLoading ? (
           <div className="space-y-4">
-            <div className="h-10 animate-pulse rounded-lg bg-foreground/5" />
-            <div className="h-10 animate-pulse rounded-lg bg-foreground/5" />
+            <Skeleton className="h-10 rounded-lg bg-foreground/5" />
+            <Skeleton className="h-10 rounded-lg bg-foreground/5" />
           </div>
         ) : (
           <div className="space-y-4">

@@ -42,7 +42,7 @@ function StatCard({
       {loading ? (
         <Skeleton className="mt-4 h-9 w-16 bg-muted dark:bg-white/5" />
       ) : (
-        <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums text-foreground dark:text-white">
+        <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums text-foreground dark:text-white animate-in fade-in slide-in-from-bottom-1 duration-500">
           {value}
         </p>
       )}
@@ -84,21 +84,21 @@ export default function DashboardPage() {
         description="Here's a snapshot of your interview performance."
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+      {/* Stats — spring cascade on mount */}
+      <div className="stagger-in grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         {stats.map((s) => (
           <StatCard key={s.label} {...s} loading={loading} />
         ))}
       </div>
 
       {/* Analytics — AI coach + data-viz widgets */}
-      <div className="mb-8">
+      <div className="mb-8 animate-content-in" style={{ animationDelay: "180ms" }}>
         <DashboardAnalytics interviews={interviews} avgScore={avgScore} />
       </div>
 
       {/* Recent Interviews — shown once there's history */}
       {(loading || interviews.length > 0) && (
-        <div className="space-y-3">
+        <div className="space-y-3 animate-content-in" style={{ animationDelay: "260ms" }}>
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
               <TrendingUp className="h-3.5 w-3.5" />
@@ -132,9 +132,9 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Interview cards */}
+          {/* Interview cards — cascade in as the skeletons swap out */}
           {!loading && interviews.length > 0 && (
-            <div className="space-y-3">
+            <div className="stagger-in space-y-3">
               {interviews.slice(0, 10).map((interview) => (
                 <InterviewCard key={interview.id} interview={interview} />
               ))}

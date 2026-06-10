@@ -198,7 +198,7 @@ export default function HistoryPage() {
     <div className="space-y-6 sm:space-y-8">
 
       {/* ── Page header ── */}
-      <div>
+      <div className="animate-content-in">
         <div className="flex items-center gap-3 mb-1">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-blue-cyan glow-cyan">
             <History className="h-4.5 w-4.5 text-foreground dark:text-white" />
@@ -214,7 +214,7 @@ export default function HistoryPage() {
 
       {/* ── Stats strip ── */}
       {!loading && hasInterviews && (
-        <div className="flex flex-wrap gap-3">
+        <div className="stagger-in flex flex-wrap gap-3">
           <StatPill
             icon={Mic}
             value={String(interviews.length)}
@@ -248,7 +248,10 @@ export default function HistoryPage() {
 
       {/* ── Filter / search bar ── */}
       {!loading && hasInterviews && (
-        <div className="rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl p-4">
+        <div
+          className="animate-content-in rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl p-4"
+          style={{ animationDelay: "140ms" }}
+        >
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -279,7 +282,7 @@ export default function HistoryPage() {
                 {currentLabel}
               </button>
               {sortOpen && (
-                <div className="absolute right-0 top-11 z-20 w-44 rounded-xl border border-border dark:border-white/10 bg-card/95 backdrop-blur-2xl py-1 shadow-2xl">
+                <div className="absolute right-0 top-11 z-20 w-44 rounded-xl border border-border dark:border-white/10 bg-card/95 backdrop-blur-2xl py-1 shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-1 duration-200">
                   {SORT_OPTIONS.map(({ value, label }) => (
                     <button
                       key={value}
@@ -342,9 +345,9 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {/* ── Interview list — vertically stacked rows in one glass container ── */}
+      {/* ── Interview list — rows cascade in, masked by the glass container ── */}
       {!loading && hasResults && (
-        <div className="overflow-hidden rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl shadow-2xl">
+        <div className="stagger-in overflow-hidden rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl shadow-2xl">
           {filtered.map((interview) => (
             <HistoryRow key={interview.id} interview={interview} />
           ))}
@@ -353,7 +356,7 @@ export default function HistoryPage() {
 
       {/* ── No results from filter ── */}
       {!loading && hasInterviews && !hasResults && (
-        <div className="rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl py-16 text-center">
+        <div className="animate-content-in rounded-2xl border border-border dark:border-white/8 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl py-16 text-center">
           <Search className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground mb-1">No interviews match your filter</p>
           <p className="text-xs text-muted-foreground mb-4">
@@ -370,7 +373,7 @@ export default function HistoryPage() {
 
       {/* ── Truly empty state ── */}
       {!loading && !hasInterviews && (
-        <div className="rounded-2xl border border-dashed border-border dark:border-white/10 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl py-20 text-center">
+        <div className="animate-content-in rounded-2xl border border-dashed border-border dark:border-white/10 bg-muted dark:bg-white/[0.02] backdrop-blur-2xl py-20 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-blue-cyan glow-cyan mx-auto mb-5">
             <Mic className="h-8 w-8 text-white" />
           </div>

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { Mic, Gauge, PauseCircle, Volume2, Repeat2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { formatDuration, formatWPM, formatPercent } from "@/lib/utils/formatting";
 import type { SpeechMetrics as SpeechMetricsType } from "@/types/analysis";
