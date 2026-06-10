@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
+import { verifyRequestAuth } from "@/lib/firebase/api-auth";
 import { analyzeInterviewTranscript, MODEL_ID, PROMPT_VERSION } from "@/lib/services/gemini";
 import { calculateSpeechMetrics } from "@/lib/utils/metrics";
 import { type TranscriptSegment } from "@/types/transcript";
@@ -44,6 +45,12 @@ function buildAnalysisDoc(
 // ── Route handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // ── 0. Authenticate — this route spends Gemini credits ────────────────────
+  const auth = await verifyRequestAuth(req);
+  if (!auth) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   // ── 1. Parse and validate request body ────────────────────────────────────
   let interviewId: string;
   try {
@@ -64,9 +71,15 @@ export async function POST(req: NextRequest) {
   const transcriptRef = db.doc(`interviews/${interviewId}/transcript/data`);
   const analysisRef  = db.doc(`interviews/${interviewId}/analysis/results`);
 
-  // ── 2. Fetch transcript — 404 if not written yet ──────────────────────────
+  // ── 2. Verify ownership, then fetch transcript ─────────────────────────────
+  // Respond 404 (not 403) for non-owned interviews so callers can't probe
+  // for the existence of other users' interview IDs.
   let transcriptSnap: FirebaseFirestore.DocumentSnapshot;
   try {
+    const interviewSnap = await interviewRef.get();
+    if (!interviewSnap.exists || interviewSnap.data()!.userId !== auth.uid) {
+      return NextResponse.json({ error: "Interview not found" }, { status: 404 });
+    }
     transcriptSnap = await transcriptRef.get();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

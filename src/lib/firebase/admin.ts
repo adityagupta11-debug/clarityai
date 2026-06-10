@@ -1,5 +1,6 @@
 import { getApps, initializeApp, cert, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { getAuth, type Auth } from "firebase-admin/auth";
 
 // ── Lazy singleton ────────────────────────────────────────────────────────────
 // getAdminApp() is called inside function bodies, never at module level,
@@ -46,4 +47,9 @@ function getAdminApp(): App {
 /** Returns the Admin Firestore instance. Call inside request handlers only. */
 export function getAdminDb(): Firestore {
   return getFirestore(getAdminApp());
+}
+
+/** Returns the Admin Auth instance. Call inside request handlers only. */
+export function getAdminAuth(): Auth {
+  return getAuth(getAdminApp());
 }

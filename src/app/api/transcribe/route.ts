@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
+import { verifyRequestAuth } from "@/lib/firebase/api-auth";
 import { transcribeAudio, type AssemblyUtterance, type AssemblyWord } from "@/lib/services/assemblyai";
 import { analyzeInterviewTranscript, MODEL_ID, PROMPT_VERSION } from "@/lib/services/gemini";
 import { calculateSpeechMetrics } from "@/lib/utils/metrics";
@@ -36,6 +37,12 @@ function toSegment(u: AssemblyUtterance): TranscriptSegment {
 
 export async function POST(req: NextRequest) {
 
+  // 0. Authenticate — this route spends AssemblyAI + Gemini credits
+  const auth = await verifyRequestAuth(req);
+  if (!auth) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   // 1. Parse body
   let interviewId: string;
   try {
@@ -57,6 +64,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Interview not found" }, { status: 404 });
   }
   const interviewData = snap.data()!;
+
+  // Ownership check — respond 404 (not 403) so callers can't probe for
+  // the existence of other users' interview IDs.
+  if (interviewData.userId !== auth.uid) {
+    return NextResponse.json({ error: "Interview not found" }, { status: 404 });
+  }
+
   const recordingUrl  = interviewData.recordingUrl as string | null;
 
   if (!recordingUrl) {

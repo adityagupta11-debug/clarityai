@@ -398,9 +398,13 @@ export default function NewInterviewPage() {
       // subscribeToInterview listener above mirrors those changes to the
       // local phase so the progress stepper reflects the real server state.
       setPhase("transcribing");
+      const idToken = await user.getIdToken();
       const apiRes = await fetch("/api/transcribe", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:  `Bearer ${idToken}`,
+        },
         body:    JSON.stringify({ interviewId }),
       });
 
