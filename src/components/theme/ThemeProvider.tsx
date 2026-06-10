@@ -4,7 +4,9 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 
 export type Theme = "dark" | "light";
 
-const STORAGE_KEY = "clarity-theme";
+// v2: key versioned to reset everyone to the dark default; older saved
+// "light" values under the unversioned key are intentionally ignored.
+const STORAGE_KEY = "clarity-theme:v2";
 
 interface ThemeContextValue {
   theme: Theme;
