@@ -23,15 +23,15 @@ let _client: GoogleGenAI | undefined;
 function getClient(): GoogleGenAI {
   if (_client) return _client;
 
-  // Prefer the dedicated Gemini key; fall back to the Firebase web API key
-  // (same project, different quota pool — useful when prepaid credits deplete).
-  const apiKey =
-    process.env.GEMINI_API_KEY ||
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  // SECURITY: Only use the dedicated server-side key.
+  // Never fall back to NEXT_PUBLIC_* vars — those are baked into the
+  // client JS bundle and visible to anyone opening DevTools.
+  const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
     throw new Error(
-      "No Gemini API key found. Set GEMINI_API_KEY in .env.local."
+      "GEMINI_API_KEY is not set. Add it to .env.local (get it from aistudio.google.com/apikey). " +
+      "Do NOT use NEXT_PUBLIC_FIREBASE_API_KEY as a substitute — that key is public."
     );
   }
 
